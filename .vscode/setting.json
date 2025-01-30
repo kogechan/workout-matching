@@ -4,5 +4,8 @@
   "editor.codeActionsOnSave": [
     "source.addMissingImports",
     "source.fixAll.eslint"
-  ]
+  ],
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
 }
