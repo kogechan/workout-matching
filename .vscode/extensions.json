@@ -1,0 +1,6 @@
+{
+  "recommendations": [
+    // use code formatter for Prisma
+    "Prisma.prisma"
+  ]
+}
