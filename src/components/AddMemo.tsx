@@ -25,8 +25,7 @@ export const AddMemo = () => {
   // メモを追加する関数
   const addMemo = async (memo: string) => {
     if (memo.trim() === '') return;
-    const newMemoObj: Memo = {
-      id: Date.now(),
+    const newMemoObj: Omit<Memo, 'id'> = {
       value: memo,
       weight: 0,
       rep: 0,
@@ -96,8 +95,8 @@ export const AddMemo = () => {
         </form>
       </Dialog>
       <div>
-        <Fab color="primary" onClick={() => setDialogOpen(true)}>
-          <AddIcon onClick={() => setMenuOpen(false)} />
+        <Fab color="primary" onClick={() => {setDialogOpen(true); setMenuOpen(false)}}>
+          <AddIcon />
         </Fab>
       </div>
     </>

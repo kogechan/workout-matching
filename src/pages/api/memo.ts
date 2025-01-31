@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,14 +33,15 @@ export default async function handler(
           .json({ error: 'すべての項目を入力してください' });
       }
 
+      const parsedDate = isNaN(Date.parse(date)) ? new Date() : new Date(date);
+
       // データベースに保存
       const newWorkout = await prisma.workoutRecord.create({
         data: {
-
           value,
           weight: Number(weight),
           rep: Number(rep),
-          date: new Date(date),
+          date: parsedDate,
           memo,
           category,
         },
