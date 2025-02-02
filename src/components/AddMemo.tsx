@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { memosAtom } from '@/jotai/Jotai';
-import { menuAtom } from '@/jotai/Jotai';
+import { memosAtom, menuAtom, dialogAtom} from '@/jotai/Jotai';
 import Memo from '@/types/WorkOut';
 
 import Button from '@mui/material/Button';
@@ -17,7 +16,7 @@ export const AddMemo = () => {
   const [newMemo, setNewMemo] = useState<string>('');
 
   // ダイアログの状態を保持
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useAtom(dialogAtom);
 
   // メニューの表示状態を保持
   const [, setMenuOpen] = useAtom(menuAtom);
@@ -34,7 +33,7 @@ export const AddMemo = () => {
       category: '',
     };
 
-    console.log("📡 APIに送信するデータ:", newMemoObj); // ✅ ここを追加！
+    console.log(" APIに送信するデータ:", newMemoObj); 
     
     try {
       // APIを呼び出してデータを保存
@@ -44,11 +43,11 @@ export const AddMemo = () => {
         body: JSON.stringify(newMemoObj),
       });
 
-      console.log("🔄 APIレスポンス:", response); // ✅ ここを追加！
+      console.log("APIレスポンス:", response); 
 
       if (response.ok) {
         const savedMemo = await response.json();
-        console.log("✅ API成功レスポンス:", savedMemo);
+        console.log("API成功レスポンス:", savedMemo);
         setMemos((prevMemos) => [...prevMemos, savedMemo]);
       } else {
         alert('データの保存に失敗しました');

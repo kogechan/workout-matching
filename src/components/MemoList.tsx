@@ -1,31 +1,23 @@
 import { useAtom } from 'jotai';
-import { memosAtom } from '@/jotai/Jotai';
+import { memosAtom, editMemoAtom, deleteMemoAtom } from '@/jotai/Jotai';
 
 export const MemoList = () => {
-  const [memos, setMemos] = useAtom(memosAtom);
+  const [memos] = useAtom(memosAtom);
 
-  // メモを編集する関数
-  const handleEdit = (
-    id: number,
-    key: 'date' | 'value' | 'weight' | 'rep' | 'memo' | 'category',
-    value: string
-  ) => {
-    setMemos((prevMemos) =>
-      prevMemos.map((memo) =>
-        memo.id === id ? { ...memo, [key]: value } : memo
-      )
-    );
-  };
+  const [, editMemo] = useAtom(editMemoAtom);
 
-  // メモを削除する関数
+  const [, deleteMemo] = useAtom(deleteMemoAtom);
+
+  // メモを削除
   const handleDelete = (id: number) => {
-    setMemos((prevMemos) => prevMemos.filter((memo) => memo.id !== id));
+    deleteMemo(id);
   };
 
-  const handleChange =
+  // メモの編集
+  const handleEdit =
     (id: number, key: 'value' | 'weight' | 'rep' | 'memo') =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      handleEdit(id, key, e.target.value);
+      editMemo(id, key, e.target.value);
     };
 
   return (
@@ -36,7 +28,7 @@ export const MemoList = () => {
             <input
               type="text"
               value={memo.value}
-              onChange={handleChange(memo.id, 'value')}
+              onChange={handleEdit(memo.id, 'value')}
               placeholder="種目名"
             />
             <span>×</span>
@@ -45,7 +37,7 @@ export const MemoList = () => {
               <input
                 type="text"
                 value={memo.weight}
-                onChange={handleChange(memo.id, 'weight')}
+                onChange={handleEdit(memo.id, 'weight')}
                 placeholder="重量"
               />
             </span>
@@ -56,7 +48,7 @@ export const MemoList = () => {
               <input
                 type="text"
                 value={memo.rep}
-                onChange={handleChange(memo.id, 'rep')}
+                onChange={handleEdit(memo.id, 'rep')}
                 placeholder="回数"
               />
             </span>
@@ -65,7 +57,7 @@ export const MemoList = () => {
               <input
                 type="text"
                 value={memo.memo}
-                onChange={handleChange(memo.id, 'memo')}
+                onChange={handleEdit(memo.id, 'memo')}
                 placeholder="メモ"
               />
             </span>
