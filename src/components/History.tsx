@@ -1,6 +1,5 @@
 import { useAtom } from 'jotai';
-import { memosAtom } from '@/jotai/Jotai';
-import { dialogAtom } from '@/jotai/Jotai';
+import { memosAtom, dialogAtom } from '@/jotai/Jotai';
 
 import { HistoryDialog } from './HistoryDialog';
 
@@ -8,7 +7,6 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import interactionPlugin from '@fullcalendar/interaction';
-import timeGridPlugin from '@fullcalendar/timegrid';
 
 export const History = () => {
   const [memos] = useAtom(memosAtom);
@@ -24,7 +22,7 @@ export const History = () => {
   return (
     <div>
       <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+        plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locales={[jaLocale]}
         locale="ja"

@@ -18,24 +18,20 @@ import {
 export const HistoryDialog = () => {
   const [, editMemo] = useAtom(editMemoAtom);
   const [, deleteMemo] = useAtom(deleteMemoAtom);
-  const [memos, setMemos] = useAtom(memosAtom);
+  const [memos] = useAtom(memosAtom);
   const [dialogOpen, setDialogOpen] = useAtom(dialogAtom);
 
-  // 入力変更ハンドラー
-  const handleChange =
-    (id: string, key: 'value' | 'weight' | 'rep' | 'memo') =>
+  // メモの編集
+  const handleEdit =
+    (id: number, key: 'value' | 'weight' | 'rep' | 'memo') =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setMemos((prevMemos) =>
-        prevMemos.map((memo) =>
-          memo.id === Number(id) ? { ...memo, [key]: e.target.value } : memo
-        )
-      );
+        editMemo(id, key, e.target.value);
     };
   return (
     <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
       <DialogTitle>記録の詳細</DialogTitle>
       <DialogContent>
-        <ul>
+        <ol>
           {memos.map((memo) => (
             <li key={memo.id}>
               <TextField
@@ -44,7 +40,7 @@ export const HistoryDialog = () => {
                 fullWidth
                 margin="dense"
                 value={memo.value}
-                onChange={handleChange(memo.id.toString(), 'value')}
+                onChange={handleEdit(memo.id, 'value')}
               />
               <TextField
                 label="重量 (kg)"
@@ -53,7 +49,7 @@ export const HistoryDialog = () => {
                 fullWidth
                 margin="dense"
                 value={memo.weight}
-                onChange={handleChange(memo.id.toString(), 'weight')}
+                onChange={handleEdit(memo.id, 'weight')}
               />
               <TextField
                 label="回数"
@@ -62,7 +58,7 @@ export const HistoryDialog = () => {
                 fullWidth
                 margin="dense"
                 value={memo.rep}
-                onChange={handleChange(memo.id.toString(), 'rep')}
+                onChange={handleEdit(memo.id, 'rep')}
               />
               <TextField
                 label="メモ"
@@ -70,21 +66,15 @@ export const HistoryDialog = () => {
                 fullWidth
                 margin="dense"
                 value={memo.memo}
-                onChange={handleChange(memo.id.toString(), 'memo')}
+                onChange={handleEdit(memo.id, 'memo')}
               />
             </li>
           ))}
-        </ul>
+        </ol>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => deleteMemo(memos[0].id)} color="error">
           削除
-        </Button>
-        <Button
-          onClick={() => editMemo(memos[0].id, 'value', memos[0].value)}
-          color="primary"
-        >
-          更新
         </Button>
         <Button onClick={() => setDialogOpen(false)}>閉じる</Button>
       </DialogActions>
