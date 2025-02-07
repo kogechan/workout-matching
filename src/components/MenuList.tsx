@@ -57,7 +57,7 @@ export const MenuList = () => {
 
                 <ListItem disablePadding>
                   <ListItemButton component={Link} href="/matching">
-                    <ListItemText primary="マッチング" />
+                    <ListItemText primary="探す" />
                   </ListItemButton>
                 </ListItem>
 

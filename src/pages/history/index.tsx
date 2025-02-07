@@ -1,4 +1,4 @@
-import { History } from '@/components/History';
+import { History } from '@/pages/history/History';
 
 const Home = () => {
   return (
@@ -8,4 +8,4 @@ const Home = () => {
   );
 };
 
-export default Home
+export default Home;

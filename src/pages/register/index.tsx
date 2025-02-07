@@ -1,9 +1,11 @@
-export const Home = () => {
-    return (
-        <div>
-            <h1>登録</h1>
-        </div>
-    )
-}
+import { SignUp } from './Register';
 
-export default Home
+export const Home = () => {
+  return (
+    <div>
+      <SignUp />
+    </div>
+  );
+};
+
+export default Home;

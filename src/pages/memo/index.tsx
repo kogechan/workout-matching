@@ -1,5 +1,5 @@
-import { AddMemo } from '@/components/AddMemo';
-import { MemoList } from '@/components/MemoList';
+import { AddMemo } from '@/pages/memo/AddMemo';
+import { MemoList } from '@/pages/memo/MemoList';
 
 const Home = () => {
   return (

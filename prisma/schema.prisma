@@ -22,3 +22,10 @@ model WorkoutRecord {
   memo     String
   category String
 }
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String
+  email    String @unique
+  password String
+}
