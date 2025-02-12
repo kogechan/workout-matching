@@ -10,7 +10,7 @@ export default async function handler(
   if (req.method !== 'POST')
     return res.status(405).json({ error: 'Method Not Allowed' });
 
-  const { username, email, password } = req.body;
+  const { email, password } = req.body;
 
   // 既に登録されているメールアドレスか確認
   const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -28,7 +28,7 @@ export default async function handler(
 
   // Prisma にユーザー情報を保存
   const newUser = await prisma.user.create({
-    data: { username, email, password: hashedPassword },
+    data: { email, password: hashedPassword },
   });
 
   return res.status(201).json({ user: newUser });

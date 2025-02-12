@@ -3,16 +3,43 @@ import supabase from '@/lib/supabase';
 
 export function useUser() {
   const [user, setUser] = useState<{ id: string; email: string } | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser();
+      setLoading(true);
+      const { data: session } = await supabase.auth.getSession();
       setUser(
-        data?.user ? { id: data.user.id, email: data.user.email ?? '' } : null
+        session?.session?.user
+          ? {
+              id: session.session.user.id,
+              email: session.session.user.email ?? '',
+            }
+          : null
       );
+      setLoading(false);
     };
     fetchUser();
+
+    // Supabase の認証状態が変更されたときにユーザー情報を更新
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === 'SIGNED_IN' && session?.user) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email ?? '',
+          });
+        } else if (event === 'SIGNED_OUT') {
+          console.log('ログアウトしました');
+          setUser(null);
+        }
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
-  return user;
+  return { user, loading, setUser };
 }

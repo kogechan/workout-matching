@@ -31,24 +31,12 @@ export const MenuList = () => {
           >
             <List onClick={closeMenu}>
               <ListItem disablePadding>
-                <ListItemButton component={Link} href="/memo">
-                  <ListItemText primary="記録" />
+                <ListItemButton component={Link} href="/posts">
+                  <ListItemText primary="掲示板" />
                 </ListItemButton>
               </ListItem>
 
               <List onClick={closeMenu}>
-                <ListItem disablePadding>
-                  <ListItemButton component={Link} href="/history">
-                    <ListItemText primary="履歴" />
-                  </ListItemButton>
-                </ListItem>
-
-                <ListItem disablePadding>
-                  <ListItemButton component={Link} href="/board">
-                    <ListItemText primary="掲示板" />
-                  </ListItemButton>
-                </ListItem>
-
                 <ListItem disablePadding>
                   <ListItemButton component={Link} href="/like">
                     <ListItemText primary="いいね" />
@@ -56,14 +44,14 @@ export const MenuList = () => {
                 </ListItem>
 
                 <ListItem disablePadding>
-                  <ListItemButton component={Link} href="/matching">
-                    <ListItemText primary="探す" />
+                  <ListItemButton component={Link} href="/message">
+                    <ListItemText primary="メッセージ" />
                   </ListItemButton>
                 </ListItem>
 
                 <ListItem disablePadding>
-                  <ListItemButton component={Link} href="/message">
-                    <ListItemText primary="メッセージ" />
+                  <ListItemButton component={Link} href="/">
+                    <ListItemText primary="探す" />
                   </ListItemButton>
                 </ListItem>
 
