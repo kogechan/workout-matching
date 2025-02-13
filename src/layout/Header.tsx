@@ -18,19 +18,17 @@ import supabase from '@/lib/supabase';
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
-  const { user, loading, setUser } = useUser(); // ログイン状態を取得
+  const { user, loading } = useUser(); // ログイン状態を取得
 
-  const handleLogout = async () => {
-    const res = await fetch('/api/auth/logout', {
-      method: 'POST',
-    });
-    if (res.ok) {
-      console.log('ログアウト成功');
-      await supabase.auth.getSession();
-      setUser(null);
-      alert('ログアウトしました');
-    } else {
-      alert('ログアウトに失敗しました');
+  const Logout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    try {
+      const { error: logoutError } = await supabase.auth.signOut();
+      if (logoutError) {
+        throw logoutError;
+      }
+    } catch {
+      alert('エラーが発生しました');
     }
   };
 
@@ -53,7 +51,7 @@ export const Header = () => {
           </Typography>
           {/* ログイン状態に応じてボタンを切り替える */}
           {loading ? null : user ? (
-            <Button color="inherit" onClick={handleLogout}>
+            <Button color="inherit" onClick={Logout}>
               ログアウト
             </Button>
           ) : (

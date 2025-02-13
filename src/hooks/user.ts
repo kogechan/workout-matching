@@ -41,5 +41,5 @@ export function useUser() {
     };
   }, []);
 
-  return { user, loading, setUser };
+  return { user, loading };
 }
