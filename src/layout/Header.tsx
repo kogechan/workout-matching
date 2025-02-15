@@ -1,7 +1,8 @@
-import { menuAtom, loginModalAtom } from '@/jotai/Jotai';
+import { menuAtom, loginModalAtom, LogoutModalAtom } from '@/jotai/Jotai';
 import { useAtom } from 'jotai';
 import { MenuList } from '@/components/MenuList';
 import { Login } from '@/components/Login';
+import { LogoutAlert } from '@/components/LogoutAlert';
 import { useUser } from '@/hooks/user';
 
 import AppBar from '@mui/material/AppBar';
@@ -13,24 +14,11 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { SignUp } from '@/components/SignUp';
 
-import supabase from '@/lib/supabase';
-
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
+  const [logoutModalOpen, setLogoutModalOpen] = useAtom(LogoutModalAtom);
   const { user, loading } = useUser(); // ログイン状態を取得
-
-  const Logout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    try {
-      const { error: logoutError } = await supabase.auth.signOut();
-      if (logoutError) {
-        throw logoutError;
-      }
-    } catch {
-      alert('エラーが発生しました');
-    }
-  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -51,7 +39,10 @@ export const Header = () => {
           </Typography>
           {/* ログイン状態に応じてボタンを切り替える */}
           {loading ? null : user ? (
-            <Button color="inherit" onClick={Logout}>
+            <Button
+              color="inherit"
+              onClick={() => setLogoutModalOpen(!logoutModalOpen)}
+            >
               ログアウト
             </Button>
           ) : (
@@ -67,6 +58,7 @@ export const Header = () => {
       <MenuList />
       <Login />
       <SignUp />
+      <LogoutAlert />
     </Box>
   );
 };
