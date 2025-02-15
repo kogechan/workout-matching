@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai';
-import { LogoutModalAtom } from '@/jotai/Jotai';
+import { logoutModalAtom } from '@/jotai/Jotai';
 import { Dialog } from '@mui/material';
 
 import supabase from '@/lib/supabase';
 
 export const LogoutAlert = () => {
-  const [logoutModalOpen, setLogoutModalOpen] = useAtom(LogoutModalAtom);
+  const [logoutModalOpen, setLogoutModalOpen] = useAtom(logoutModalAtom);
 
   const Logout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();

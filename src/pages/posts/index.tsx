@@ -1,15 +1,18 @@
 import { PostForm } from './PostForm';
 import { PostList } from './PostList';
 import { AddPost } from './AddPost';
+import { Container, Typography } from '@mui/material';
 
 const Home = () => {
   return (
-    <div>
-      <h1>掲示板</h1>
+    <Container maxWidth="sm">
+      <Typography variant="h4" align="center" sx={{ my: 2 }}>
+        掲示板
+      </Typography>
       <PostForm />
       <PostList />
       <AddPost />
-    </div>
+    </Container>
   );
 };
 

@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { postAtom, PostModalAtom } from '@/jotai/Jotai';
+import { postAtom, postModalAtom } from '@/jotai/Jotai';
 import { getPost, addPost } from '@/pages/api/posts/post';
-import { Dialog } from '@mui/material';
+import { Box, Button, Dialog, TextField } from '@mui/material';
 
 export const PostForm = () => {
   const [, setPosts] = useAtom(postAtom);
   // 投稿のcontentを保持
   const [content, setContent] = useState('');
-  const [postModalOpen, setPostModalOpen] = useAtom(PostModalAtom);
+  const [postModalOpen, setPostModalOpen] = useAtom(postModalAtom);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -29,16 +29,36 @@ export const PostForm = () => {
   };
   return (
     <Dialog open={postModalOpen} onClose={() => setPostModalOpen(false)}>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="内容"
-        />
-        <button type="submit" onClick={() => setPostModalOpen(false)}>
-          投稿
-        </button>
-      </form>
+      <Box sx={{ p: 2, mb: 1, display: 'flex', flexDirection: 'column' }}>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="いまどうしてる？"
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={6}
+            sx={{ m: 1, width: '50ch' }}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <Box
+            my={1}
+            flexDirection="row"
+            justifyContent="flex-end"
+            display="flex"
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 1 }}
+              onClick={() => setPostModalOpen(false)}
+            >
+              投稿
+            </Button>
+          </Box>
+        </form>
+      </Box>
     </Dialog>
   );
 };

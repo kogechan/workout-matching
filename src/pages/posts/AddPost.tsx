@@ -1,11 +1,15 @@
 import { useAtom } from 'jotai';
-import { PostModalAtom } from '@/jotai/Jotai';
+import { postModalAtom } from '@/jotai/Jotai';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import { IconButton } from '@mui/material';
 
 export const AddPost = () => {
-  const [postModalOpen, setPostModalOpen] = useAtom(PostModalAtom);
+  const [postModalOpen, setPostModalOpen] = useAtom(postModalAtom);
   return (
     <>
-      <button onClick={() => setPostModalOpen(!postModalOpen)}>投稿</button>
+      <IconButton>
+        <PostAddIcon onClick={() => setPostModalOpen(!postModalOpen)} />
+      </IconButton>
     </>
   );
 };

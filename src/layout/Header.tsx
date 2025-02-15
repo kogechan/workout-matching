@@ -1,4 +1,4 @@
-import { menuAtom, loginModalAtom, LogoutModalAtom } from '@/jotai/Jotai';
+import { menuAtom, loginModalAtom, logoutModalAtom } from '@/jotai/Jotai';
 import { useAtom } from 'jotai';
 import { MenuList } from '@/components/MenuList';
 import { Login } from '@/components/Login';
@@ -17,7 +17,7 @@ import { SignUp } from '@/components/SignUp';
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
-  const [logoutModalOpen, setLogoutModalOpen] = useAtom(LogoutModalAtom);
+  const [logoutModalOpen, setLogoutModalOpen] = useAtom(logoutModalAtom);
   const { user, loading } = useUser(); // ログイン状態を取得
 
   return (

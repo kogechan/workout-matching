@@ -3,7 +3,7 @@ import {
   loginModalAtom,
   emailAtom,
   passwordAtom,
-  SignUpModalAtom,
+  signUpModalAtom,
 } from '@/jotai/Jotai';
 import { Dialog } from '@mui/material';
 
@@ -13,7 +13,7 @@ export const Login = () => {
   const [email, setEmail] = useAtom(emailAtom);
   const [password, setPassword] = useAtom(passwordAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
-  const [SignUpOpen, setSignUpOpen] = useAtom(SignUpModalAtom);
+  const [SignUpOpen, setSignUpOpen] = useAtom(signUpModalAtom);
 
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

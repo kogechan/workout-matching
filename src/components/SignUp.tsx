@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { emailAtom, passwordAtom, SignUpModalAtom } from '@/jotai/Jotai';
+import { emailAtom, passwordAtom, signUpModalAtom } from '@/jotai/Jotai';
 import { Dialog } from '@mui/material';
 import supabase from '@/lib/supabase';
 import Link from 'next/link';
@@ -7,7 +7,7 @@ import Link from 'next/link';
 export const SignUp = () => {
   const [email, setEmail] = useAtom(emailAtom);
   const [password, setPassword] = useAtom(passwordAtom);
-  const [SignUpOpen, setSignUpOpen] = useAtom(SignUpModalAtom);
+  const [SignUpOpen, setSignUpOpen] = useAtom(signUpModalAtom);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

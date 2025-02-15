@@ -6,11 +6,11 @@ export const menuAtom = atom(false);
 // ログインモーダルの開閉状態を管理する Atom
 export const loginModalAtom = atom(false);
 // アカウント登録モーダルの開閉状態を管理する Atom
-export const SignUpModalAtom = atom(false);
+export const signUpModalAtom = atom(false);
 // 投稿モーダルの開閉状態を管理する
-export const PostModalAtom = atom(false);
+export const postModalAtom = atom(false);
 // ログアウトアラートモーダルの開閉状態を管理
-export const LogoutModalAtom = atom(false);
+export const logoutModalAtom = atom(false);
 // メールアドレスの管理
 export const emailAtom = atom('');
 // パスワードの管理
