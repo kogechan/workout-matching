@@ -4,7 +4,6 @@ import { MenuList } from '@/components/MenuList';
 import { Login } from '@/components/Login';
 import { LogoutAlert } from '@/components/LogoutAlert';
 import { useUser } from '@/hooks/user';
-
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { SignUp } from '@/components/SignUp';
+import Link from 'next/link';
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
@@ -24,18 +23,20 @@ export const Header = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <MenuIcon />
-          </IconButton>
+          {user && (
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+            <Link href="/">サービス名</Link>
           </Typography>
           {/* ログイン状態に応じてボタンを切り替える */}
           {loading ? null : user ? (
@@ -57,7 +58,6 @@ export const Header = () => {
       </AppBar>
       <MenuList />
       <Login />
-      <SignUp />
       <LogoutAlert />
     </Box>
   );

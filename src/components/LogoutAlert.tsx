@@ -1,11 +1,13 @@
 import { useAtom } from 'jotai';
 import { logoutModalAtom } from '@/jotai/Jotai';
 import { Dialog } from '@mui/material';
-
+import { useRouter } from 'next/router';
 import supabase from '@/lib/supabase';
 
 export const LogoutAlert = () => {
   const [logoutModalOpen, setLogoutModalOpen] = useAtom(logoutModalAtom);
+
+  const router = useRouter();
 
   const Logout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -26,6 +28,7 @@ export const LogoutAlert = () => {
           onClick={(e) => {
             Logout(e);
             setLogoutModalOpen(false);
+            router.push('/');
           }}
         >
           ログアウト

@@ -8,6 +8,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Link from 'next/link';
+import Avatar from '@mui/material/Avatar';
 
 export const MenuList = () => {
   // メニューの表示状態を管理
@@ -29,6 +30,12 @@ export const MenuList = () => {
             role="presentation"
             onClick={closeMenu}
           >
+            <Box display="flex" justifyContent="center" my={2}>
+              <Avatar sx={{ width: 80, height: 80 }} />
+            </Box>
+
+            <Link href="/profile">プロフィールを編集</Link>
+
             <List onClick={closeMenu}>
               <ListItem disablePadding>
                 <ListItemButton component={Link} href="/posts">
@@ -50,12 +57,6 @@ export const MenuList = () => {
                 </ListItem>
 
                 <ListItem disablePadding>
-                  <ListItemButton component={Link} href="/">
-                    <ListItemText primary="探す" />
-                  </ListItemButton>
-                </ListItem>
-
-                <ListItem disablePadding>
                   <ListItemButton component={Link} href="/setting">
                     <ListItemText primary="設定" />
                   </ListItemButton>
@@ -64,6 +65,7 @@ export const MenuList = () => {
             </List>
           </Box>
         )}
+        <Link href="/contactForm">お問い合わせ</Link>
       </Drawer>
     </div>
   );

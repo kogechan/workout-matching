@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { postAtom, postModalAtom } from '@/jotai/Jotai';
 import { getPost, addPost } from '@/pages/api/posts/post';
-import { Box, Button, Dialog, TextField } from '@mui/material';
+import { Avatar, Box, Button, Dialog, Stack, TextField } from '@mui/material';
 
 export const PostForm = () => {
   const [, setPosts] = useAtom(postAtom);
@@ -31,6 +31,9 @@ export const PostForm = () => {
     <Dialog open={postModalOpen} onClose={() => setPostModalOpen(false)}>
       <Box sx={{ p: 2, mb: 1, display: 'flex', flexDirection: 'column' }}>
         <form onSubmit={handleSubmit}>
+          <Stack direction="row" spacing={2}>
+            <Avatar />
+          </Stack>
           <TextField
             label="いまどうしてる？"
             variant="outlined"

@@ -11,6 +11,8 @@ import {
   Menu,
   Typography,
   MenuItem,
+  Stack,
+  Avatar,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -54,6 +56,9 @@ export const PostList = () => {
                   alignItems: 'center',
                 }}
               >
+                <Stack direction="row" spacing={2}>
+                  <Avatar />
+                </Stack>
                 <Typography variant="body1">{post.content}</Typography>
                 <IconButton onClick={(e) => handleMenuOpen(e, post.id)}>
                   <MoreHorizIcon />

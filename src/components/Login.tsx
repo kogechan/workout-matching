@@ -1,19 +1,14 @@
 import { useAtom } from 'jotai';
-import {
-  loginModalAtom,
-  emailAtom,
-  passwordAtom,
-  signUpModalAtom,
-} from '@/jotai/Jotai';
+import { loginModalAtom, emailAtom, passwordAtom } from '@/jotai/Jotai';
 import { Dialog } from '@mui/material';
 
 import supabase from '@/lib/supabase';
+import Link from 'next/link';
 
 export const Login = () => {
   const [email, setEmail] = useAtom(emailAtom);
   const [password, setPassword] = useAtom(passwordAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
-  const [SignUpOpen, setSignUpOpen] = useAtom(signUpModalAtom);
 
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,9 +41,12 @@ export const Login = () => {
         />
         <button type="submit">ログイン</button>
       </form>
-      <button onClick={() => setSignUpOpen(!SignUpOpen)}>
+      <Link href="email" onClick={() => setLoginModalOpen(false)}>
+        パスワードをお忘れですか？
+      </Link>
+      <Link href="acount" onClick={() => setLoginModalOpen(false)}>
         まだアカウントをお持ちでない方はこちら
-      </button>
+      </Link>
     </Dialog>
   );
 };
