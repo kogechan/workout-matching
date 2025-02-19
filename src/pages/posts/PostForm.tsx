@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { postAtom, postModalAtom } from '@/jotai/Jotai';
+import { postAtom, postModalAtom, profileAtom } from '@/jotai/Jotai';
 import { getPost, addPost } from '@/pages/api/posts/post';
 import { Avatar, Box, Button, Dialog, Stack, TextField } from '@mui/material';
 
 export const PostForm = () => {
   const [, setPosts] = useAtom(postAtom);
-  // 投稿のcontentを保持
+  const [profile] = useAtom(profileAtom);
   const [content, setContent] = useState('');
   const [postModalOpen, setPostModalOpen] = useAtom(postModalAtom);
 
@@ -32,7 +32,7 @@ export const PostForm = () => {
       <Box sx={{ p: 2, mb: 1, display: 'flex', flexDirection: 'column' }}>
         <form onSubmit={handleSubmit}>
           <Stack direction="row" spacing={2}>
-            <Avatar />
+            <Avatar src={profile.avatar_url} />
           </Stack>
           <TextField
             label="いまどうしてる？"

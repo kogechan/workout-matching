@@ -5,6 +5,7 @@ import { IconButton } from '@mui/material';
 
 export const AddPost = () => {
   const [postModalOpen, setPostModalOpen] = useAtom(postModalAtom);
+
   return (
     <>
       <IconButton>

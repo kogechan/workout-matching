@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { postAtom } from '@/jotai/Jotai';
+import { postAtom, profileAtom } from '@/jotai/Jotai';
 import { deletePost } from '../api/posts/post';
 import {
   Card,
@@ -19,6 +19,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 export const PostList = () => {
   const [posts, setPosts] = useAtom(postAtom);
+  const [profile] = useAtom(profileAtom);
   const [menuAnchorEl, setMenuAnchorEl] = useState<{
     [key: number]: HTMLElement | null;
   }>({});
@@ -57,7 +58,7 @@ export const PostList = () => {
                 }}
               >
                 <Stack direction="row" spacing={2}>
-                  <Avatar />
+                  <Avatar src={profile.avatar_url} />
                 </Stack>
                 <Typography variant="body1">{post.content}</Typography>
                 <IconButton onClick={(e) => handleMenuOpen(e, post.id)}>
