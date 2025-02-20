@@ -30,7 +30,7 @@ export const addPost = async (content: string) => {
   const { data } = await supabase.from('posts').insert([
     {
       content,
-      user_id: user.data.user.id, // 確実に `user_id` を取得する
+      user_id: user.data.user.id,
     },
   ]);
   return data;
