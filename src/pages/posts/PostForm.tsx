@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { postAtom, postModalAtom, profileAtom } from '@/jotai/Jotai';
+import { postAtom, postModalAtom } from '@/jotai/Jotai';
 import { getPost, addPost } from '@/pages/api/posts/post';
 import { Avatar, Box, Button, Dialog, Stack, TextField } from '@mui/material';
+import { useAvatar } from '@/hooks/useAvatar';
 
 export const PostForm = () => {
   const [, setPosts] = useAtom(postAtom);
-  const [profile] = useAtom(profileAtom);
   const [content, setContent] = useState('');
   const [postModalOpen, setPostModalOpen] = useAtom(postModalAtom);
+  const { profile } = useAvatar();
 
   useEffect(() => {
     const fetchPosts = async () => {

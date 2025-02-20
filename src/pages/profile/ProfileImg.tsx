@@ -3,9 +3,13 @@ import { Box, Avatar, IconButton } from '@mui/material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { useAtom } from 'jotai';
 import { profileAtom } from '@/jotai/Jotai';
+import { useAvatar } from '@/hooks/useAvatar';
+
+// 一度過去に設定した画像を再度上げることができない
 
 export const ProfileImg = () => {
-  const [profile, setProfile] = useAtom(profileAtom);
+  const [, setProfile] = useAtom(profileAtom);
+  const { profile } = useAvatar();
 
   // 画像アップロード処理
   const handleAvatarUpload = async (
@@ -21,7 +25,7 @@ export const ProfileImg = () => {
 
     const { error } = await supabase.storage
       .from('avatars')
-      .upload(filePath, file, { upsert: false });
+      .upload(filePath, file);
 
     if (error) {
       console.error(' 画像アップロードエラー:', error);

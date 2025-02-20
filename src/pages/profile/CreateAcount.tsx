@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { profileAtom } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
@@ -12,32 +11,11 @@ import {
   MenuItem,
   Select,
 } from '@mui/material';
+import { useAvatar } from '@/hooks/useAvatar';
 
 export const CreateAcount = () => {
-  const [profile, setProfile] = useAtom(profileAtom);
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
-      const { data: user } = await supabase.auth.getUser();
-      if (!user?.user) return;
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.user.id)
-        .maybeSingle();
-
-      if (error) console.error('プロフィール取得エラー:', error);
-      if (data) setProfile(data);
-
-      setLoading(false);
-    };
-
-    fetchProfile();
-  }, [setProfile]);
+  const [, setProfile] = useAtom(profileAtom);
+  const { profile, loading } = useAvatar();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

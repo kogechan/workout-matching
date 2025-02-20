@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { menuAtom, profileAtom } from '@/jotai/Jotai';
+import { menuAtom } from '@/jotai/Jotai';
 import Drawer from '@mui/material/Drawer';
 import ListItemButton from '@mui/material/ListItemButton';
 import Box from '@mui/material/Box';
@@ -7,10 +7,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Link from 'next/link';
 import { Avatar } from '@mui/material';
+import { useAvatar } from '@/hooks/useAvatar';
 
 export const MenuList = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
-  const [profile] = useAtom(profileAtom);
+  const { profile } = useAvatar();
 
   // メニュー項目をクリックしたときにメニューを閉じる
   const closeMenu = () => {

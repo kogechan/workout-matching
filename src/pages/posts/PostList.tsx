@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { postAtom, profileAtom } from '@/jotai/Jotai';
+import { postAtom } from '@/jotai/Jotai';
 import { deletePost } from '../api/posts/post';
 import {
   Card,
@@ -18,15 +18,16 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import BlockIcon from '@mui/icons-material/Block';
 import ReportIcon from '@mui/icons-material/Report';
 import supabase from '@/lib/supabase';
+import { useAvatar } from '@/hooks/useAvatar';
 
 export const PostList = () => {
   const [posts, setPosts] = useAtom(postAtom);
-  const [profile] = useAtom(profileAtom);
   const [menuAnchorEl, setMenuAnchorEl] = useState<{
     [key: number]: HTMLElement | null;
   }>({});
   // 現在のログインユーザーを判別するためのステート
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { profile } = useAvatar();
 
   useEffect(() => {
     const fetchUser = async () => {
