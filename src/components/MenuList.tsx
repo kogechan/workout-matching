@@ -55,7 +55,7 @@ export const MenuList = () => {
             </ListItem>
 
             <ListItem disablePadding>
-              <ListItemButton component={Link} href="/message">
+              <ListItemButton component={Link} href="/chat">
                 <ListItemText primary="メッセージ" />
               </ListItemButton>
             </ListItem>
