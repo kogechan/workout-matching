@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import supabase from '@/lib/supabase';
-import { Message } from '@/type/message';
+import { Message } from '@/type/chat';
 
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -16,7 +16,7 @@ export const useChat = () => {
     };
     fetchMessages();
 
-    // リアルタイムでメッセージを受信
+    // リアルタイム
     const subscription = supabase
       .channel('messages')
       .on(

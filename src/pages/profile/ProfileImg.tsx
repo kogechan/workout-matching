@@ -38,10 +38,12 @@ export const ProfileImg = () => {
     setProfile({ ...profile, avatar_url: data.publicUrl });
 
     // データベースに画像の URL を保存
-    const { error: updateError } = await supabase.from('profiles').upsert(
-      { user_id: user.user.id, avatar_url: data.publicUrl },
-      { onConflict: 'user_id' } // これを設定すればデータがUPDATEできるようになり、UNIQUE制約に違反しなくなる
-    );
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .upsert(
+        { id: user.user.id, avatar_url: data.publicUrl },
+        { onConflict: 'id' }
+      );
 
     if (updateError) console.error('画像 URL 更新エラー:', updateError);
   };

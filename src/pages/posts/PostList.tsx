@@ -19,6 +19,25 @@ import BlockIcon from '@mui/icons-material/Block';
 import ReportIcon from '@mui/icons-material/Report';
 import supabase from '@/lib/supabase';
 import { useAvatar } from '@/hooks/useAvatar';
+import { GetServerSideProps } from 'next';
+// import { Post } from '@/type/post';
+// import { GetServerSideProps } from 'next';
+
+// サーバーサイドで最新の投稿を取得
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error('データ取得エラー:', error);
+    return { props: { posts: [] } };
+  }
+
+  return { props: { posts } };
+};
 
 export const PostList = () => {
   const [posts, setPosts] = useAtom(postAtom);
@@ -29,6 +48,7 @@ export const PostList = () => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { profile } = useAvatar();
 
+  // ユーザーを取得
   useEffect(() => {
     const fetchUser = async () => {
       const { data: user } = await supabase.auth.getUser();
@@ -75,7 +95,7 @@ export const PostList = () => {
             <CardContent>
               <Stack direction="row" spacing={2}>
                 <Avatar
-                  src={profile.avatar_url}
+                  src={profile.avatar_url || '/default-avatar.png'}
                   sx={{ width: 48, height: 48 }}
                 />
 
@@ -155,3 +175,24 @@ export const PostList = () => {
     </>
   );
 };
+
+// リアルタイム
+/* useEffect(() => {
+    // Supabase Realtime で新しい投稿を監視
+    const subscription = supabase
+      .channel('realtime-posts')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'posts' },
+        (payload) => {
+          const newPost = payload.new as Post;
+          setPosts((prevPosts) => [newPost, ...prevPosts]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, [setPosts]);
+ */

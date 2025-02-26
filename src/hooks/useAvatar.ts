@@ -17,11 +17,21 @@ export const useAvatar = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', user.user.id)
+        .eq('id', user.user.id)
         .maybeSingle();
 
       if (error) console.error('プロフィール取得エラー:', error);
       if (data) setProfile(data);
+
+      setProfile(() => ({
+        username: data?.username || '',
+        bio: data?.bio || '',
+        gender: data?.gender || '',
+        age: data?.age || '',
+        location: data?.location || '',
+        training_experience: data?.training_experience || '',
+        avatar_url: data?.avatar_url || '',
+      }));
 
       setLoading(false);
     };

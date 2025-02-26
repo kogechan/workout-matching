@@ -33,7 +33,7 @@ export const CreateAcount = () => {
 
     const { error } = await supabase
       .from('profiles')
-      .upsert({ ...profile, user_id: user.user.id }, { onConflict: 'user_id' });
+      .upsert({ ...profile, id: user.user.id }, { onConflict: 'id' });
 
     if (error) {
       console.error('プロフィール更新エラー:', error);
@@ -51,7 +51,7 @@ export const CreateAcount = () => {
         fullWidth
         margin="normal"
         name="username"
-        value={profile.username}
+        value={profile.username || ''}
         onChange={handleChange}
       />
 
@@ -62,7 +62,7 @@ export const CreateAcount = () => {
       <RadioGroup
         row
         name="gender"
-        value={profile.gender}
+        value={profile.gender || ''}
         onChange={handleGenderChange}
       >
         <FormControlLabel value="男性" control={<Radio />} label="男性" />
@@ -78,7 +78,7 @@ export const CreateAcount = () => {
         margin="normal"
         name="age"
         type="number"
-        value={profile.age}
+        value={profile.age || ''}
         onChange={handleChange}
       />
 
@@ -125,7 +125,7 @@ export const CreateAcount = () => {
         name="bio"
         multiline
         rows={3}
-        value={profile.bio}
+        value={profile.bio || ''}
         onChange={handleChange}
       />
       <Button

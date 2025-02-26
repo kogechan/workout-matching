@@ -1,10 +1,9 @@
-import { Chat } from './Chat';
+import ChatRoomsList from './ChatIndex';
 
 const Home = () => {
   return (
     <div>
-      <h1>メッセージ</h1>
-      <Chat />
+      <ChatRoomsList />
     </div>
   );
 };
