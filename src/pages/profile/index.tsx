@@ -1,5 +1,5 @@
 import { Card, CardContent, Container } from '@mui/material';
-import { CreateAcount } from './CreateAcount';
+import { CreateAcount } from './EditAcount';
 import { ProfileImg } from './ProfileImg';
 
 const Home = () => {
