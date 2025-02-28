@@ -1,17 +1,27 @@
-import { Card, CardContent, Container } from '@mui/material';
-import { CreateAcount } from './EditAcount';
-import { ProfileImg } from './ProfileImg';
+import { Box, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { ProfileCard } from './ProfileCard';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
 
 const Home = () => {
   return (
-    <Container maxWidth="sm">
-      <Card sx={{ mt: 4, p: 3 }}>
-        <CardContent>
-          <ProfileImg />
-          <CreateAcount />
-        </CardContent>
-      </Card>
-    </Container>
+    <>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box sx={{ p: 3 }}>
+          <ProfileCard />
+        </Box>
+      </ThemeProvider>
+    </>
   );
 };
 

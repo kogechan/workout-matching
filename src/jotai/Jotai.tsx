@@ -4,7 +4,7 @@ import { User } from '@/type/user';
 
 // メニューの表示状態を管理
 export const menuAtom = atom(false);
-// ログインモーダルの開閉状態を管理する Atom
+// ログインモーダルの開閉状態を管理する
 export const loginModalAtom = atom(false);
 // 投稿モーダルの開閉状態を管理する
 export const postModalAtom = atom(false);

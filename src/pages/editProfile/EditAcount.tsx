@@ -12,10 +12,12 @@ import {
   Select,
 } from '@mui/material';
 import { useAvatar } from '@/hooks/useAvatar';
+import { useRouter } from 'next/router';
 
 export const CreateAcount = () => {
   const [, setProfile] = useAtom(profileAtom);
   const { profile, loading } = useAvatar();
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -133,7 +135,10 @@ export const CreateAcount = () => {
         color="primary"
         fullWidth
         sx={{ mt: 2 }}
-        onClick={handleSave}
+        onClick={() => {
+          handleSave();
+          router.push('/profile');
+        }}
         disabled={loading}
       >
         {loading ? '保存中...' : '保存'}
