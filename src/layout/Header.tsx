@@ -46,7 +46,7 @@ export const Header = () => {
               router.push('/');
             }}
           >
-            キンター
+            KINTA
           </Typography>
 
           {/* ログイン状態に応じてボタンを切り替える */}

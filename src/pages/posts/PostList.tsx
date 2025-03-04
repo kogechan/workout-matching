@@ -18,7 +18,9 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import BlockIcon from '@mui/icons-material/Block';
 import ReportIcon from '@mui/icons-material/Report';
 import supabase from '@/lib/supabase';
+import { useAvatar } from '@/hooks/useAvatar';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 // import { Post } from '@/type/post';
 // import { GetServerSideProps } from 'next';
 
@@ -45,6 +47,8 @@ export const PostList = () => {
   }>({});
   // 現在のログインユーザーを判別するためのステート
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { profile } = useAvatar();
+  const router = useRouter();
 
   // ユーザーを取得
   useEffect(() => {
@@ -92,13 +96,29 @@ export const PostList = () => {
           >
             <CardContent>
               <Stack direction="row" spacing={2}>
-                <Avatar
-                  src={post.profiles?.avatar_url || ''}
-                  sx={{ width: 48, height: 48 }}
-                >
-                  {/* アイコンがない場合ユーザーの頭文字を表示する */}
-                  {post.profiles?.username?.charAt(0) || 'U'}{' '}
-                </Avatar>
+                {/* 自分のアイコンをクリックしてもプロフィールが表示されないようにする三項演算子 */}
+                {post.user_id === currentUserId ? (
+                  <Avatar
+                    src={profile.avatar_url || ''}
+                    sx={{ width: 48, height: 48 }}
+                  >
+                    {/* アイコンがない場合ユーザーの頭文字を表示する */}
+                    {post.profiles?.username?.charAt(0) || 'U'}{' '}
+                  </Avatar>
+                ) : (
+                  <Avatar
+                    src={post.profiles?.avatar_url || ''}
+                    sx={{ width: 48, height: 48 }}
+                    onClick={() =>
+                      router.push(
+                        '/profile/093e9e32-209e-4fa0-a8c1-b13298c833b7'
+                      )
+                    }
+                  >
+                    {/* アイコンがない場合ユーザーの頭文字を表示する */}
+                    {post.profiles?.username?.charAt(0) || 'U'}{' '}
+                  </Avatar>
+                )}
 
                 <Box sx={{ flex: 1 }}>
                   <Stack direction="row" alignItems="center" spacing={1}>
@@ -176,6 +196,8 @@ export const PostList = () => {
     </>
   );
 };
+
+export default PostList;
 
 // リアルタイム
 /* useEffect(() => {

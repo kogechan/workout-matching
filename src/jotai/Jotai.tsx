@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { Post } from '@/type/post';
-import { User } from '@/type/user';
+import { OtherUser, User } from '@/type/user';
 
 // メニューの表示状態を管理
 export const menuAtom = atom(false);
@@ -16,8 +16,18 @@ export const emailAtom = atom('');
 export const passwordAtom = atom('');
 // 投稿を保持
 export const postAtom = atom<Post[]>([]);
-// プロフィール情報を保持
+// ログインユーザーのプロフィール情報の値を保持
 export const profileAtom = atom<User>({
+  username: '',
+  gender: '',
+  age: '',
+  location: '',
+  training_experience: '',
+  bio: '',
+  avatar_url: '',
+});
+// 他ユーザーのプロフィール情報の値の保持、使わない可能性あり
+export const otherProfileAtom = atom<OtherUser>({
   username: '',
   gender: '',
   age: '',

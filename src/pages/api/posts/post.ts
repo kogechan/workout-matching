@@ -9,7 +9,9 @@ export const getPost = async () => {
   }
   const { data, error } = await supabase
     .from('posts')
-    .select('id, content, created_at, user_id, profiles(username, avatar_url)')
+    .select(
+      'id, content, created_at, user_id, profiles(username, avatar_url,gender,age,location,training_experience,bio)'
+    )
     .order('created_at', { ascending: false });
 
   if (error) {
