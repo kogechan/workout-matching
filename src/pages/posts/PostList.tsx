@@ -111,7 +111,7 @@ export const PostList = () => {
                     sx={{ width: 48, height: 48 }}
                     onClick={() =>
                       router.push(
-                        '/profile/093e9e32-209e-4fa0-a8c1-b13298c833b7'
+                        `/profile/${post.profiles?.username || post.user_id}`
                       )
                     }
                   >

@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -6,118 +7,141 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Avatar,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 import supabase from '@/lib/supabase';
-import { ChatList } from './ChatList';
 import { MessageInput } from './MessageInput';
 import { Message, ChatRoom } from '@/type/chat';
-import { useEffect, useState } from 'react';
+import { ChatList } from './ChatList';
 
-export const ChatRoomPage = () => {
+interface ProfileData {
+  id: string;
+  username: string;
+  avatar_url?: string;
+}
+
+const ChatRoomPage = () => {
   const router = useRouter();
   const { id: roomId } = router.query;
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [room, setRoom] = useState<ChatRoom | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [otherUser, setOtherUser] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // テスト用のユーザーID（実際の実装では認証システムから取得）
-  const currentUserId = 'current-user-id';
 
   useEffect(() => {
     if (!roomId) return;
 
-    // チャットルーム情報の取得
+    const fetchCurrentUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error('現在のユーザー取得エラー:', error);
+        return null;
+      }
+      return data?.user?.id || null;
+    };
+
     const fetchRoom = async () => {
       try {
-        const { data, error } = await supabase
+        // 現在のユーザーIDを取得
+        const userId = await fetchCurrentUser();
+        if (!userId) {
+          router.push('/login');
+          return;
+        }
+        setCurrentUserId(userId);
+
+        // チャットルーム情報の取得
+        const { data: roomData, error: roomError } = await supabase
           .from('chat_rooms')
           .select('*')
           .eq('id', roomId)
           .single();
 
-        if (error) throw error;
-        setRoom(data);
-      } catch (error) {
-        console.error('Error fetching room:', error);
-        router.push('/chat');
-      }
-    };
+        if (roomError) throw roomError;
+        setRoom(roomData);
 
-    // メッセージ履歴の取得
-    const fetchMessages = async () => {
-      try {
-        const { data, error } = await supabase
+        // 相手のユーザーIDを特定
+        const otherUserId =
+          roomData.user1_id === userId ? roomData.user2_id : roomData.user1_id;
+
+        // 相手のプロフィール情報を取得
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', otherUserId)
+          .single();
+
+        if (profileError) throw profileError;
+        setOtherUser(profileData);
+
+        // メッセージ履歴の取得
+        const { data: messagesData, error: messagesError } = await supabase
           .from('messages')
           .select(
             `
             *,
             user:user_id (
               id,
-              username,
-              avatar_url
+              email
             )
           `
           )
           .eq('room_id', roomId)
           .order('created_at', { ascending: true });
 
-        if (error) throw error;
-        setMessages(data || []);
+        if (messagesError) throw messagesError;
+        setMessages(messagesData || []);
+
+        // リアルタイム購読の設定
+        const subscription = supabase
+          .channel(`room:${roomId}`)
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'messages',
+              filter: `room_id=eq.${roomId}`,
+            },
+            async (payload) => {
+              // 新しいメッセージを取得してユーザー情報を含める
+              const { data, error } = await supabase
+                .from('messages')
+                .select(
+                  `
+                *,
+                user:user_id (
+                  id,
+                  email
+                )
+              `
+                )
+                .eq('id', payload.new.id)
+                .single();
+
+              if (!error && data) {
+                setMessages((prev) => [...prev, data]);
+              }
+            }
+          )
+          .subscribe();
+
+        return () => {
+          subscription.unsubscribe();
+        };
       } catch (error) {
-        console.error('Error fetching messages:', error);
+        console.error('データ取得エラー:', error);
+        router.push('/chat');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchRoom();
-    fetchMessages();
-
-    // リアルタイム購読の設定
-    const subscription = supabase
-      .channel(`room:${roomId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `room_id=eq.${roomId}`,
-        },
-        (payload) => {
-          // 新しいメッセージを取得してユーザー情報を含める
-          const fetchNewMessage = async () => {
-            const { data, error } = await supabase
-              .from('messages')
-              .select(
-                `
-              *,
-              user:user_id (
-                id,
-                username,
-                avatar_url
-              )
-            `
-              )
-              .eq('id', payload.new.id)
-              .single();
-
-            if (!error && data) {
-              setMessages((prev) => [...prev, data]);
-            }
-          };
-
-          fetchNewMessage();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, [roomId, router]);
 
   return (
@@ -134,9 +158,21 @@ export const ChatRoomPage = () => {
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {room?.name || 'チャットルーム'}
-          </Typography>
+
+          {otherUser && (
+            <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+              <Avatar
+                src={otherUser.avatar_url}
+                alt={otherUser.username}
+                sx={{ mr: 1, width: 32, height: 32 }}
+              >
+                {otherUser.username?.charAt(0).toUpperCase()}
+              </Avatar>
+              <Typography variant="h6" component="div">
+                {otherUser.username}
+              </Typography>
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
 
@@ -154,8 +190,12 @@ export const ChatRoomPage = () => {
           currentUserId={currentUserId}
           isLoading={isLoading}
         />
-        <MessageInput roomId={roomId as string} userId={currentUserId} />
+        {currentUserId && roomId && (
+          <MessageInput roomId={roomId as string} userId={currentUserId} />
+        )}
       </Paper>
     </Box>
   );
 };
+
+export default ChatRoomPage;

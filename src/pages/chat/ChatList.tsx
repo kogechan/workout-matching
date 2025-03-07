@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 
 interface ChatListProps {
   messages: Message[];
-  currentUserId: string;
+  currentUserId: string | null;
   isLoading: boolean;
 }
 

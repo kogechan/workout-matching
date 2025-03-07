@@ -4,20 +4,17 @@ export interface Message {
   content: string;
   created_at: string;
   roome_id: string;
-  User?: {
-    username?: string;
-    gender?: string;
-    age?: string;
-    location?: string;
-    training_experience?: string;
-    bio?: string;
-    avatar_url?: string;
+  user?: {
+    id: string;
+    email: string;
   };
 }
 
 export interface ChatRoom {
   id: string;
   name: string;
+  user_id1?: string;
+  user_id2?: string;
   created_at: string;
   updated_at: string;
   last_message?: string;

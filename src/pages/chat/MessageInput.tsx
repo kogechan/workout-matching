@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 interface MessageInputProps {
   roomId: string;
-  userId: string;
+  userId: string | null;
 }
 
 export const MessageInput = ({ roomId, userId }: MessageInputProps) => {
