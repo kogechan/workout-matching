@@ -14,7 +14,8 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import supabase from '@/lib/supabase';
-import { ChatRoom } from '@/type/chat';
+import { useAtom } from 'jotai';
+import { currentUserAtom, isLoadingAtom } from '@/jotai/Jotai';
 
 interface ChatRoomWithUser {
   id: string;
@@ -32,8 +33,8 @@ interface ChatRoomWithUser {
 const ChatRoomsList = () => {
   const router = useRouter();
   const [rooms, setRooms] = useState<ChatRoomWithUser[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
+  const [, setCurrentUserId] = useAtom(currentUserAtom);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -88,7 +89,7 @@ const ChatRoomsList = () => {
     };
 
     fetchRooms();
-  }, [router]);
+  }, [router, setCurrentUserId, setIsLoading]);
 
   const handleRoomClick = (roomId: string) => {
     router.push(`/chat/${roomId}`);

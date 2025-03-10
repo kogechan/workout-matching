@@ -2,37 +2,48 @@ import { Box, TextField, IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import supabase from '@/lib/supabase';
 import { useState } from 'react';
+import { useAtom } from 'jotai';
+import { currentUserAtom, messageAtom } from '@/jotai/Jotai';
 
 interface MessageInputProps {
   roomId: string;
-  userId: string | null;
 }
 
-export const MessageInput = ({ roomId, userId }: MessageInputProps) => {
+export const MessageInput = ({ roomId }: MessageInputProps) => {
   const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [currentUserId] = useAtom(currentUserAtom);
+  const [, setMessages] = useAtom(messageAtom);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!message.trim()) return;
 
-    setIsLoading(true);
+    setSending(true);
 
     try {
-      const { error } = await supabase.from('messages').insert({
-        content: message.trim(),
-        room_id: roomId,
-        user_id: userId,
-      });
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          content: message,
+          room_id: roomId,
+          user_id: currentUserId,
+        })
+        .select('*, user:user_id(id, email)')
+        .single();
 
       if (error) throw error;
+
+      if (data) {
+        setMessages((prev) => [...prev, data]);
+      }
 
       setMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
-      setIsLoading(false);
+      setSending(false);
     }
   };
 
@@ -54,14 +65,14 @@ export const MessageInput = ({ roomId, userId }: MessageInputProps) => {
         placeholder="メッセージを入力..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        disabled={isLoading}
+        disabled={sending}
         size="small"
         sx={{ mr: 1 }}
       />
       <IconButton
         type="submit"
         color="primary"
-        disabled={!message.trim() || isLoading}
+        disabled={!message.trim() || sending}
         size="large"
       >
         <SendIcon />

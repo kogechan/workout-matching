@@ -1,23 +1,16 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { Message } from '@/type/chat';
 import { ChatBubble } from './ChatBubble';
 import { useEffect, useRef } from 'react';
+import { useAtom } from 'jotai';
+import { currentUserAtom, isLoadingAtom, messageAtom } from '@/jotai/Jotai';
 
-interface ChatListProps {
-  messages: Message[];
-  currentUserId: string | null;
-  isLoading: boolean;
-}
-
-export const ChatList = ({
-  messages,
-  currentUserId,
-  isLoading,
-}: ChatListProps) => {
+export const MessageList = () => {
+  const [messages] = useAtom(messageAtom);
+  const [currentUserId] = useAtom(currentUserAtom);
+  const [isLoading] = useAtom(isLoadingAtom);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 新しいメッセージが来たら一番下にスクロール
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 

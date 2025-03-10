@@ -1,6 +1,7 @@
 import { atom } from 'jotai';
 import { Post } from '@/type/post';
 import { OtherUser, User } from '@/type/user';
+import { ChatRoom, Message, ProfileData } from '@/type/chat';
 
 // メニューの表示状態を管理
 export const menuAtom = atom(false);
@@ -36,3 +37,13 @@ export const otherProfileAtom = atom<OtherUser>({
   bio: '',
   avatar_url: '',
 });
+// 現在のユーザーの情報を保持
+export const currentUserAtom = atom<string | null>(null);
+// ローディング状態を管理
+export const isLoadingAtom = atom(true);
+// メッセージ情報を保持
+export const messageAtom = atom<Message[]>([]);
+// 他ユーザーの情報を保持
+export const otherUserAtom = atom<ProfileData | null>(null);
+// チャットルーム情報を保持
+export const chatRoomAtom = atom<ChatRoom | null>(null);

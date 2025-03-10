@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -10,30 +10,30 @@ import {
   Avatar,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Link from 'next/link';
 import supabase from '@/lib/supabase';
 import { MessageInput } from './MessageInput';
-import { Message, ChatRoom } from '@/type/chat';
-import { ChatList } from './ChatList';
-
-interface ProfileData {
-  id: string;
-  username: string;
-  avatar_url?: string;
-}
+import { useAtom } from 'jotai';
+import {
+  chatRoomAtom,
+  currentUserAtom,
+  isLoadingAtom,
+  messageAtom,
+  otherUserAtom,
+} from '@/jotai/Jotai';
+import { MessageList } from './MessageList';
 
 const ChatRoomPage = () => {
   const router = useRouter();
   const { id: roomId } = router.query;
 
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [room, setRoom] = useState<ChatRoom | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [otherUser, setOtherUser] = useState<ProfileData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setMessages] = useAtom(messageAtom);
+  const [, setRoom] = useAtom(chatRoomAtom);
+  const [, setCurrentUserId] = useAtom(currentUserAtom);
+  const [otherUser, setOtherUser] = useAtom(otherUserAtom);
+  const [, setIsLoading] = useAtom(isLoadingAtom);
 
   useEffect(() => {
-    if (!roomId) return;
+    if (!router.isReady || !roomId) return;
 
     const fetchCurrentUser = async () => {
       const { data, error } = await supabase.auth.getUser();
@@ -49,7 +49,7 @@ const ChatRoomPage = () => {
         // 現在のユーザーIDを取得
         const userId = await fetchCurrentUser();
         if (!userId) {
-          router.push('/login');
+          router.push('/');
           return;
         }
         setCurrentUserId(userId);
@@ -142,7 +142,16 @@ const ChatRoomPage = () => {
     };
 
     fetchRoom();
-  }, [roomId, router]);
+  }, [
+    roomId,
+    router,
+    router.isReady,
+    setCurrentUserId,
+    setIsLoading,
+    setMessages,
+    setOtherUser,
+    setRoom,
+  ]);
 
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -152,9 +161,8 @@ const ChatRoomPage = () => {
             edge="start"
             color="inherit"
             aria-label="back"
-            component={Link}
-            href="/chat"
             sx={{ mr: 2 }}
+            onClick={() => router.push('/chat')}
           >
             <ArrowBackIcon />
           </IconButton>
@@ -185,14 +193,8 @@ const ChatRoomPage = () => {
           borderRadius: 0,
         }}
       >
-        <ChatList
-          messages={messages}
-          currentUserId={currentUserId}
-          isLoading={isLoading}
-        />
-        {currentUserId && roomId && (
-          <MessageInput roomId={roomId as string} userId={currentUserId} />
-        )}
+        <MessageList />
+        {roomId && <MessageInput roomId={roomId as string} />}
       </Paper>
     </Box>
   );

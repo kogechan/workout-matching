@@ -19,3 +19,9 @@ export interface ChatRoom {
   updated_at: string;
   last_message?: string;
 }
+
+export interface ProfileData {
+  id: string;
+  username: string;
+  avatar_url?: string;
+}

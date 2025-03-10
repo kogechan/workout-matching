@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { postAtom } from '@/jotai/Jotai';
+import { currentUserAtom, postAtom } from '@/jotai/Jotai';
 import { deletePost } from '../api/posts/post';
 import {
   Card,
@@ -46,7 +46,7 @@ export const PostList = () => {
     [key: number]: HTMLElement | null;
   }>({});
   // 現在のログインユーザーを判別するためのステート
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useAtom(currentUserAtom);
   const { profile } = useAvatar();
   const router = useRouter();
 
@@ -59,7 +59,7 @@ export const PostList = () => {
       }
     };
     fetchUser();
-  }, []);
+  }, [setCurrentUserId]);
 
   // メニューを開く
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, id: number) => {

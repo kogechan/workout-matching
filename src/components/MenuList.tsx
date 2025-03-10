@@ -49,6 +49,12 @@ export const MenuList = () => {
             </ListItem>
 
             <ListItem disablePadding>
+              <ListItemButton component={Link} href="/search">
+                <ListItemText primary="探す" />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem disablePadding>
               <ListItemButton component={Link} href="/like">
                 <ListItemText primary="いいね" />
               </ListItemButton>

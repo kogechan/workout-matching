@@ -22,15 +22,19 @@ import { GetServerSideProps } from 'next';
 import supabase from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { postAtom } from '@/jotai/Jotai';
+import {
+  chatRoomAtom,
+  currentUserAtom,
+  isLoadingAtom,
+  postAtom,
+} from '@/jotai/Jotai';
 import { useRouter } from 'next/router';
-import { ChatRoom } from '@/type/chat';
 
 const ProfileCard = () => {
   const [posts] = useAtom(postAtom);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [room, setRoom] = useState<ChatRoom | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useAtom(currentUserAtom);
+  const [room, setRoom] = useAtom(chatRoomAtom);
+  const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const router = useRouter();
 
@@ -83,7 +87,7 @@ const ProfileCard = () => {
     };
 
     fetchUserAndChatRoom();
-  }, [posts]);
+  }, [posts, setCurrentUserId, setIsLoading, setRoom]);
 
   const createChatRoom = async () => {
     try {

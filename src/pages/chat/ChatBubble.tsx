@@ -1,6 +1,9 @@
 import { Box, Typography, Avatar } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Message } from '@/type/chat';
+import { useAtom } from 'jotai';
+import { otherUserAtom } from '@/jotai/Jotai';
+import { useRouter } from 'next/router';
 
 interface ChatBubbleProps {
   message: Message;
@@ -29,23 +32,29 @@ const MessageBubble = styled(Box, {
 }));
 
 export const ChatBubble = ({ message, isCurrentUser }: ChatBubbleProps) => {
+  const [otherUser] = useAtom(otherUserAtom);
+  const router = useRouter();
+
   return (
     <BubbleContainer
       sx={{ flexDirection: isCurrentUser ? 'row-reverse' : 'row' }}
     >
-      {!isCurrentUser && (
+      {!isCurrentUser && otherUser && (
         <Avatar
-          src={message.User?.avatar_url}
-          alt={message.User?.username || ''}
+          src={otherUser.avatar_url}
+          alt={otherUser.username || ''}
           sx={{ mr: 1 }}
+          onClick={() =>
+            router.push(`/profile/${otherUser?.username || otherUser?.id}`)
+          }
         >
-          {message.User?.username?.charAt(0).toUpperCase()}
+          {otherUser.username?.charAt(0).toUpperCase()}
         </Avatar>
       )}
       <Box>
-        {!isCurrentUser && (
+        {!isCurrentUser && otherUser && (
           <Typography variant="caption" color="textSecondary">
-            {message.User?.username}
+            {otherUser.username}
           </Typography>
         )}
         <MessageBubble isCurrentUser={isCurrentUser}>
