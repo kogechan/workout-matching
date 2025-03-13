@@ -21,10 +21,7 @@ import supabase from '@/lib/supabase';
 import { useAvatar } from '@/hooks/useAvatar';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-// import { Post } from '@/type/post';
-// import { GetServerSideProps } from 'next';
 
-// サーバーサイドで最新の投稿を取得
 export const getServerSideProps: GetServerSideProps = async () => {
   const { data: posts, error } = await supabase
     .from('posts')
@@ -34,24 +31,27 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   if (error) {
     console.error('データ取得エラー:', error);
-    return { props: { posts: [] } };
+    return { props: { initialPosts: [] } };
   }
 
-  return { props: { posts } };
+  return { props: { initialPosts: posts } };
 };
 
-export const PostList = () => {
+export const PostList = ({ initialPosts = [] }) => {
   const [posts, setPosts] = useAtom(postAtom);
   const [menuAnchorEl, setMenuAnchorEl] = useState<{
     [key: number]: HTMLElement | null;
   }>({});
-  // 現在のログインユーザーを判別するためのステート
   const [currentUserId, setCurrentUserId] = useAtom(currentUserAtom);
   const { profile } = useAvatar();
   const router = useRouter();
 
   // ユーザーを取得
   useEffect(() => {
+    if (initialPosts.length > 0) {
+      setPosts(initialPosts);
+    }
+
     const fetchUser = async () => {
       const { data: user } = await supabase.auth.getUser();
       if (user?.user) {
@@ -59,7 +59,7 @@ export const PostList = () => {
       }
     };
     fetchUser();
-  }, [setCurrentUserId]);
+  }, [setCurrentUserId, setPosts, initialPosts]);
 
   // メニューを開く
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, id: number) => {
@@ -97,29 +97,24 @@ export const PostList = () => {
             <CardContent>
               <Stack direction="row" spacing={2}>
                 {/* 自分のアイコンをクリックしてもプロフィールが表示されないようにする三項演算子 */}
-                {post.user_id === currentUserId ? (
-                  <Avatar
-                    src={profile.avatar_url || ''}
-                    sx={{ width: 48, height: 48 }}
-                  >
-                    {/* アイコンがない場合ユーザーの頭文字を表示する */}
-                    {post.profiles?.username?.charAt(0) || 'U'}{' '}
-                  </Avatar>
-                ) : (
-                  <Avatar
-                    src={post.profiles?.avatar_url || ''}
-                    sx={{ width: 48, height: 48 }}
-                    onClick={() =>
+                <Avatar
+                  src={
+                    post.user_id === currentUserId
+                      ? profile.avatar_url
+                      : post.profiles?.avatar_url || ''
+                  }
+                  sx={{ width: 48, height: 48 }}
+                  onClick={() => {
+                    if (post.user_id !== currentUserId) {
                       router.push(
                         `/profile/${post.profiles?.username || post.user_id}`
-                      )
+                      );
                     }
-                  >
-                    {/* アイコンがない場合ユーザーの頭文字を表示する */}
-                    {post.profiles?.username?.charAt(0) || 'U'}{' '}
-                  </Avatar>
-                )}
-
+                  }}
+                >
+                  {/* アイコンがない場合ユーザーの頭文字を表示する */}
+                  {post.profiles?.username?.charAt(0) || 'U'}
+                </Avatar>
                 <Box sx={{ flex: 1 }}>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <Typography variant="subtitle1" fontWeight="bold">
@@ -198,24 +193,3 @@ export const PostList = () => {
 };
 
 export default PostList;
-
-// リアルタイム
-/* useEffect(() => {
-    // Supabase Realtime で新しい投稿を監視
-    const subscription = supabase
-      .channel('realtime-posts')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'posts' },
-        (payload) => {
-          const newPost = payload.new as Post;
-          setPosts((prevPosts) => [newPost, ...prevPosts]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, [setPosts]);
- */

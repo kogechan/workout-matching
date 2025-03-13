@@ -28,31 +28,30 @@ const ChatRoomPage = () => {
 
   const [, setMessages] = useAtom(messageAtom);
   const [, setRoom] = useAtom(chatRoomAtom);
-  const [, setCurrentUserId] = useAtom(currentUserAtom);
+  const [currentUserId] = useAtom(currentUserAtom);
   const [otherUser, setOtherUser] = useAtom(otherUserAtom);
   const [, setIsLoading] = useAtom(isLoadingAtom);
 
   useEffect(() => {
     if (!router.isReady || !roomId) return;
 
-    const fetchCurrentUser = async () => {
+    /*  const fetchCurrentUser = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (error) {
         console.error('現在のユーザー取得エラー:', error);
         return null;
       }
       return data?.user?.id || null;
-    };
+    }; */
 
     const fetchRoom = async () => {
       try {
         // 現在のユーザーIDを取得
-        const userId = await fetchCurrentUser();
+        const userId = currentUserId;
         if (!userId) {
           router.push('/');
           return;
         }
-        setCurrentUserId(userId);
 
         // チャットルーム情報の取得
         const { data: roomData, error: roomError } = await supabase
@@ -146,11 +145,11 @@ const ChatRoomPage = () => {
     roomId,
     router,
     router.isReady,
-    setCurrentUserId,
     setIsLoading,
     setMessages,
     setOtherUser,
     setRoom,
+    currentUserId,
   ]);
 
   return (

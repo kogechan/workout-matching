@@ -19,7 +19,7 @@
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
     "@mui/x-date-pickers": "^7.24.1",
-    "@supabase/ssr": "^0.5.2",
+    "@supabase/ssr": "github:supabase/ssr",
     "@supabase/supabase-js": "^2.48.1",
     "@types/jsonwebtoken": "^9.0.8",
     "argon2": "^0.41.1",

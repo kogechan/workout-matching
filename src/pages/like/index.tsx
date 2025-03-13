@@ -1,8 +1,10 @@
+import LikeList from './LikeList';
+
 const Home = () => {
   return (
-    <div>
-      <h1>いいね</h1>
-    </div>
+    <>
+      <LikeList />
+    </>
   );
 };
 

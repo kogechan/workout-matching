@@ -23,5 +23,10 @@ export interface ChatRoom {
 export interface ProfileData {
   id: string;
   username: string;
-  avatar_url?: string;
+  avatar_url: string;
+  age?: string;
+  location?: string;
+  gender?: string;
+  training_experience?: string;
+  bio?: string;
 }

@@ -3,6 +3,7 @@ export interface Post {
   content: string;
   user_id: string;
   profiles: {
+    id: string;
     username: string;
     avatar_url: string | null;
     gender: string;

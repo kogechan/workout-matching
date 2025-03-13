@@ -34,23 +34,21 @@ const ChatRoomsList = () => {
   const router = useRouter();
   const [rooms, setRooms] = useState<ChatRoomWithUser[]>([]);
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
-  const [, setCurrentUserId] = useAtom(currentUserAtom);
+  const [currentUserId] = useAtom(currentUserAtom);
 
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        // 現在のユーザーを取得
+        /*  // 現在のユーザーを取得
         const { data: userData, error: userError } =
           await supabase.auth.getUser();
         if (userError) throw userError;
 
         if (!userData?.user) {
-          router.push('/login');
           return;
-        }
+        } */
 
-        const userId = userData.user.id;
-        setCurrentUserId(userId);
+        const userId = currentUserId;
 
         // ユーザーが参加しているチャットルームを取得
         const { data: roomsData, error: roomsError } = await supabase
@@ -89,7 +87,7 @@ const ChatRoomsList = () => {
     };
 
     fetchRooms();
-  }, [router, setCurrentUserId, setIsLoading]);
+  }, [router, setIsLoading, currentUserId]);
 
   const handleRoomClick = (roomId: string) => {
     router.push(`/chat/${roomId}`);
