@@ -23,10 +23,10 @@ import { GetServerSideProps, NextApiRequest, NextApiResponse } from 'next';
 import supabase from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentUserAtom } from '@/jotai/Jotai';
+import { chatRoomAtom, currentUserAtom } from '@/jotai/Jotai';
 import { useRouter } from 'next/router';
 import { LikeButton } from './LikeButton';
-import { ProfileData, ChatRoom } from '@/type/chat';
+import { ProfileData } from '@/type/chat';
 import { createServerSupabaseClient } from '@/lib/server';
 
 interface ProfileCardProps {
@@ -58,15 +58,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const ProfileCard = ({ profile }: ProfileCardProps) => {
   const [currentUserId] = useAtom(currentUserAtom);
-  const [room, setRoom] = useState<ChatRoom | null>(null);
+  const [room, setRoom] = useAtom(chatRoomAtom);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isCheckingRoom, setIsCheckingRoom] = useState(true);
   const router = useRouter();
 
+  // コンポーネントマウント時に既存のチャットルームを検索
   useEffect(() => {
     const checkExistingRoom = async () => {
-      if (!currentUserId || !profile?.id) return;
+      if (!currentUserId || !profile?.id) {
+        setIsCheckingRoom(false);
+        return;
+      }
 
+      setIsCheckingRoom(true);
       try {
         console.log('既存ルーム検索:', {
           currentUserId,
@@ -78,58 +84,69 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
           .from('chat_rooms')
           .select('*')
           .or(
-            `user1_id.eq.${currentUserId},user2_id.eq.${profile.id},user1_id.eq.${profile.id},user2_id.eq.${currentUserId}`
+            `and(user1_id.eq.${currentUserId},user2_id.eq.${profile.id}),and(user1_id.eq.${profile.id},user2_id.eq.${currentUserId})`
           )
           .maybeSingle();
 
+        console.log('ルーム検索結果:', { roomData, roomError });
+
         if (roomError) {
           console.error('既存ルーム検索エラー:', roomError);
-          return;
-        }
-
-        if (roomData) {
+          setRoom(null);
+        } else if (roomData) {
           console.log('既存ルームを発見:', roomData);
           setRoom(roomData);
         } else {
-          console.log('既存ルームなし');
+          console.log('既存ルームなし、roomにnullをセット');
+          setRoom(null);
         }
       } catch (err) {
         console.error('ルーム検索エラー:', err);
+        setRoom(null);
+      } finally {
+        setIsCheckingRoom(false);
       }
     };
-    checkExistingRoom();
-  }, [currentUserId, profile?.id]);
 
-  // 新規チャットルームを作成
+    checkExistingRoom();
+  }, [currentUserId, profile?.id, setRoom]);
+
+  // 新規チャットルーム作成 - 条件チェックを慎重に
   const createNewChatRoom = async () => {
+    console.log('createNewChatRoom開始', {
+      currentUserId,
+      profileId: profile?.id,
+    });
+
+    // 条件チェックを厳密に
+    if (!currentUserId) {
+      setError('ログインしていないか、ユーザー情報が取得できません');
+      console.error('ユーザーIDなし');
+      return;
+    }
+
+    if (!profile?.id) {
+      setError('プロフィール情報が取得できません');
+      console.error('プロフィールIDなし');
+      return;
+    }
+
+    if (isCreatingRoom) {
+      console.log('既に作成中');
+      return;
+    }
+
     try {
-      if (!currentUserId || !profile?.id || isCreatingRoom) {
-        console.error('必要な情報が不足:', {
-          currentUserId,
-          profileId: profile?.id,
-        });
-        return;
-      }
       setIsCreatingRoom(true);
       setError(null);
 
-      // ユーザー名を取得
-      const { data: userData } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('id', currentUserId)
-        .single();
-
-      const currentUserName = userData?.username || 'User';
-      const otherUserName = profile.username || 'User';
-
-      const roomName = `${currentUserName} & ${otherUserName}`;
-
-      console.log('新規ルーム作成:', {
-        name: roomName,
-        user1_id: currentUserId,
-        user2_id: profile.id,
+      console.log('新規ルーム作成開始:', {
+        currentUserId,
+        profileId: profile.id,
       });
+
+      // チャットルーム名を生成
+      const roomName = `${currentUserId} & ${profile.username || 'User'}`;
 
       // チャットルームを作成
       const { data: newRoom, error } = await supabase
@@ -141,6 +158,8 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
         })
         .select()
         .single();
+
+      console.log('ルーム作成応答:', { newRoom, error });
 
       if (error) {
         console.error('ルーム作成エラー:', error);
@@ -160,13 +179,26 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
     }
   };
 
+  // ボタンクリックハンドラの強化
   const handleChatButtonClick = () => {
-    console.log('現在のルーム状態:', room);
+    console.log('チャットボタンクリック', {
+      room,
+      isCheckingRoom,
+      currentUserId,
+      profileId: profile?.id,
+    });
+
+    if (isCheckingRoom) {
+      console.log('ルーム確認中...');
+      return; // ルーム確認中は何もしない
+    }
 
     if (room) {
-      console.log('既存のルームへ移動:', room.id);
+      // 既存のルームが見つかった場合
+      console.log('既存ルームへ移動:', room.id);
       router.push(`/chat/${room.id}`);
     } else {
+      // 新規ルーム作成
       console.log('新規ルーム作成開始');
       createNewChatRoom();
     }

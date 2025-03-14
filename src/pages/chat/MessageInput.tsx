@@ -3,7 +3,7 @@ import SendIcon from '@mui/icons-material/Send';
 import supabase from '@/lib/supabase';
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentUserAtom, messageAtom } from '@/jotai/Jotai';
+import { currentUserAtom } from '@/jotai/Jotai';
 
 interface MessageInputProps {
   roomId: string;
@@ -13,7 +13,6 @@ export const MessageInput = ({ roomId }: MessageInputProps) => {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [currentUserId] = useAtom(currentUserAtom);
-  const [, setMessages] = useAtom(messageAtom);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +22,7 @@ export const MessageInput = ({ roomId }: MessageInputProps) => {
     setSending(true);
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('messages')
         .insert({
           content: message,
@@ -34,10 +33,6 @@ export const MessageInput = ({ roomId }: MessageInputProps) => {
         .single();
 
       if (error) throw error;
-
-      if (data) {
-        setMessages((prev) => [...prev, data]);
-      }
 
       setMessage('');
     } catch (error) {

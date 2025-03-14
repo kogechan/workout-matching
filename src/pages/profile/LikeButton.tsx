@@ -46,7 +46,7 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
       setIsLoading(false);
     };
     fetchCurrentUser();
-  }, [profileId, setIsLoading, currentUserId]);
+  }, [profileId, setIsLoading, currentUserId, setLikeCount]);
 
   const handleLike = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>

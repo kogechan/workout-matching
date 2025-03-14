@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Tabs, Tab, Typography, Avatar, CircularProgress } from '@mui/material';
 import styles from '@/styles/likes.module.css';
 import supabase from '@/lib/supabase';
+import { useRouter } from 'next/router';
 
 interface User {
   id: string;
@@ -16,6 +17,7 @@ const LikeList = () => {
   const [likedByUsers, setLikedByUsers] = useState<User[]>([]);
   const [likedUsers, setLikedUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
@@ -90,7 +92,11 @@ const LikeList = () => {
           </Typography>
         ) : (
           likedByUsers.map((user) => (
-            <div key={user.id} className={styles.userCard}>
+            <div
+              key={user.id}
+              className={styles.userCard}
+              onClick={() => router.push(`/profile/${user.username}`)}
+            >
               <Avatar
                 src={user.avatar_url || ''}
                 alt={user.username}
@@ -115,7 +121,11 @@ const LikeList = () => {
           </Typography>
         ) : (
           likedUsers.map((user) => (
-            <div key={user.id} className={styles.userCard}>
+            <div
+              key={user.id}
+              className={styles.userCard}
+              onClick={() => router.push(`/profile/${user.username}`)}
+            >
               <Avatar
                 src={user.avatar_url || ''}
                 alt={user.username}
