@@ -117,6 +117,7 @@ export const CreateAcount = () => {
         <MenuItem value="1~3年">1~3年</MenuItem>
         <MenuItem value="3~5年">3~5年</MenuItem>
         <MenuItem value="5年以上">5年以上</MenuItem>
+        <MenuItem value="10年以上">10年以上</MenuItem>
       </Select>
       <Typography variant="subtitle1" sx={{ mt: 2 }}>
         自己紹介 (任意)

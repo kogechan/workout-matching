@@ -11,6 +11,8 @@ export const loginModalAtom = atom(false);
 export const postModalAtom = atom(false);
 // ログアウトアラートモーダルの開閉状態を管理
 export const logoutModalAtom = atom(false);
+// 検索フィルターをフルダイアログにしてその開閉状態を管理
+export const filterModalAtom = atom(false);
 // メールアドレスの管理
 export const emailAtom = atom('');
 // パスワードの管理

@@ -1,9 +1,37 @@
-const Home = () => {
+import { GetServerSideProps } from 'next';
+import { SearchPage } from './SearchPage';
+import supabase from '@/lib/supabase';
+import { ProfileData } from '@/type/chat';
+
+interface SearchPageProps {
+  initialProfiles: ProfileData[];
+}
+
+const Home = ({ initialProfiles }: SearchPageProps) => {
   return (
-    <div>
-      <h1>ユーザーを探す</h1>
-    </div>
+    <>
+      <SearchPage initialProfiles={initialProfiles} />
+    </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { data, error } = await supabase.from('profiles').select('*').limit(20);
+
+  if (error) {
+    console.error('Error fetching initial profiles:', error);
+    return {
+      props: {
+        initialProfiles: [],
+      },
+    };
+  }
+
+  return {
+    props: {
+      initialProfiles: data || [],
+    },
+  };
 };
 
 export default Home;
