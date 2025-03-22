@@ -21,8 +21,9 @@ import {
   otherUserAtom,
 } from '@/jotai/Jotai';
 import { MessageList } from './MessageList';
+import { NextPage } from 'next';
 
-const ChatRoomPage = () => {
+const ChatRoomPage: NextPage = () => {
   const router = useRouter();
   const { id: roomId } = router.query;
 

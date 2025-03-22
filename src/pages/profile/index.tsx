@@ -1,5 +1,6 @@
 import { Box, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { ProfileCard } from './ProfileCard';
+import { NextPage } from 'next';
 
 const theme = createTheme({
   palette: {
@@ -12,7 +13,7 @@ const theme = createTheme({
   },
 });
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <>
       <ThemeProvider theme={theme}>

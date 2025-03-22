@@ -39,3 +39,5 @@ export const messageAtom = atom<Message[]>([]);
 export const otherUserAtom = atom<ProfileData | null>(null);
 // チャットルーム情報を保持
 export const chatRoomAtom = atom<ChatRoom | null>(null);
+// アラートの表示状態を状態を管理
+export const alertAtom = atom(false);

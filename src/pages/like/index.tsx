@@ -1,6 +1,7 @@
+import { NextPage } from 'next';
 import LikeList from './LikeList';
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <>
       <LikeList />

@@ -10,6 +10,7 @@ import {
   Radio,
   MenuItem,
   Select,
+  Box,
 } from '@mui/material';
 import { useAvatar } from '@/hooks/useAvatar';
 import { useRouter } from 'next/router';
@@ -45,7 +46,7 @@ export const CreateAcount = () => {
   };
 
   return (
-    <>
+    <Box>
       <Typography variant="subtitle1" sx={{ mt: 2 }}>
         ユーザー名
       </Typography>
@@ -144,6 +145,6 @@ export const CreateAcount = () => {
       >
         {loading ? '保存中...' : '保存'}
       </Button>
-    </>
+    </Box>
   );
 };

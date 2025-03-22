@@ -1,6 +1,7 @@
+import { NextPage } from 'next';
 import { SignUp } from './SignUp';
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <div>
       <SignUp />

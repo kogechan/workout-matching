@@ -4,11 +4,11 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { useAtom } from 'jotai';
 import { profileAtom } from '@/jotai/Jotai';
 import { useAvatar } from '@/hooks/useAvatar';
-
-// 一度過去に設定した画像を再度上げることができない
+import { useState } from 'react';
 
 export const ProfileImg = () => {
   const [, setProfile] = useAtom(profileAtom);
+  const [preview, setPreview] = useState<string | null>(null);
   const { profile } = useAvatar();
 
   // 画像アップロード処理
@@ -46,11 +46,14 @@ export const ProfileImg = () => {
       );
 
     if (updateError) console.error('画像 URL 更新エラー:', updateError);
+
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
   };
 
   return (
     <>
-      {/* アバター画像のアップロード */}
       <Box display="flex" justifyContent="center" my={2}>
         <label htmlFor="avatar-upload">
           <input
@@ -69,6 +72,7 @@ export const ProfileImg = () => {
             </Avatar>
           </IconButton>
         </label>
+        {preview && <img src={preview} alt="preview" width="200%" />}
       </Box>
     </>
   );

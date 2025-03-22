@@ -1,8 +1,9 @@
 import { CreateAcount } from '@/pages/editProfile/EditAcount';
 import { ProfileImg } from '@/pages/editProfile/ProfileImg';
 import { Card, CardContent, Container } from '@mui/material';
+import { NextPage } from 'next';
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <>
       <Container maxWidth="sm">

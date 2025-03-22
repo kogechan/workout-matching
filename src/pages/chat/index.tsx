@@ -1,6 +1,7 @@
+import { NextPage } from 'next';
 import ChatRoomsList from './ChatIndex';
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <div>
       <ChatRoomsList />

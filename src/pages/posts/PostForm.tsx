@@ -2,14 +2,34 @@ import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { postAtom, postModalAtom } from '@/jotai/Jotai';
 import { getPost, addPost } from '@/pages/api/posts/post';
-import { Avatar, Box, Button, Dialog, Stack, TextField } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useAvatar } from '@/hooks/useAvatar';
+import styles from '@/styles/postDialog.module.css';
+
+import CloseIcon from '@mui/icons-material/Close';
+import ImageIcon from '@mui/icons-material/Image';
+
+const MAX_CHARS = 280;
 
 export const PostForm = () => {
   const [, setPosts] = useAtom(postAtom);
   const [content, setContent] = useState('');
   const [postModalOpen, setPostModalOpen] = useAtom(postModalAtom);
   const { profile } = useAvatar();
+
+  const remainingChars = MAX_CHARS - content.length;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -29,40 +49,131 @@ export const PostForm = () => {
     setPosts(await getPost());
   };
   return (
-    <Dialog open={postModalOpen} onClose={() => setPostModalOpen(false)}>
-      <Box sx={{ p: 2, mb: 1, display: 'flex', flexDirection: 'column' }}>
+    <Dialog
+      open={postModalOpen}
+      onClose={() => setPostModalOpen(false)}
+      fullWidth
+      maxWidth="sm"
+      className={styles.dialog}
+    >
+      <DialogTitle className={styles.dialogTitle}>
+        <IconButton
+          edge="start"
+          color="inherit"
+          onClick={() => setPostModalOpen(false)}
+          aria-label="close"
+          className={styles.closeButton}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+
+      <DialogContent className={styles.dialogContent}>
         <form onSubmit={handleSubmit}>
-          <Stack direction="row" spacing={2}>
-            <Avatar src={profile.avatar_url} />
-          </Stack>
-          <TextField
-            label="いまどうしてる？"
-            variant="outlined"
-            fullWidth
-            multiline
-            rows={6}
-            sx={{ m: 1, width: '50ch' }}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-          <Box
-            my={1}
-            flexDirection="row"
-            justifyContent="flex-end"
-            display="flex"
-          >
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{ mt: 1 }}
-              onClick={() => setPostModalOpen(false)}
-            >
-              投稿
-            </Button>
+          <Box className={styles.postContainer}>
+            <Avatar
+              src={profile.avatar_url}
+              alt={profile.username}
+              sx={{ width: 48, height: 48 }}
+            />
+
+            <Box className={styles.inputContainer}>
+              <TextField
+                minRows={4}
+                multiline
+                fullWidth
+                placeholder="合トレを募集しよう"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                variant="standard"
+                slotProps={{
+                  input: {
+                    disableUnderline: true,
+                    className: styles.textField,
+                  },
+                }}
+                className={styles.textFieldWrapper}
+              />
+
+              {/* 画像プレビュー領域 */}
+              {/* {imageUrls.length > 0 && (
+              <Box className={styles.imagePreviewContainer}>
+                {imageUrls.map((url, index) => (
+                  <Box key={index} className={styles.imagePreview}>
+                    <img src={url} alt={`Preview ${index}`} />
+                    <IconButton
+                      size="small"
+                      onClick={() => handleRemoveImage(index)}
+                      className={styles.removeImageButton}
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )} */}
+
+              <Divider className={styles.divider} />
+
+              {/* アイコンツールバー */}
+              <Box className={styles.toolbar}>
+                <Box className={styles.toolbarIcons}>
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    accept="image/*"
+                    multiple
+                  />
+                  <IconButton className={styles.toolbarIcon} size="small">
+                    <ImageIcon className={styles.icon} />
+                  </IconButton>
+                </Box>
+
+                <Box className={styles.postControls}>
+                  {/* 文字数カウンター（残り文字数が少なくなると円形プログレス表示） */}
+                  {remainingChars <= 20 ? (
+                    <CircularProgress
+                      variant="determinate"
+                      value={(remainingChars / MAX_CHARS) * 100}
+                      size={24}
+                      thickness={5}
+                      className={
+                        remainingChars < 0
+                          ? styles.negativeProgress
+                          : styles.progress
+                      }
+                    />
+                  ) : null}
+
+                  {/* 残り文字数表示 */}
+                  {remainingChars <= 20 && (
+                    <Typography
+                      variant="body2"
+                      className={
+                        remainingChars < 0
+                          ? styles.negativeCounter
+                          : styles.counter
+                      }
+                    >
+                      {remainingChars}
+                    </Typography>
+                  )}
+
+                  {/* 投稿ボタン */}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    onClick={() => setPostModalOpen(false)}
+                    className={styles.postButton}
+                  >
+                    投稿する
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
           </Box>
         </form>
-      </Box>
+      </DialogContent>
     </Dialog>
   );
 };

@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { SearchPage } from './SearchPage';
 import supabase from '@/lib/supabase';
 import { ProfileData } from '@/type/chat';
@@ -7,7 +7,7 @@ interface SearchPageProps {
   initialProfiles: ProfileData[];
 }
 
-const Home = ({ initialProfiles }: SearchPageProps) => {
+const Home: NextPage<SearchPageProps> = ({ initialProfiles }) => {
   return (
     <>
       <SearchPage initialProfiles={initialProfiles} />

@@ -1,6 +1,7 @@
+import { NextPage } from 'next';
 import { SendEmail } from './SendEmail';
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <div>
       <SendEmail />
