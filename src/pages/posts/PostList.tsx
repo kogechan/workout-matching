@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import {
-  alertAtom,
-  currentUserAtom,
-  isLoadingAtom,
-  postAtom,
-} from '@/jotai/Jotai';
-import { deletePost } from '../api/posts/post';
+import { currentUserAtom, isLoadingAtom, postAtom } from '@/jotai/Jotai';
 import {
   Card,
   CardContent,
   IconButton,
-  Menu,
   Typography,
-  MenuItem,
   Avatar,
   Box,
   Button,
@@ -22,21 +14,20 @@ import {
   TextField,
   Container,
   Divider,
-  Alert,
   Snackbar,
+  Alert,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import BlockIcon from '@mui/icons-material/Block';
-import ReportIcon from '@mui/icons-material/Report';
 import ImageIcon from '@mui/icons-material/Image';
 import CheckIcon from '@mui/icons-material/Check';
 import supabase from '@/lib/supabase';
 import { useAvatar } from '@/hooks/useAvatar';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { getPost, addPost } from '../api/posts/post';
+import { getPost, addPost, deletePost } from '../api/posts/post';
 import styles from '@/styles/postDialog.module.css';
+import { MoreHoriz } from './MoreHoriz';
+import dayjs from '@/hooks/dayjs';
+import { useAlert } from '@/hooks/useAlert';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const { data: posts, error } = await supabase
@@ -62,14 +53,11 @@ const MAX_CHARS = 280;
 
 export const PostList = ({ initialPosts = [] }) => {
   const [posts, setPosts] = useAtom(postAtom);
-  const [menuAnchorEl, setMenuAnchorEl] = useState<{
-    [key: number]: HTMLElement | null;
-  }>({});
-  const [currentUserId, setCurrentUserId] = useAtom(currentUserAtom);
+  const [currentUserId] = useAtom(currentUserAtom);
   const [isLoading] = useAtom(isLoadingAtom);
-  const [open, setOpen] = useAtom(alertAtom);
   const [content, setContent] = useState('');
   const { profile } = useAvatar();
+  const { deleteAlert, DeleteAlert, postAlert, PostAlert } = useAlert();
   const router = useRouter();
 
   const remainingChars = MAX_CHARS - content.length;
@@ -78,31 +66,14 @@ export const PostList = ({ initialPosts = [] }) => {
     if (initialPosts.length > 0) {
       setPosts(initialPosts);
     }
-
-    const fetchUser = async () => {
-      const { data: user } = await supabase.auth.getUser();
-      if (user?.user) {
-        setCurrentUserId(user.user.id);
-      }
-    };
-    fetchUser();
-  }, [setCurrentUserId, setPosts, initialPosts]);
-
-  // メニューを開く
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, id: number) => {
-    setMenuAnchorEl((prev) => ({ ...prev, [id]: event.currentTarget }));
-  };
-
-  // メニューを閉じる
-  const handleMenuClose = (id: number) => {
-    setMenuAnchorEl((prev) => ({ ...prev, [id]: null }));
-  };
+  }, [setPosts, initialPosts]);
 
   // 投稿を削除する関数
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (postId: number) => {
     try {
-      await deletePost(id);
-      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+      await deletePost(postId);
+      setPosts(posts.filter((p) => p.id !== postId));
+      DeleteAlert();
     } catch (error) {
       console.error(error);
     }
@@ -114,13 +85,7 @@ export const PostList = ({ initialPosts = [] }) => {
     await addPost(content);
     setContent('');
     setPosts(await getPost());
-  };
-
-  const handleAlert = () => {
-    setOpen(true);
-    setTimeout(() => {
-      setOpen(false);
-    }, 3000);
+    PostAlert();
   };
 
   return (
@@ -128,14 +93,25 @@ export const PostList = ({ initialPosts = [] }) => {
       <Container maxWidth="md">
         <Box sx={{ py: 3 }}>
           <Snackbar
-            open={open}
+            open={deleteAlert}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'center',
             }}
           >
             <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-              削除しました
+              投稿を削除しました
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={postAlert}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+              投稿に成功しました
             </Alert>
           </Snackbar>
           <form onSubmit={handleSubmit}>
@@ -153,7 +129,7 @@ export const PostList = ({ initialPosts = [] }) => {
                       minRows={4}
                       multiline
                       fullWidth
-                      placeholder="合トレを募集しよう"
+                      placeholder="合トレを募集してみよう"
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                       variant="standard"
@@ -285,58 +261,11 @@ export const PostList = ({ initialPosts = [] }) => {
                           {post.profiles?.username}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          · 2h
+                          {dayjs(post.created_at).format('YYYY/MM/DD')}
                         </Typography>
-                        {/* メニュー */}
-                        <Menu
-                          id={`menu-${post.id}`}
-                          anchorEl={menuAnchorEl[post.id]}
-                          open={Boolean(menuAnchorEl[post.id])}
-                          onClose={() => handleMenuClose(post.id)}
-                          MenuListProps={{
-                            'aria-labelledby': `menu-button-${post.id}`,
-                          }}
-                        >
-                          {/* メニューの内容をログインユーザーと投稿者で切り替える処理 */}
-                          {post.user_id === currentUserId ? (
-                            <MenuItem
-                              onClick={() => {
-                                handleDelete(post.id);
-                                handleMenuClose(post.id);
-                              }}
-                            >
-                              <DeleteIcon onClick={handleAlert} />
-                              削除
-                            </MenuItem>
-                          ) : (
-                            <Menu
-                              id={`menu-${post.id}`}
-                              anchorEl={menuAnchorEl[post.id]}
-                              open={Boolean(menuAnchorEl[post.id])}
-                              onClose={() => handleMenuClose(post.id)}
-                              MenuListProps={{
-                                'aria-labelledby': `menu-button-${post.id}`,
-                              }}
-                            >
-                              <MenuItem
-                                onClick={() => alert('ブロックしました')}
-                              >
-                                <BlockIcon sx={{ marginRight: 1 }} />
-                                ブロック
-                              </MenuItem>
-                              <MenuItem
-                                onClick={() => alert('ミュートしました')}
-                              >
-                                <BlockIcon sx={{ marginRight: 1 }} />
-                                ミュート
-                              </MenuItem>
-                              <MenuItem onClick={() => alert('報告しました')}>
-                                <ReportIcon sx={{ marginRight: 1 }} />
-                                報告
-                              </MenuItem>
-                            </Menu>
-                          )}
-                        </Menu>
+                        <Typography variant="body2" color="text.secondary">
+                          {dayjs(post.created_at).fromNow()}
+                        </Typography>
                       </Box>
 
                       <Typography variant="body1" sx={{ mb: 2 }}>
@@ -345,17 +274,11 @@ export const PostList = ({ initialPosts = [] }) => {
                       <Box
                         sx={{
                           position: 'absolute',
-                          bottom: '65%',
-                          left: '95%',
+                          top: 8,
+                          right: 8,
                         }}
                       >
-                        <IconButton
-                          aria-label="more"
-                          onClick={(e) => handleMenuOpen(e, post.id)}
-                          sx={{ padding: 1 }}
-                        >
-                          <MoreHorizIcon />
-                        </IconButton>
+                        <MoreHoriz post={post} onDeletePost={handleDelete} />
                       </Box>
                     </Box>
                   </Box>

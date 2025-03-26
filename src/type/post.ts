@@ -2,6 +2,7 @@ export interface Post {
   id: number;
   content: string;
   user_id: string;
+  created_at: string;
   profiles: {
     id: string;
     username: string;
