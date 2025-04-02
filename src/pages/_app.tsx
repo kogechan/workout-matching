@@ -10,14 +10,28 @@ export default function App({ Component, pageProps }: AppProps) {
   const [, setCurrentUserId] = useAtom(currentUserAtom);
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (userData.user) {
-        setCurrentUserId(userData.user.id);
-      }
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setCurrentUserId(user?.id || null);
     };
 
-    initializeAuth();
+    fetchUser();
+
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          setCurrentUserId(session.user?.id || null);
+        } else {
+          setCurrentUserId(null);
+        }
+      }
+    );
+
+    return () => {
+      subscription?.subscription.unsubscribe();
+    };
   }, [setCurrentUserId]);
 
   return (

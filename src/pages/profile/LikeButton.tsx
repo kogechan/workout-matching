@@ -1,9 +1,6 @@
 import { currentUserAtom, isLoadingAtom } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import { red } from '@mui/material/colors';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 
@@ -91,19 +88,22 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
 
   return (
     <Box>
-      <IconButton
-        color="primary"
+      <Button
+        variant="contained"
+        sx={{
+          borderRadius: 20,
+          backgroundColor: '#f26a63',
+          width: { md: 1200, xs: 400, sm: 700 },
+        }}
         onClick={handleLike}
         disabled={isLoading || !currentUserId}
         aria-label={isLiked ? 'いいね解除' : 'いいね'}
       >
-        {isLiked ? (
-          <FavoriteIcon sx={{ color: red[500] }} />
-        ) : (
-          <FavoriteBorderIcon />
-        )}
-      </IconButton>
-      <Typography variant="caption">{likeCount}</Typography>
+        {isLiked ? 'いいね済み' : 'いいね'}
+        <Typography variant="caption" fontSize={16} sx={{ ml: 1 }}>
+          {likeCount}
+        </Typography>
+      </Button>
     </Box>
   );
 };

@@ -234,7 +234,7 @@ export const PostList = ({ initialPosts = [] }) => {
                           ? profile.avatar_url
                           : post.profiles?.avatar_url || ''
                       }
-                      sx={{ width: 48, height: 48 }}
+                      sx={{ width: 48, height: 48, cursor: 'pointer' }}
                       onClick={() => {
                         if (post.user_id !== currentUserId) {
                           router.push(

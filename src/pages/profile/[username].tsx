@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   CardActions,
   CircularProgress,
   Divider,
@@ -10,12 +9,15 @@ import {
   Alert,
   Paper,
   IconButton,
+  Dialog,
+  DialogContent,
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WcIcon from '@mui/icons-material/Wc';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import HomeIcon from '@mui/icons-material/Home';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import {
   GetServerSideProps,
   NextApiRequest,
@@ -30,9 +32,19 @@ import { useRouter } from 'next/router';
 import { LikeButton } from './LikeButton';
 import { ProfileData } from '@/type/chat';
 import { createServerSupabaseClient } from '@/lib/server';
+import { MoreVert } from './MoreVert';
+import { UserReport } from '@/components/UserReport';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+interface SubImage {
+  id: string;
+  url: string;
+  profile_id: string;
+}
 
 interface ProfileCardProps {
   profile: ProfileData;
+  subImages: SubImage[];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -52,18 +64,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (error) {
     console.error('データ取得エラー:', error);
-    return { props: { profile: null } };
+    return { props: { profile: null, subImages: [] } };
   }
 
-  return { props: { profile: profile } };
+  let formattedSubImages = [];
+  if (profile.sub_images && Array.isArray(profile.sub_images)) {
+    formattedSubImages = profile.sub_images.map((url, index) => ({
+      id: `sub-${index}`,
+      url: url,
+      profile_id: profile.id,
+    }));
+  }
+
+  return { props: { profile, subImages: formattedSubImages } };
 };
 
-const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
+const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
   const [currentUserId] = useAtom(currentUserAtom);
   const [room, setRoom] = useAtom(chatRoomAtom);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCheckingRoom, setIsCheckingRoom] = useState(true);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const router = useRouter();
 
   // コンポーネントマウント時に既存のチャットルームを検索
@@ -219,6 +241,11 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
     );
   }
 
+  // 画像プレビュー
+  const handlePreview = (url: string) => {
+    setPreviewImage(url);
+  };
+
   return (
     <Box
       sx={{
@@ -234,6 +261,15 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
         }}
       >
         <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="back"
+          sx={{ mr: 2 }}
+          onClick={() => router.back()}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+        <Box
           color="inherit"
           sx={{
             position: 'absolute',
@@ -241,8 +277,18 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
             top: 16,
           }}
         >
-          <MoreVertIcon />
-        </IconButton>
+          <MoreVert profile={profile} />
+        </Box>
+
+        <Box sx={{ position: 'absolute', right: 15, top: 65 }}>
+          <IconButton onClick={handleChatButtonClick} disabled={isCreatingRoom}>
+            {isCreatingRoom ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              <ChatBubbleIcon />
+            )}
+          </IconButton>
+        </Box>
       </Box>
       <Box
         sx={{
@@ -256,14 +302,38 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
             src={profile?.avatar_url || ''}
             alt={profile?.username}
             sx={{
-              width: { xs: 120, sm: 160, md: 180 },
-              height: { xs: 120, sm: 160, md: 180 },
+              width: { xs: 200, sm: 160, md: 250 },
+              height: { xs: 200, sm: 160, md: 250 },
               border: '4px',
               boxShadow: 3,
               backgroundColor: 'white',
               zIndex: 1,
+              cursor: 'pointer',
             }}
+            onClick={() => handlePreview(profile?.avatar_url || '')}
           />
+        </Box>
+
+        {/* サブ写真 */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 2 }}>
+          {Array.isArray(subImages) &&
+            subImages.length > 0 &&
+            subImages.map((image, index) => (
+              <Avatar
+                key={`${image.id || index}`}
+                src={image.url}
+                sx={{
+                  width: { xs: 50, sm: 60, md: 70 },
+                  height: { xs: 50, sm: 60, md: 70 },
+                  border: '4px',
+                  boxShadow: 3,
+                  backgroundColor: 'white',
+                  zIndex: 1,
+                  cursor: 'pointer',
+                }}
+                onClick={() => handlePreview(image.url)}
+              />
+            ))}
         </Box>
         <Box sx={{ mt: 2, mb: 4, textAlign: 'center' }}>
           <Typography variant="h4" fontWeight="bold">
@@ -312,7 +382,7 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
                 <WcIcon sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }} />
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    性別:
+                    性別
                   </Typography>
                   <Typography variant="body1" fontWeight="medium">
                     {profile?.gender}
@@ -326,10 +396,24 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
                 />
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    年齢:
+                    年齢
                   </Typography>
                   <Typography variant="body1" fontWeight="medium">
                     {profile?.age}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <HomeIcon
+                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
+                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    居住地
+                  </Typography>
+                  <Typography variant="body1" fontWeight="medium">
+                    {profile?.location}
                   </Typography>
                 </Box>
               </Box>
@@ -340,10 +424,52 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
                 />
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    トレーニング歴:
+                    得意部位
+                  </Typography>
+                  <Typography variant="body1" fontWeight="medium">
+                    {profile?.favorite_muscle}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FitnessCenterIcon
+                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
+                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    苦手部位
+                  </Typography>
+                  <Typography variant="body1" fontWeight="medium">
+                    {profile?.difficult_muscle}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FitnessCenterIcon
+                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
+                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    トレーニング歴
                   </Typography>
                   <Typography variant="body1" fontWeight="medium">
                     {profile?.training_experience}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FitnessCenterIcon
+                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
+                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    所属ジム
+                  </Typography>
+                  <Typography variant="body1" fontWeight="medium">
+                    {profile?.belong_gym}
                   </Typography>
                 </Box>
               </Box>
@@ -382,20 +508,29 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile }) => {
             </Alert>
           )}
           <LikeButton profileId={profile.id} />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleChatButtonClick}
-            disabled={isCreatingRoom}
-          >
-            {isCreatingRoom ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              'メッセージ'
-            )}
-          </Button>
         </CardActions>
+        <UserReport />
       </Box>
+      {/* プレビューダイアログ */}
+      <Dialog
+        open={!!previewImage}
+        onClose={() => setPreviewImage(null)}
+        maxWidth="md"
+      >
+        <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
+          {previewImage && (
+            <img
+              src={previewImage}
+              alt="画像プレビュー"
+              style={{
+                width: '100%',
+                maxHeight: '80vh',
+                objectFit: 'contain',
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

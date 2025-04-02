@@ -29,4 +29,7 @@ export interface ProfileData {
   gender?: string;
   training_experience?: string;
   bio?: string;
+  favorite_muscle?: string;
+  difficult_muscle?: string;
+  belong_gym?: string;
 }

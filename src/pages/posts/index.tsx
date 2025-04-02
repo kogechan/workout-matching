@@ -2,7 +2,7 @@ import { PostForm } from './PostForm';
 import { PostList } from './PostList';
 import { AddPost } from './AddPost';
 import { NextPage } from 'next';
-import { Report } from '@/components/Report';
+import { PostReport } from '@/components/PostReport';
 
 const Home: NextPage = () => {
   return (
@@ -10,7 +10,7 @@ const Home: NextPage = () => {
       <PostForm />
       <PostList />
       <AddPost />
-      <Report />
+      <PostReport />
     </>
   );
 };

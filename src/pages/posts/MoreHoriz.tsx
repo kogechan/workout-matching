@@ -1,7 +1,7 @@
 import {
   currentUserAtom,
-  reportModalAtom,
-  reportTargetAtom,
+  reportPostModalAtom,
+  reportPostTargetAtom,
 } from '@/jotai/Jotai';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
@@ -20,8 +20,8 @@ interface MoreHorizProps {
 export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [currentUserId] = useAtom(currentUserAtom);
-  const [reportModalOpen, setReportModalOpen] = useAtom(reportModalAtom);
-  const [, setReportTarget] = useAtom(reportTargetAtom);
+  const [reportModalOpen, setReportModalOpen] = useAtom(reportPostModalAtom);
+  const [, setReportTarget] = useAtom(reportPostTargetAtom);
 
   // メニューを開く
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {

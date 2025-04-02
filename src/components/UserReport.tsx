@@ -1,7 +1,7 @@
 import {
   currentUserAtom,
-  reportModalAtom,
-  reportTargetAtom,
+  reportUserModalAtom,
+  reportUserTargetAtom,
 } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
 import {
@@ -27,23 +27,16 @@ import { useState } from 'react';
 import { useAlert } from '@/hooks/useAlert';
 import CheckIcon from '@mui/icons-material/Check';
 
-const REPORT_REASONS = [
-  'スパム',
-  '不適切なコンテンツ',
-  'ハラスメント',
-  '違法行為',
-  'なりすまし',
-  'その他',
-];
+const REPORT_REASONS = ['ハラスメント', '違法行為', 'なりすまし', 'その他'];
 
-export const Report = () => {
-  const [reportModalOpen, setReportModalOpen] = useAtom(reportModalAtom);
+export const UserReport = () => {
+  const [reportModalOpen, setReportModalOpen] = useAtom(reportUserModalAtom);
   const [reason, setReason] = useState('');
   const [details, setDetails] = useState('');
   const [loading, setLoading] = useState(false);
   const { reportAlert, ReportAlert } = useAlert();
   const [currentUserId] = useAtom(currentUserAtom);
-  const [reportTarget] = useAtom(reportTargetAtom);
+  const [reportTarget] = useAtom(reportUserTargetAtom);
 
   const handleReasonChange = (e: SelectChangeEvent) => {
     setReason(e.target.value);
@@ -107,10 +100,10 @@ export const Report = () => {
         fullWidth
       >
         <form onSubmit={handleSubmit}>
-          <DialogTitle>投稿を報告</DialogTitle>
+          <DialogTitle>ユーザーを報告</DialogTitle>
           <DialogContent>
             <DialogContentText sx={{ mb: 2 }}>
-              投稿者: {reportTarget?.profiles?.username}
+              ユーザー: {reportTarget?.username}
             </DialogContentText>
 
             <FormControl fullWidth sx={{ mb: 2 }} required>

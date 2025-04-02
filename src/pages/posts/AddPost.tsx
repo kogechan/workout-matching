@@ -1,6 +1,5 @@
 import { useAtom } from 'jotai';
 import { postModalAtom } from '@/jotai/Jotai';
-import PostAddIcon from '@mui/icons-material/PostAdd';
 import { IconButton } from '@mui/material';
 import ModeIcon from '@mui/icons-material/Mode';
 

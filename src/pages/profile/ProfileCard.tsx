@@ -2,6 +2,8 @@ import {
   Avatar,
   Box,
   Button,
+  Dialog,
+  DialogContent,
   Divider,
   IconButton,
   Paper,
@@ -15,10 +17,21 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WcIcon from '@mui/icons-material/Wc';
+import HomeIcon from '@mui/icons-material/Home';
+import { useAtom } from 'jotai';
+import { subImgeAtom } from '@/jotai/Jotai';
+import { useState } from 'react';
 
 export const ProfileCard = () => {
   const { profile } = useAvatar();
   const router = useRouter();
+  const [subImages] = useAtom(subImgeAtom);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // 画像プレビュー
+  const handlePreview = (url: string) => {
+    setPreviewImage(url);
+  };
 
   return (
     <Box
@@ -56,17 +69,42 @@ export const ProfileCard = () => {
       >
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: -10 }}>
           <Avatar
-            src={profile.avatar_url}
+            src={profile.avatar_url || ''}
             alt={profile.username}
             sx={{
-              width: { xs: 120, sm: 160, md: 180 },
-              height: { xs: 120, sm: 160, md: 180 },
+              width: { xs: 200, sm: 160, md: 250 },
+              height: { xs: 200, sm: 160, md: 250 },
               border: '4px',
               boxShadow: 3,
               backgroundColor: 'white',
               zIndex: 1,
+              cursor: 'pointer',
             }}
+            onClick={() => handlePreview(profile.avatar_url || '')}
           />
+        </Box>
+
+        {/* サブ写真 */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 2 }}>
+          {subImages.length > 0 &&
+            subImages.map((image) => (
+              <div key={image.id}>
+                {' '}
+                <Avatar
+                  src={image.url}
+                  sx={{
+                    width: { xs: 50, sm: 60, md: 70 },
+                    height: { xs: 50, sm: 60, md: 70 },
+                    border: '4px',
+                    boxShadow: 3,
+                    backgroundColor: 'white',
+                    zIndex: 1,
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handlePreview(image.url)}
+                />
+              </div>
+            ))}
         </Box>
 
         <Box sx={{ mt: 2, mb: 4, textAlign: 'center' }}>
@@ -140,6 +178,48 @@ export const ProfileCard = () => {
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <HomeIcon
+                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
+                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    居住地
+                  </Typography>
+                  <Typography variant="body1" fontWeight="medium">
+                    {profile.location}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FitnessCenterIcon
+                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
+                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    得意部位
+                  </Typography>
+                  <Typography variant="body1" fontWeight="medium">
+                    {profile.favorite_muscle}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FitnessCenterIcon
+                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
+                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    苦手部位
+                  </Typography>
+                  <Typography variant="body1" fontWeight="medium">
+                    {profile.difficult_muscle}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <FitnessCenterIcon
                   sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
                 />
@@ -149,6 +229,20 @@ export const ProfileCard = () => {
                   </Typography>
                   <Typography variant="body1" fontWeight="medium">
                     {profile.training_experience}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FitnessCenterIcon
+                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
+                />
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    所属ジム
+                  </Typography>
+                  <Typography variant="body1" fontWeight="medium">
+                    {profile.belong_gym}
                   </Typography>
                 </Box>
               </Box>
@@ -204,6 +298,26 @@ export const ProfileCard = () => {
           </Button>
         </Box>
       </Box>
+      {/* プレビューダイアログ */}
+      <Dialog
+        open={!!previewImage}
+        onClose={() => setPreviewImage(null)}
+        maxWidth="md"
+      >
+        <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
+          {previewImage && (
+            <img
+              src={previewImage}
+              alt="画像プレビュー"
+              style={{
+                width: '100%',
+                maxHeight: '80vh',
+                objectFit: 'contain',
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

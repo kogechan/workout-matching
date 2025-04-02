@@ -31,6 +31,9 @@ export const useAvatar = () => {
         location: data?.location || '',
         training_experience: data?.training_experience || '',
         avatar_url: data?.avatar_url || '',
+        favorite_muscle: data?.favorite_muscle || '',
+        difficult_muscle: data?.difficult_muscle || '',
+        belong_gym: data?.belong_gym || '',
       }));
 
       setLoading(false);

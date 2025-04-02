@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { Post } from '@/type/post';
-import { User } from '@/type/user';
+import { ProfileImageType, User } from '@/type/user';
 import { ChatRoom, Message, ProfileData } from '@/type/chat';
 
 // メニューの表示状態を管理
@@ -11,8 +11,10 @@ export const loginModalAtom = atom(false);
 export const postModalAtom = atom(false);
 // ログアウトアラートモーダルの開閉状態を管理
 export const logoutModalAtom = atom(false);
-// 報告モーダルの開閉状態を管理
-export const reportModalAtom = atom(false);
+// 報告モーダルの開閉状態を管理(投稿)
+export const reportPostModalAtom = atom(false);
+// 報告モーダルの開閉状態を管理(ユーザー)
+export const reportUserModalAtom = atom(false);
 // 検索フィルターをフルダイアログにしてその開閉状態を管理
 export const filterModalAtom = atom(false);
 // メールアドレスの管理
@@ -30,6 +32,9 @@ export const profileAtom = atom<User>({
   training_experience: '',
   bio: '',
   avatar_url: '',
+  favorite_muscle: '',
+  difficult_muscle: '',
+  belong_gym: '',
 });
 // 現在のユーザーの情報を保持
 export const currentUserAtom = atom<string | null>(null);
@@ -42,4 +47,8 @@ export const otherUserAtom = atom<ProfileData | null>(null);
 // チャットルーム情報を保持
 export const chatRoomAtom = atom<ChatRoom | null>(null);
 // 報告対象の管理（投稿）
-export const reportTargetAtom = atom<Post | null>(null);
+export const reportPostTargetAtom = atom<Post | null>(null);
+// 報告対象の管理(ユーザー)
+export const reportUserTargetAtom = atom<ProfileData | null>(null);
+// サブ写真の情報を保持
+export const subImgeAtom = atom<ProfileImageType[]>([]);
