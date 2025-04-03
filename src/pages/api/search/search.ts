@@ -10,8 +10,16 @@ export default async function handler(
   }
 
   try {
-    const { currentUserId, age, location, gender, training_experience } =
-      req.body;
+    const {
+      currentUserId,
+      age,
+      location,
+      gender,
+      training_experience,
+      favorite_muscle,
+      difficult_muscle,
+      belong_gym,
+    } = req.body;
 
     // supabaseクエリの構築
     let query = supabase.from('profiles').select('*');
@@ -55,6 +63,21 @@ export default async function handler(
     // トレーニング歴フィルター
     if (training_experience) {
       query = query.eq('training_experience', training_experience);
+    }
+
+    // 得意部位フィルター
+    if (favorite_muscle) {
+      query = query.eq('favorite_muscle', favorite_muscle);
+    }
+
+    // 苦手部位フィルター
+    if (difficult_muscle) {
+      query = query.eq('difficult_muscle', difficult_muscle);
+    }
+
+    // 所属ジムフィルター
+    if (belong_gym) {
+      query = query.eq('belong_gym', belong_gym);
     }
 
     // クエリの実行

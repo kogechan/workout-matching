@@ -175,7 +175,6 @@ export const PostList = ({ initialPosts = [] }) => {
                           <ImageIcon className={styles.icon} />
                         </IconButton>
                       </Box>
-
                       <Box className={styles.postControls}>
                         {/* 文字数カウンター（残り文字数が少なくなると円形プログレス表示） */}
                         {remainingChars <= 20 ? (
@@ -231,8 +230,10 @@ export const PostList = ({ initialPosts = [] }) => {
                     <Avatar
                       src={
                         post.user_id === currentUserId
-                          ? profile.avatar_url
-                          : post.profiles?.avatar_url || ''
+                          ? profile.avatar_url ||
+                            '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+                          : post.profiles?.avatar_url ||
+                            '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
                       }
                       sx={{ width: 48, height: 48, cursor: 'pointer' }}
                       onClick={() => {
@@ -244,10 +245,7 @@ export const PostList = ({ initialPosts = [] }) => {
                           );
                         }
                       }}
-                    >
-                      {/* アイコンがない場合ユーザーの頭文字を表示する */}
-                      {post.profiles?.username?.charAt(0) || 'U'}
-                    </Avatar>
+                    ></Avatar>
                     <Box sx={{ flexGrow: 1 }}>
                       <Box
                         sx={{

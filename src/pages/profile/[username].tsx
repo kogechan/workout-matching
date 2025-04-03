@@ -299,7 +299,10 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
       >
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: -10 }}>
           <Avatar
-            src={profile?.avatar_url || ''}
+            src={
+              profile?.avatar_url ||
+              '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+            }
             alt={profile?.username}
             sx={{
               width: { xs: 200, sm: 160, md: 250 },
