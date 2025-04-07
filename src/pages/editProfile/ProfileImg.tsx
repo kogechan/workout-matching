@@ -10,11 +10,17 @@ import {
   Dialog,
   DialogContent,
   CardActions,
+  Backdrop,
+  Paper,
+  Zoom,
+  Fab,
+  Tooltip,
 } from '@mui/material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import EditIcon from '@mui/icons-material/Edit';
 import { useAvatar } from '@/hooks/useAvatar';
 import { useAtom } from 'jotai';
 import { currentUserAtom, subImgeAtom } from '@/jotai/Jotai';
@@ -28,7 +34,8 @@ export const ProfileImg = () => {
   const [subImages, setSubImages] = useAtom(subImgeAtom);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  /* const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null); */
+  const [hoverMain, setHoverMain] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // 既存のサブ画像を取得
   useEffect(() => {
@@ -82,6 +89,17 @@ export const ProfileImg = () => {
     }
 
     setIsLoading(true);
+    setUploadProgress(0);
+
+    const progressInterval = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 95) {
+          clearInterval(progressInterval);
+          return prev;
+        }
+        return prev + 5;
+      });
+    }, 100);
 
     try {
       const filePath = `avatars/${currentUserId}-${Date.now()}-${file.name}`;
@@ -110,7 +128,11 @@ export const ProfileImg = () => {
       console.error('画像アップロードエラー:', error);
       alert('画像のアップロードに失敗しました');
     } finally {
-      setIsLoading(false);
+      clearInterval(progressInterval);
+      setTimeout(() => {
+        setUploadProgress(0);
+        setIsLoading(false);
+      }, 500);
     }
   };
 
@@ -123,6 +145,17 @@ export const ProfileImg = () => {
     const files = Array.from(event.target.files);
 
     setIsLoading(true);
+    setUploadProgress(0);
+
+    const progressInterval = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 95) {
+          clearInterval(progressInterval);
+          return prev;
+        }
+        return prev + 5;
+      });
+    }, 150);
 
     try {
       const newImages: ProfileImageType[] = [];
@@ -170,7 +203,11 @@ export const ProfileImg = () => {
       console.error('サブ画像アップロードエラー:', error);
       alert('画像のアップロードに失敗しました');
     } finally {
-      setIsLoading(false);
+      clearInterval(progressInterval);
+      setTimeout(() => {
+        setIsLoading(false);
+        setUploadProgress(0);
+      }, 500);
       // 入力フィールドをリセット
       event.target.value = '';
     }
@@ -219,61 +256,94 @@ export const ProfileImg = () => {
 
   return (
     <>
-      <Box sx={{ p: 3 }}>
-        {isLoading && (
-          <Box
-            sx={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              zIndex: 9999,
-            }}
-          >
-            <CircularProgress color="primary" />
-          </Box>
-        )}
-        {/* メインアバター */}
-        <Box
+      <Box sx={{ p: 2 }}>
+        <Backdrop
           sx={{
-            mb: 4,
+            zIndex: (theme) => theme.zIndex.drawer + 1,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            gap: 2,
+          }}
+          open={isLoading}
+        >
+          <CircularProgress
+            color="primary"
+            variant={uploadProgress > 0 ? 'determinate' : 'indeterminate'}
+            value={uploadProgress}
+          />
+          <Typography variant="body2" color="white">
+            {uploadProgress > 0
+              ? `${uploadProgress}% 完了`
+              : 'アップロード中...'}
+          </Typography>
+        </Backdrop>
+        {/* メインアバター */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: 4,
+            mb: 4,
+            borderRadius: 2,
+            bgcolor: '#f8f9fa',
+            textAlign: 'center',
           }}
         >
-          <label htmlFor="avatar-upload">
-            <input
-              type="file"
-              id="avatar-upload"
-              style={{ display: 'none' }}
-              accept="image/png, image/jpeg, image/webp"
-              onChange={handleAvatarUpload}
-              disabled={isLoading}
-            />
+          <Typography variant="h6" gutterBottom color="primary">
+            メイン写真
+          </Typography>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'inline-block',
+              my: 2,
+              borderRadius: '50%',
+              boxShadow: hoverMain ? 3 : 0,
+              transition: 'all 0.3s ease',
+            }}
+            onMouseEnter={() => setHoverMain(true)}
+            onMouseLeave={() => setHoverMain(false)}
+          >
             <IconButton component="span">
               <Avatar
                 sx={{
                   width: { xs: 200, sm: 160, md: 250 },
                   height: { xs: 200, sm: 160, md: 250 },
+                  border: '4px solid white',
+                  boxShadow: 2,
                 }}
                 src={profile.avatar_url || ''}
+                alt="プロフィール画像"
               >
                 <CameraAltIcon />
               </Avatar>
             </IconButton>
-          </label>
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
-            メイン写真
-          </Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
-            クリックして変更
-          </Typography>
+
+            <Zoom in={hoverMain}>
+              <label htmlFor="avatar-upload">
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  style={{ display: 'none' }}
+                  accept="image/png, image/jpeg, image/webp"
+                  onChange={handleAvatarUpload}
+                  disabled={isLoading}
+                />
+                <Fab
+                  color="primary"
+                  aria-label="edit"
+                  size="small"
+                  component="span"
+                  sx={{
+                    position: 'absolute',
+                    bottom: 10,
+                    right: 10,
+                  }}
+                >
+                  <EditIcon />
+                </Fab>
+              </label>
+            </Zoom>
+          </Box>
 
           {profile.avatar_url && (
             <Button
@@ -285,72 +355,125 @@ export const ProfileImg = () => {
               プレビュー
             </Button>
           )}
-        </Box>
+        </Paper>
 
         {/* 追加画像セクション */}
-        <Box sx={{ mt: 4 }}>
-          <Typography pl={{ md: 15, xs: 5 }} variant="h6" gutterBottom>
-            追加の写真（最大3枚）
+        <Paper
+          elevation={0}
+          sx={{
+            p: 4,
+            borderRadius: 2,
+            bgcolor: '#f8f9fa',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 3,
+            }}
+          >
+            <Typography variant="h6" color="primary">
+              追加の写真
+            </Typography>
+
             {subImages.length < 3 && (
-              <label htmlFor="sub-image-upload">
-                <input
-                  type="file"
-                  id="sub-image-upload"
-                  style={{ display: 'none' }}
-                  accept="image/png, image/jpeg, image/webp"
-                  onChange={handleSubImageUpload}
-                  multiple
-                  disabled={isLoading}
-                />
-                <AddAPhotoIcon sx={{ cursor: 'pointer' }} />
-              </label>
-            )}
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-            {/* 既存のサブ画像 */}
-            {subImages.map((image) => (
-              <Grid2 size={{ xs: 6, sm: 4, md: 4 }} key={image.id}>
-                {/* <label htmlFor="sub-image-upload">
+              <Tooltip title="写真を追加（最大3枚まで）">
+                <label htmlFor="sub-image-upload">
                   <input
                     type="file"
                     id="sub-image-upload"
                     style={{ display: 'none' }}
                     accept="image/png, image/jpeg, image/webp"
-                    onChange={handleSubImageUpload} 
+                    onChange={handleSubImageUpload}
                     multiple
                     disabled={isLoading}
-                  /> */}
-
-                <Avatar
-                  sx={{
-                    width: { xs: 80, sm: 110, md: 130 },
-                    height: { xs: 80, sm: 110, md: 130 },
-                    objectFit: 'cover',
-                    cursor: 'pointer',
-                  }}
-                  src={image.url || ''}
-                  alt="サブ画像"
-                  onClick={() => handlePreview(image.url || '')}
-                >
-                  <CameraAltIcon />
-                </Avatar>
-                {/*  </label> */}
-                <Box>
-                  <CardActions
-                    sx={{ display: 'flex', justifyContent: 'center' }}
+                  />
+                  <Button
+                    variant="contained"
+                    component="span"
+                    startIcon={<AddAPhotoIcon />}
+                    disabled={subImages.length >= 3}
                   >
-                    <IconButton
-                      onClick={() => deleteSubImage(image.url)}
-                      disabled={isLoading}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </CardActions>
-                </Box>
-              </Grid2>
-            ))}
+                    追加
+                  </Button>
+                </label>
+              </Tooltip>
+            )}
           </Box>
-        </Box>
+
+          <Typography variant="body2" color="text.secondary" mb={3}>
+            トレーニングの成果や日常の写真を追加してみよう (最大3枚)
+          </Typography>
+
+          <Grid2
+            container
+            spacing={3}
+            justifyContent={subImages.length === 0 ? 'center' : 'flex-start'}
+          >
+            {/* 既存のサブ画像 */}
+            {subImages.length === 0 ? (
+              <Grid2 size={{ xs: 12 }} textAlign="center" py={4}>
+                <Typography variant="body1" color="text.secondary" mb={2}>
+                  まだ追加写真がありません
+                </Typography>
+
+                <label htmlFor="first-sub-image">
+                  <input
+                    type="file"
+                    id="first-sub-image"
+                    style={{ display: 'none' }}
+                    accept="image/png, image/jpeg, image/webp"
+                    onChange={handleSubImageUpload}
+                    multiple
+                    disabled={isLoading}
+                  />
+                  <Button
+                    variant="outlined"
+                    component="span"
+                    startIcon={<AddAPhotoIcon />}
+                  >
+                    写真を追加
+                  </Button>
+                </label>
+              </Grid2>
+            ) : (
+              subImages.map((image) => (
+                <Grid2 size={{ xs: 12, sm: 4 }} py={4} key={image.id}>
+                  <Avatar
+                    sx={{
+                      width: { xs: 200, sm: 110, md: 110 },
+                      height: { xs: 200, sm: 110, md: 110 },
+                      objectFit: 'cover',
+                      cursor: 'pointer',
+                      border: '4px solid white',
+                      boxShadow: 2,
+                    }}
+                    src={image.url || ''}
+                    alt="サブ画像"
+                    onClick={() => handlePreview(image.url || '')}
+                  >
+                    <CameraAltIcon />
+                  </Avatar>
+
+                  <Box>
+                    <CardActions
+                      sx={{ display: 'flex', justifyContent: 'center' }}
+                    >
+                      <IconButton
+                        onClick={() => deleteSubImage(image.url)}
+                        disabled={isLoading}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Box>
+                </Grid2>
+              ))
+            )}
+          </Grid2>
+        </Paper>
         {/* プレビューダイアログ */}
         <Dialog
           open={!!previewImage}

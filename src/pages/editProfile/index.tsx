@@ -1,18 +1,111 @@
 import { CreateAcount } from '@/pages/editProfile/EditAcount';
 import { ProfileImg } from '@/pages/editProfile/ProfileImg';
-import { Card, CardContent, Container } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+} from '@mui/material';
 import { NextPage } from 'next';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+
+const steps = ['プロフィール情報', '基本情報', 'アカウント情報'];
 
 const Home: NextPage = () => {
+  const [activeStep, setActiveStep] = useState(0);
+  const [, setCompleted] = useState(false);
+  const router = useRouter();
+
+  const handleNext = () => {
+    setActiveStep((prevStep) => prevStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevStep) => prevStep - 1);
+  };
+
+  const handleComplete = () => {
+    setCompleted(true);
+  };
   return (
     <>
       <Container maxWidth="sm">
-        <Card sx={{ mt: 4, p: 3 }}>
-          <CardContent>
-            <ProfileImg />
-            <CreateAcount />
-          </CardContent>
-        </Card>
+        <Box sx={{ my: 4 }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            align="center"
+            fontWeight="bold"
+          >
+            プロフィール編集
+          </Typography>
+
+          <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+
+          <Card sx={{ p: { xs: 2, md: 3 }, boxShadow: 3 }}>
+            <CardContent>
+              {activeStep === 0 && <ProfileImg />}
+              {activeStep === 1 && <CreateAcount />}
+              {activeStep === 2 && (
+                <Box sx={{ textAlign: 'center', py: 5 }}>
+                  <Typography variant="h5" gutterBottom>
+                    内容を確認してください
+                  </Typography>
+                  <Typography variant="body1" paragraph>
+                    すべての情報が正しければ「完了」をクリックしてください。
+                  </Typography>
+                </Box>
+              )}
+
+              <Box
+                sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}
+              >
+                <Button
+                  variant="outlined"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                >
+                  戻る
+                </Button>
+                <Box>
+                  {activeStep === steps.length - 1 ? (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        handleComplete();
+                        router.push('/profile');
+                      }}
+                    >
+                      完了
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                    >
+                      次へ
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
       </Container>
     </>
   );
