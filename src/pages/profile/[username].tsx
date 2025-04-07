@@ -3,14 +3,13 @@ import {
   Box,
   CardActions,
   CircularProgress,
-  Divider,
-  Stack,
   Typography,
   Alert,
   Paper,
   IconButton,
   Dialog,
   DialogContent,
+  Container,
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
@@ -18,6 +17,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WcIcon from '@mui/icons-material/Wc';
 import HomeIcon from '@mui/icons-material/Home';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   GetServerSideProps,
   NextApiRequest,
@@ -25,7 +25,7 @@ import {
   NextPage,
 } from 'next';
 import supabase from '@/lib/supabase';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { chatRoomAtom, currentUserAtom } from '@/jotai/Jotai';
 import { useRouter } from 'next/router';
@@ -34,8 +34,8 @@ import { ProfileData } from '@/type/chat';
 import { createServerSupabaseClient } from '@/lib/server';
 import { MoreVert } from './MoreVert';
 import { UserReport } from '@/components/UserReport';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+// インターフェース
 interface SubImage {
   id: string;
   url: string;
@@ -46,6 +46,23 @@ interface ProfileCardProps {
   profile: ProfileData;
   subImages: SubImage[];
 }
+
+// 情報アイテムコンポーネント
+const InfoItem = ({ icon, label, value }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    {React.cloneElement(icon, {
+      sx: { color: 'text.secondary', mr: 2, fontSize: 28 },
+    })}
+    <Box>
+      <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
+        {label}
+      </Typography>
+      <Typography sx={{ fontSize: '1rem', fontWeight: 'medium' }}>
+        {value || '-'}
+      </Typography>
+    </Box>
+  </Box>
+);
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { req, res, params } = context;
@@ -88,7 +105,7 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const router = useRouter();
 
-  // コンポーネントマウント時に既存のチャットルームを検索
+  // 既存のチャットルームを検索
   useEffect(() => {
     const checkExistingRoom = async () => {
       if (!currentUserId || !profile?.id) {
@@ -135,14 +152,13 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
     checkExistingRoom();
   }, [currentUserId, profile?.id, setRoom]);
 
-  // 新規チャットルーム作成 - 条件チェックを慎重に
+  // 新規チャットルーム作成
   const createNewChatRoom = async () => {
     console.log('createNewChatRoom開始', {
       currentUserId,
       profileId: profile?.id,
     });
 
-    // 条件チェックを厳密に
     if (!currentUserId) {
       setError('ログインしていないか、ユーザー情報が取得できません');
       console.error('ユーザーIDなし');
@@ -203,7 +219,7 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
     }
   };
 
-  // ボタンクリックハンドラの強化
+  // ボタンクリックハンドラ
   const handleChatButtonClick = () => {
     console.log('チャットボタンクリック', {
       room,
@@ -214,307 +230,306 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
 
     if (isCheckingRoom) {
       console.log('ルーム確認中...');
-      return; // ルーム確認中は何もしない
+      return;
     }
 
     if (room) {
-      // 既存のルームが見つかった場合
       console.log('既存ルームへ移動:', room.id);
       router.push(`/chat/${room.id}`);
     } else {
-      // 新規ルーム作成
       console.log('新規ルーム作成開始');
       createNewChatRoom();
     }
   };
-
-  if (!profile) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
-        <Alert severity="error">プロフィールが見つかりませんでした</Alert>
-      </Box>
-    );
-  }
 
   // 画像プレビュー
   const handlePreview = (url: string) => {
     setPreviewImage(url);
   };
 
+  if (!profile) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <Alert severity="error">プロフィールが見つかりませんでした</Alert>
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
         width: '100%',
         minHeight: '100vh',
+        pb: 6,
       }}
     >
+      {/* ヘッダーセクション */}
       <Box
         sx={{
           width: '100%',
           height: { xs: 120, sm: 150, md: 180 },
           position: 'relative',
+          mb: 2,
         }}
       >
         <IconButton
           edge="start"
           color="inherit"
           aria-label="back"
-          sx={{ mr: 2 }}
+          sx={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            zIndex: 2,
+          }}
           onClick={() => router.back()}
         >
           <ArrowBackIcon />
         </IconButton>
+
         <Box
-          color="inherit"
           sx={{
             position: 'absolute',
-            right: 16,
             top: 16,
+            right: 16,
+            zIndex: 2,
           }}
         >
           <MoreVert profile={profile} />
         </Box>
 
-        <Box sx={{ position: 'absolute', right: 15, top: 65 }}>
-          <IconButton onClick={handleChatButtonClick} disabled={isCreatingRoom}>
-            {isCreatingRoom ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              <ChatBubbleIcon />
-            )}
-          </IconButton>
-        </Box>
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: 64,
+            right: 16,
+            zIndex: 2,
+          }}
+          onClick={handleChatButtonClick}
+          disabled={isCreatingRoom}
+        >
+          {isCreatingRoom ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            <ChatBubbleIcon />
+          )}
+        </IconButton>
       </Box>
-      <Box
-        sx={{
-          px: { xs: 2, sm: 4, md: 6 },
-          maxWidth: '1200px',
-          mx: 'auto',
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: -10 }}>
-          <Avatar
-            src={
-              profile?.avatar_url ||
-              '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
-            }
-            alt={profile?.username}
-            sx={{
-              width: { xs: 200, sm: 160, md: 250 },
-              height: { xs: 200, sm: 160, md: 250 },
-              border: '4px',
-              boxShadow: 3,
-              backgroundColor: 'white',
-              zIndex: 1,
-              cursor: 'pointer',
-            }}
-            onClick={() => handlePreview(profile?.avatar_url || '')}
-          />
-        </Box>
+
+      <Container maxWidth="lg">
+        {/* プロフィール画像 */}
+        <Avatar
+          src={
+            profile?.avatar_url ||
+            '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+          }
+          alt={profile?.username}
+          sx={{
+            width: { xs: 200, sm: 180, md: 250 },
+            height: { xs: 200, sm: 180, md: 250 },
+            border: '4px solid white',
+            boxShadow: 3,
+            backgroundColor: 'white',
+            zIndex: 1,
+            cursor: 'pointer',
+            position: 'relative',
+            top: { xs: -50, sm: -60, md: -70 },
+            mx: 'auto',
+          }}
+          onClick={() => handlePreview(profile?.avatar_url || '')}
+        />
 
         {/* サブ写真 */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 2 }}>
-          {Array.isArray(subImages) &&
-            subImages.length > 0 &&
-            subImages.map((image, index) => (
+        {Array.isArray(subImages) && subImages.length > 0 && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 2,
+              mb: 10,
+              flexWrap: 'wrap',
+            }}
+          >
+            {subImages.map((image, index) => (
               <Avatar
                 key={`${image.id || index}`}
                 src={image.url}
                 sx={{
-                  width: { xs: 50, sm: 60, md: 70 },
-                  height: { xs: 50, sm: 60, md: 70 },
-                  border: '4px',
-                  boxShadow: 3,
+                  width: { xs: 60, sm: 70, md: 80 },
+                  height: { xs: 60, sm: 70, md: 80 },
+                  border: '3px solid white',
+                  boxShadow: 2,
                   backgroundColor: 'white',
-                  zIndex: 1,
                   cursor: 'pointer',
                 }}
                 onClick={() => handlePreview(image.url)}
               />
             ))}
-        </Box>
-        <Box sx={{ mt: 2, mb: 4, textAlign: 'center' }}>
-          <Typography variant="h4" fontWeight="bold">
-            {profile?.username}
+          </Box>
+        )}
+
+        {/* ユーザー名と場所 */}
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 'bold',
+            textAlign: 'center',
+            mt: { xs: -4, sm: -5 },
+            mb: 2,
+          }}
+        >
+          {profile?.username}
+        </Typography>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mb: 3,
+          }}
+        >
+          <LocationOnIcon fontSize="small" color="action" />
+          <Typography variant="body1" sx={{ ml: 1 }}>
+            {profile?.location || '未設定'}
           </Typography>
-          <Box
+        </Box>
+
+        {/* 基本情報セクション */}
+        <Paper
+          sx={{
+            p: { xs: 3, sm: 4 },
+            mb: 3,
+            borderRadius: 2,
+            bgcolor: 'background.paper',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+          }}
+        >
+          <Typography
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              mt: 1,
+              fontWeight: 600,
+              fontSize: { xs: '1.1rem', sm: '1.25rem' },
+              mb: 3,
+              borderBottom: '1px solid #f0f0f0',
+              pb: 1,
             }}
           >
-            <LocationOnIcon fontSize="small" color="action" sx={{ mr: 0.5 }} />
-            <Typography variant="body1" sx={{ ml: 1 }}>
-              {profile?.location}
-            </Typography>
+            基本情報
+          </Typography>
+
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+              },
+              gap: 3,
+            }}
+          >
+            <InfoItem icon={<WcIcon />} label="性別" value={profile?.gender} />
+
+            <InfoItem
+              icon={<CalendarTodayIcon />}
+              label="年齢"
+              value={profile?.age}
+            />
+
+            <InfoItem
+              icon={<HomeIcon />}
+              label="居住地"
+              value={profile?.location}
+            />
+
+            <InfoItem
+              icon={<FitnessCenterIcon />}
+              label="得意部位"
+              value={profile?.favorite_muscle}
+            />
+
+            <InfoItem
+              icon={<FitnessCenterIcon />}
+              label="苦手部位"
+              value={profile?.difficult_muscle}
+            />
+
+            <InfoItem
+              icon={<FitnessCenterIcon />}
+              label="トレーニング歴"
+              value={profile?.training_experience}
+            />
+
+            <InfoItem
+              icon={<FitnessCenterIcon />}
+              label="所属ジム"
+              value={profile?.belong_gym}
+            />
           </Box>
-        </Box>
-
-        <Paper
-          elevation={0}
-          sx={{
-            p: { xs: 2, sm: 3, md: 4 },
-            mb: 3,
-            borderRadius: 2,
-            bgcolor: 'background.paper',
-          }}
-        >
-          <Stack spacing={3}>
-            <Typography variant="h6" fontWeight="medium">
-              基本情報
-            </Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: '1fr 1fr',
-                  md: '1fr 1fr 1fr',
-                },
-                gap: 3,
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <WcIcon sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }} />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    性別
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {profile?.gender}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <CalendarTodayIcon
-                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
-                />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    年齢
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {profile?.age}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <HomeIcon
-                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
-                />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    居住地
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {profile?.location}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <FitnessCenterIcon
-                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
-                />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    得意部位
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {profile?.favorite_muscle}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <FitnessCenterIcon
-                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
-                />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    苦手部位
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {profile?.difficult_muscle}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <FitnessCenterIcon
-                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
-                />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    トレーニング歴
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {profile?.training_experience}
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <FitnessCenterIcon
-                  sx={{ color: 'text.secondary', mr: 2, fontSize: 28 }}
-                />
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    所属ジム
-                  </Typography>
-                  <Typography variant="body1" fontWeight="medium">
-                    {profile?.belong_gym}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Stack>
         </Paper>
 
+        {/* 自己紹介セクション */}
         <Paper
-          elevation={0}
           sx={{
-            p: { xs: 2, sm: 3, md: 4 },
+            p: { xs: 3, sm: 4 },
             mb: 3,
             borderRadius: 2,
             bgcolor: 'background.paper',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
           }}
         >
-          <Typography variant="h6" fontWeight="medium" sx={{ mb: 2 }}>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: { xs: '1.1rem', sm: '1.25rem' },
+              mb: 3,
+              borderBottom: '1px solid #f0f0f0',
+              pb: 1,
+            }}
+          >
             自己紹介
           </Typography>
-
           <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ mb: 2, lineHeight: 1.7 }}
+            sx={{
+              lineHeight: 1.8,
+              color: 'text.secondary',
+              whiteSpace: 'pre-line',
+            }}
           >
-            {profile.bio}
+            {profile.bio || '自己紹介はまだ設定されていません'}
           </Typography>
         </Paper>
 
-        <Divider sx={{ my: 2 }} />
+        {/* エラー表示 */}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
-        <CardActions sx={{ justifyContent: 'center', px: 2, pb: 2 }}>
-          {error && (
-            <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
-              {error}
-            </Alert>
-          )}
+        {/* アクションボタン */}
+        <CardActions
+          sx={{
+            justifyContent: 'center',
+            px: 2,
+            pb: 2,
+            mt: 2,
+          }}
+        >
           <LikeButton profileId={profile.id} />
         </CardActions>
+
         <UserReport />
-      </Box>
-      {/* プレビューダイアログ */}
+      </Container>
+
+      {/* 画像プレビューダイアログ */}
       <Dialog
         open={!!previewImage}
         onClose={() => setPreviewImage(null)}

@@ -44,6 +44,11 @@ export const MoreVert = ({ profile }: MoreVertProps) => {
         MenuListProps={{
           'aria-labelledby': `menu-button-${profile.id}`,
         }}
+        slotProps={{
+          paper: {
+            style: { borderRadius: 8 },
+          },
+        }}
       >
         <MenuItem
           key="block"

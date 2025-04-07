@@ -131,7 +131,7 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
   return (
     <>
       <Head>
-        <title>ユーザー検索 | トレーニングパートナー</title>
+        <title>ユーザー検索</title>
       </Head>
 
       <AppBar
@@ -173,7 +173,7 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
               <FilterListIcon />
             </Badge>
           </IconButton>
-          <Typography>ユーザーを条件検索</Typography>
+          <Typography>ユーザーを絞る</Typography>
         </Box>
 
         {/* 適用中のフィルター表示 */}

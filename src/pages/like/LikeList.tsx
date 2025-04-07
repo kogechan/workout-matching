@@ -1,6 +1,13 @@
 // LikesTabView.tsx
 import { useState, useEffect } from 'react';
-import { Tabs, Tab, Typography, Avatar, CircularProgress } from '@mui/material';
+import {
+  Tabs,
+  Tab,
+  Typography,
+  Avatar,
+  CircularProgress,
+  Box,
+} from '@mui/material';
 import styles from '@/styles/likes.module.css';
 import supabase from '@/lib/supabase';
 import { useRouter } from 'next/router';
@@ -67,9 +74,16 @@ const LikeList = () => {
 
   if (loading) {
     return (
-      <div className={styles.container}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '50vh',
+        }}
+      >
         <CircularProgress />
-      </div>
+      </Box>
     );
   }
 
@@ -81,8 +95,8 @@ const LikeList = () => {
         variant="fullWidth"
         className={styles.tabs}
       >
-        <Tab label="自分にいいねしたユーザー" />
-        <Tab label="自分がいいねしたユーザー" />
+        <Tab label="相手からのいいね" />
+        <Tab label="自分からのいいね" />
       </Tabs>
 
       <div className={styles.tabPanel} hidden={tabValue !== 0}>

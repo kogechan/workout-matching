@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentUserAtom, isLoadingAtom, postAtom } from '@/jotai/Jotai';
+import { currentUserAtom, postAtom } from '@/jotai/Jotai';
 import {
   Card,
   CardContent,
@@ -16,6 +16,8 @@ import {
   Divider,
   Snackbar,
   Alert,
+  Paper,
+  Chip,
 } from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
 import CheckIcon from '@mui/icons-material/Check';
@@ -47,6 +49,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 const StyledCard = styled(Card)(({}) => ({
   marginBottom: '16px',
   position: 'relative',
+  borderRadus: '16px',
 }));
 
 const MAX_CHARS = 280;
@@ -54,7 +57,7 @@ const MAX_CHARS = 280;
 export const PostList = ({ initialPosts = [] }) => {
   const [posts, setPosts] = useAtom(postAtom);
   const [currentUserId] = useAtom(currentUserAtom);
-  const [isLoading] = useAtom(isLoadingAtom);
+  const [loading, setLoading] = useState(true);
   const [content, setContent] = useState('');
   const { profile } = useAvatar();
   const { deleteAlert, DeleteAlert, postAlert, PostAlert } = useAlert();
@@ -66,6 +69,7 @@ export const PostList = ({ initialPosts = [] }) => {
     if (initialPosts.length > 0) {
       setPosts(initialPosts);
     }
+    setLoading(false);
   }, [setPosts, initialPosts]);
 
   // 投稿を削除する関数
@@ -88,6 +92,14 @@ export const PostList = ({ initialPosts = [] }) => {
     PostAlert();
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <>
       <Container maxWidth="md">
@@ -99,7 +111,11 @@ export const PostList = ({ initialPosts = [] }) => {
               horizontal: 'center',
             }}
           >
-            <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+            <Alert
+              icon={<CheckIcon fontSize="inherit" />}
+              severity="success"
+              sx={{ borderRadius: '8px', fontWeight: 'medium' }}
+            >
               投稿を削除しました
             </Alert>
           </Snackbar>
@@ -110,21 +126,26 @@ export const PostList = ({ initialPosts = [] }) => {
               horizontal: 'center',
             }}
           >
-            <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+            <Alert
+              icon={<CheckIcon fontSize="inherit" />}
+              severity="success"
+              sx={{ borderRadius: '8px', fontWeight: 'medium' }}
+            >
               投稿に成功しました
             </Alert>
           </Snackbar>
+
           <form onSubmit={handleSubmit}>
-            <Card sx={{ mb: 2 }}>
+            <Card sx={{ mb: 2, borderRadius: 4 }}>
               <CardContent className={styles.dialogContent}>
-                <Box className={styles.postContainer}>
+                <Box sx={{ display: 'flex', gap: 2 }}>
                   <Avatar
                     src={profile.avatar_url}
                     alt={profile.username}
                     sx={{ width: 48, height: 48, mt: 1 }}
                   />
 
-                  <Box className={styles.inputContainer}>
+                  <Box sx={{ flexGrow: 1 }}>
                     <TextField
                       minRows={4}
                       multiline
@@ -142,38 +163,20 @@ export const PostList = ({ initialPosts = [] }) => {
                       className={styles.textFieldWrapper}
                     />
 
-                    {/* 画像プレビュー領域 */}
-                    {/* {imageUrls.length > 0 && (
-              <Box className={styles.imagePreviewContainer}>
-                {imageUrls.map((url, index) => (
-                  <Box key={index} className={styles.imagePreview}>
-                    <img src={url} alt={`Preview ${index}`} />
-                    <IconButton
-                      size="small"
-                      onClick={() => handleRemoveImage(index)}
-                      className={styles.removeImageButton}
-                    >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                ))}
-              </Box>
-            )} */}
-
                     <Divider className={styles.divider} />
 
                     {/* アイコンツールバー */}
                     <Box className={styles.toolbar}>
-                      <Box className={styles.toolbarIcons}>
+                      <Box>
                         <input
                           type="file"
                           style={{ display: 'none' }}
                           accept="image/*"
                           multiple
                         />
-                        <IconButton className={styles.toolbarIcon} size="small">
+                        {/* <IconButton className={styles.toolbarIcon} size="small">
                           <ImageIcon className={styles.icon} />
-                        </IconButton>
+                        </IconButton> */}
                       </Box>
                       <Box className={styles.postControls}>
                         {/* 文字数カウンター（残り文字数が少なくなると円形プログレス表示） */}
@@ -221,69 +224,98 @@ export const PostList = ({ initialPosts = [] }) => {
             </Card>
           </form>
 
-          <Box sx={{ mb: 2 }}>
-            {posts.map((post) => (
-              <StyledCard key={post.id}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', gap: 2 }}>
-                    {/* 自分のアイコンをクリックしてもプロフィールが表示されないようにする三項演算子 */}
-                    <Avatar
-                      src={
-                        post.user_id === currentUserId
-                          ? profile.avatar_url ||
-                            '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
-                          : post.profiles?.avatar_url ||
-                            '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
-                      }
-                      sx={{ width: 48, height: 48, cursor: 'pointer' }}
-                      onClick={() => {
-                        if (post.user_id !== currentUserId) {
-                          router.push(
-                            `/profile/${
-                              post.profiles?.username || post.user_id
-                            }`
-                          );
+          {posts.length === 0 && !loading ? (
+            <Paper sx={{ p: 4, textAlign: 'center', borderRadius: '12px' }}>
+              <Typography variant="h6" color="text.secondary">
+                投稿がありません
+              </Typography>
+            </Paper>
+          ) : (
+            <Box sx={{ mb: 2 }}>
+              {posts.map((post) => (
+                <Card
+                  sx={{ mb: 2, position: 'relative', borderRadius: 4 }}
+                  key={post.id}
+                >
+                  <CardContent>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                      {/* 自分のアイコンをクリックしてもプロフィールが表示されないようにする三項演算子 */}
+                      <Avatar
+                        src={
+                          post.user_id === currentUserId
+                            ? profile.avatar_url ||
+                              '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+                            : post.profiles?.avatar_url ||
+                              '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
                         }
-                      }}
-                    ></Avatar>
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          mb: 1,
+                        sx={{ width: 48, height: 48, cursor: 'pointer' }}
+                        onClick={() => {
+                          if (post.user_id !== currentUserId) {
+                            router.push(
+                              `/profile/${
+                                post.profiles?.username || post.user_id
+                              }`
+                            );
+                          }
                         }}
-                      >
-                        <Typography variant="subtitle1" fontWeight="bold">
-                          {post.profiles?.username}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {dayjs(post.created_at).format('YYYY/MM/DD')}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {dayjs(post.created_at).fromNow()}
-                        </Typography>
-                      </Box>
+                      ></Avatar>
+                      <Box sx={{ flexGrow: 1 }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            mb: 1,
+                          }}
+                        >
+                          <Typography variant="subtitle1" fontWeight="bold">
+                            {post.profiles?.username}
+                          </Typography>
+                          <Chip
+                            label={dayjs(post.created_at).format('YYYY/MM/DD')}
+                            size="small"
+                            sx={{
+                              height: '20px',
+                              fontSize: '0.7rem',
+                              backgroundColor: (theme) =>
+                                theme.palette.grey[100],
+                            }}
+                          />
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontStyle: 'italic' }}
+                          >
+                            {dayjs(post.created_at).fromNow()}
+                          </Typography>
+                        </Box>
 
-                      <Typography variant="body1" sx={{ mb: 2 }}>
-                        {post.content}
-                      </Typography>
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          top: 8,
-                          right: 8,
-                        }}
-                      >
-                        <MoreHoriz post={post} onDeletePost={handleDelete} />
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            mb: 2,
+                            lineHeight: 1.6,
+                            whiteSpace: 'pre-wrap',
+                          }}
+                        >
+                          {post.content}
+                        </Typography>
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                          }}
+                        >
+                          <MoreHoriz post={post} onDeletePost={handleDelete} />
+                        </Box>
                       </Box>
                     </Box>
-                  </Box>
-                </CardContent>
-              </StyledCard>
-            ))}
-          </Box>
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
+          )}
         </Box>
       </Container>
     </>

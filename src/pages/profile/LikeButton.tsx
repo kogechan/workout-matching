@@ -96,7 +96,7 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
           width: { md: 1200, xs: 400, sm: 700 },
         }}
         onClick={handleLike}
-        disabled={isLoading || !currentUserId}
+        disabled={isLoading || !currentUserId || isLiked}
         aria-label={isLiked ? 'いいね解除' : 'いいね'}
       >
         {isLiked ? 'いいね済み' : 'いいね'}

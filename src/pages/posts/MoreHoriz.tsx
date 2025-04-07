@@ -56,6 +56,11 @@ export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
         MenuListProps={{
           'aria-labelledby': `menu-button-${post.id}`,
         }}
+        slotProps={{
+          paper: {
+            style: { borderRadius: 8 },
+          },
+        }}
       >
         {post.user_id === currentUserId ? (
           <MenuItem

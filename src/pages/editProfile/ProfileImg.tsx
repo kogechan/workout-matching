@@ -15,7 +15,6 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import { useAvatar } from '@/hooks/useAvatar';
 import { useAtom } from 'jotai';
 import { currentUserAtom, subImgeAtom } from '@/jotai/Jotai';
@@ -71,10 +70,10 @@ export const ProfileImg = () => {
     const file = event.target.files[0];
 
     // ファイルサイズチェック (5MB以下)
-    if (file.size > 5 * 1024 * 1024) {
+    /*  if (file.size > 5 * 1024 * 1024) {
       alert('ファイルサイズは5MB以下にしてください');
       return;
-    }
+    } */
 
     // 画像ファイル形式チェック
     if (!file.type.match('image/(jpeg|jpg|png|webp)')) {
@@ -129,12 +128,6 @@ export const ProfileImg = () => {
       const newImages: ProfileImageType[] = [];
 
       for (const file of files) {
-        // ファイルサイズチェック
-        /*  if (file.size > 4 * 1024 * 1024) {
-          alert('ファイルサイズは5MB以下にしてください');
-          continue;
-        } */
-
         // 画像ファイル形式チェック
         if (!file.type.match('image/(jpeg|jpg|png|webp)')) {
           alert('JPEG、PNG、WEBPファイルのみアップロードできます');
@@ -160,7 +153,6 @@ export const ProfileImg = () => {
         });
       }
 
-      // 既存の画像と新しい画像を結合
       const updatedSubImages = [...subImages, ...newImages];
       setSubImages(updatedSubImages);
 
@@ -181,49 +173,6 @@ export const ProfileImg = () => {
       setIsLoading(false);
       // 入力フィールドをリセット
       event.target.value = '';
-    }
-  };
-
-  // サブ画像をメイン画像に設定
-  const setAsMainImage = async (imageUrl: string) => {
-    setIsLoading(true);
-
-    try {
-      // 現在のメイン画像をサブ画像に移動（メイン画像が存在する場合）
-      const updatedSubImages = [...subImages];
-
-      if (profile.avatar_url) {
-        updatedSubImages.push({
-          id: `prev-main-${Date.now()}`,
-          url: profile.avatar_url,
-        });
-      }
-
-      // 選択した画像をサブ画像から削除
-      const filteredSubImages = updatedSubImages.filter(
-        (img) => img.url !== imageUrl
-      );
-      setSubImages(filteredSubImages);
-
-      // プロフィールのアバターを更新
-      setProfile({ ...profile, avatar_url: imageUrl });
-
-      // データベースを更新
-      const { error } = await supabase.from('profiles').upsert(
-        {
-          id: currentUserId,
-          avatar_url: imageUrl,
-          sub_images: filteredSubImages.map((img) => img.url),
-        },
-        { onConflict: 'id' }
-      );
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('メイン画像設定エラー:', error);
-      alert('メイン画像の設定に失敗しました');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -267,16 +216,6 @@ export const ProfileImg = () => {
   const handlePreview = (url: string) => {
     setPreviewImage(url);
   };
-
-  // メニューを開く
-  /*  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMenuAnchorEl(event.currentTarget);
-  }; */
-
-  // メニューを閉じる
-  /*  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-  }; */
 
   return (
     <>
@@ -367,48 +306,39 @@ export const ProfileImg = () => {
               </label>
             )}
           </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
             {/* 既存のサブ画像 */}
             {subImages.map((image) => (
               <Grid2 size={{ xs: 6, sm: 4, md: 4 }} key={image.id}>
-                <label htmlFor="sub-image-upload">
+                {/* <label htmlFor="sub-image-upload">
                   <input
                     type="file"
                     id="sub-image-upload"
                     style={{ display: 'none' }}
                     accept="image/png, image/jpeg, image/webp"
-                    onChange={handleSubImageUpload}
+                    onChange={handleSubImageUpload} 
                     multiple
                     disabled={isLoading}
-                  />
-                  <IconButton component="span">
-                    <Avatar
-                      sx={{
-                        width: { xs: 80, sm: 110, md: 130 },
-                        height: { xs: 80, sm: 110, md: 130 },
-                        objectFit: 'cover',
-                      }}
-                      src={image.url || ''}
-                      alt="サブ画像"
-                    >
-                      <CameraAltIcon />
-                    </Avatar>
-                  </IconButton>
-                </label>
-                {/* サイズ変更するかも */}
+                  /> */}
+
+                <Avatar
+                  sx={{
+                    width: { xs: 80, sm: 110, md: 130 },
+                    height: { xs: 80, sm: 110, md: 130 },
+                    objectFit: 'cover',
+                    cursor: 'pointer',
+                  }}
+                  src={image.url || ''}
+                  alt="サブ画像"
+                  onClick={() => handlePreview(image.url || '')}
+                >
+                  <CameraAltIcon />
+                </Avatar>
+                {/*  </label> */}
                 <Box>
                   <CardActions
                     sx={{ display: 'flex', justifyContent: 'center' }}
                   >
-                    <IconButton
-                      onClick={() => setAsMainImage(image.url)}
-                      disabled={isLoading}
-                    >
-                      <ChangeCircleIcon />
-                    </IconButton>
-                    {/* <IconButton onClick={() => handlePreview(image.url)}>
-                      <VisibilityIcon />
-                    </IconButton> */}
                     <IconButton
                       onClick={() => deleteSubImage(image.url)}
                       disabled={isLoading}
@@ -417,47 +347,6 @@ export const ProfileImg = () => {
                     </IconButton>
                   </CardActions>
                 </Box>
-
-                {/*  <Menu
-                  id={`menu-${image.id}`}
-                  anchorEl={menuAnchorEl}
-                  open={Boolean(menuAnchorEl)}
-                  onClose={handleMenuClose}
-                  MenuListProps={{
-                    'aria-labelledby': `menu-button-${image.id}`,
-                  }}
-                >
-                  <MenuItem onClick={() => handleSubImageUpload}>
-                    <label htmlFor="sub-image-upload">
-                      <input
-                        type="file"
-                        id="sub-image-upload"
-                        style={{ display: 'none' }}
-                        accept="image/png, image/jpeg, image/webp"
-                        onChange={handleSubImageUpload}
-                        disabled={isLoading}
-                      />
-                    </label>
-                    写真を変更
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => setAsMainImage(image.url)}
-                    disabled={isLoading}
-                  >
-                    メインに設定
-                  </MenuItem>
-
-                  <MenuItem onClick={() => handlePreview(image.url)}>
-                    プレビュー
-                  </MenuItem>
-
-                  <MenuItem
-                    onClick={() => deleteSubImage(image.url)}
-                    disabled={isLoading}
-                  >
-                    削除
-                  </MenuItem>
-                </Menu> */}
               </Grid2>
             ))}
           </Box>

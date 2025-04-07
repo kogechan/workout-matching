@@ -72,7 +72,11 @@ export const PostForm = () => {
         onClose={() => setPostModalOpen(false)}
         fullWidth
         maxWidth="sm"
-        className={styles.dialog}
+        slotProps={{
+          paper: {
+            style: { borderRadius: 16 },
+          },
+        }}
       >
         <DialogTitle className={styles.dialogTitle}>
           <IconButton
@@ -113,24 +117,6 @@ export const PostForm = () => {
                   className={styles.textFieldWrapper}
                 />
 
-                {/* 画像プレビュー領域 */}
-                {/* {imageUrls.length > 0 && (
-              <Box className={styles.imagePreviewContainer}>
-                {imageUrls.map((url, index) => (
-                  <Box key={index} className={styles.imagePreview}>
-                    <img src={url} alt={`Preview ${index}`} />
-                    <IconButton
-                      size="small"
-                      onClick={() => handleRemoveImage(index)}
-                      className={styles.removeImageButton}
-                    >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                ))}
-              </Box>
-            )} */}
-
                 <Divider className={styles.divider} />
 
                 {/* アイコンツールバー */}
@@ -142,9 +128,9 @@ export const PostForm = () => {
                       accept="image/*"
                       multiple
                     />
-                    <IconButton className={styles.toolbarIcon} size="small">
+                    {/* <IconButton className={styles.toolbarIcon} size="small">
                       <ImageIcon className={styles.icon} />
-                    </IconButton>
+                    </IconButton> */}
                   </Box>
 
                   <Box className={styles.postControls}>
