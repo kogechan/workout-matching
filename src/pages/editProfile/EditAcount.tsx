@@ -18,6 +18,7 @@ import {
   InputLabel,
   Snackbar,
 } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
 import { useAvatar } from '@/hooks/useAvatar';
 import { useState } from 'react';
 
@@ -83,7 +84,11 @@ export const CreateAcount = () => {
           horizontal: 'center',
         }}
       >
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert
+          severity="success"
+          icon={<CheckIcon fontSize="inherit" />}
+          sx={{ mb: 2 }}
+        >
           プロフィールを更新しました！
         </Alert>
       </Snackbar>
@@ -167,7 +172,7 @@ export const CreateAcount = () => {
                     error={errors.age}
                     helperText={
                       errors.age
-                        ? '13歳から100歳までの有効な年齢を入力してください'
+                        ? '18歳から100歳までの有効な年齢を入力してください'
                         : ''
                     }
                     slotProps={{ htmlInput: { min: 13, max: 100 } }}
@@ -278,7 +283,7 @@ export const CreateAcount = () => {
                         })
                       }
                     >
-                      {['胸', '背中', '肩', '腕', '脚', '腹筋', '全身'].map(
+                      {['胸', '背中', '肩', '腕', '脚', '腹筋', '特になし'].map(
                         (muscle) => (
                           <MenuItem key={muscle} value={muscle}>
                             {muscle}

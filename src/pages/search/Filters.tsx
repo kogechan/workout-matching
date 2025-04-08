@@ -89,7 +89,7 @@ const Filters = ({ onFiltersChange }: SearchFiltersProps) => {
             <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
               <FilterAltIcon sx={{ mr: 1 }} />
               <Typography variant="h6" component="div">
-                条件を絞り込む
+                条件検索
               </Typography>
               {appliedFiltersCount > 0 && (
                 <Chip
@@ -297,6 +297,10 @@ const Filters = ({ onFiltersChange }: SearchFiltersProps) => {
                 {
                   value: 'その他フィットネスジム',
                   label: 'その他フィットネスジム',
+                },
+                {
+                  value: '所属していない',
+                  label: '所属していない',
                 },
               ]}
             />

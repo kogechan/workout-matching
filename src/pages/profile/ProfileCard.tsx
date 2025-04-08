@@ -20,7 +20,7 @@ import WcIcon from '@mui/icons-material/Wc';
 import HomeIcon from '@mui/icons-material/Home';
 import { useAtom } from 'jotai';
 import { currentUserAtom, subImgeAtom } from '@/jotai/Jotai';
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import supabase from '@/lib/supabase';
 import { ProfileImageType } from '@/type/user';
 
@@ -48,7 +48,7 @@ export const ProfileCard = () => {
   const [subImages, setSubImages] = useAtom(subImgeAtom);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
-  useCallback(() => {
+  useEffect(() => {
     const fetchSubImages = async () => {
       if (!currentUserId) return;
 

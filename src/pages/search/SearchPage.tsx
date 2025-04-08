@@ -15,7 +15,6 @@ import {
   Zoom,
   useTheme,
   useScrollTrigger,
-  useMediaQuery,
   Grid2,
   CardMedia,
 } from '@mui/material';
@@ -28,13 +27,11 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Head from 'next/head';
 import { useCallback, useState } from 'react';
-import styles from '@/styles/search.module.css';
 import { SearchFilters } from '@/type/search';
 import { useRouter } from 'next/router';
 import Filters from './Filters';
 import { useAtom } from 'jotai';
 import { currentUserAtom, filterAtom, filterModalAtom } from '@/jotai/Jotai';
-import Image from 'next/image';
 
 interface SearchPageProps {
   initialProfiles: ProfileData[];
@@ -48,7 +45,6 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
   const [currentFilters, setCurrentFilters] = useAtom(filterAtom);
   const router = useRouter();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // スクロールトリガー
   const trigger = useScrollTrigger({
@@ -149,7 +145,7 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
             component="div"
             sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}
           >
-            合トレ仲間を見つけよう
+            合トレする仲間を見つけよう！
           </Typography>
         </Toolbar>
       </AppBar>
@@ -173,7 +169,7 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
               <FilterListIcon />
             </Badge>
           </IconButton>
-          <Typography>ユーザーを絞る</Typography>
+          <Typography>ユーザーを絞り込む</Typography>
         </Box>
 
         {/* 適用中のフィルター表示 */}
@@ -276,8 +272,8 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
             >
               <Typography variant="subtitle1" color="text.secondary">
                 {profiles.length > 0
-                  ? `${profiles.length}人のパートナーが見つかりました`
-                  : '該当するパートナーが見つかりませんでした'}
+                  ? `${profiles.length}人のトレーニーが見つかりました`
+                  : '該当するトレーニーが見つかりませんでした'}
               </Typography>
             </Box>
 
@@ -334,11 +330,19 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
                             fontSize: '2rem',
                           }}
                         >
-                          <Image
-                            alt="Default Profile"
-                            layout="fill"
-                            objectFit="cover"
+                          <CardMedia
+                            component="img"
+                            className="styles.profileImage"
                             src="/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg"
+                            alt={profile.username}
+                            sx={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                            }}
                           />
                         </Box>
                       )}

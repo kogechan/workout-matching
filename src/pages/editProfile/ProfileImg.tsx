@@ -20,7 +20,6 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import EditIcon from '@mui/icons-material/Edit';
 import { useAvatar } from '@/hooks/useAvatar';
 import { useAtom } from 'jotai';
 import { currentUserAtom, subImgeAtom } from '@/jotai/Jotai';
@@ -339,7 +338,7 @@ export const ProfileImg = () => {
                     right: 10,
                   }}
                 >
-                  <EditIcon />
+                  <AddAPhotoIcon />
                 </Fab>
               </label>
             </Zoom>

@@ -4,13 +4,11 @@ import { currentUserAtom, postAtom } from '@/jotai/Jotai';
 import {
   Card,
   CardContent,
-  IconButton,
   Typography,
   Avatar,
   Box,
   Button,
   CircularProgress,
-  styled,
   TextField,
   Container,
   Divider,
@@ -19,7 +17,6 @@ import {
   Paper,
   Chip,
 } from '@mui/material';
-import ImageIcon from '@mui/icons-material/Image';
 import CheckIcon from '@mui/icons-material/Check';
 import supabase from '@/lib/supabase';
 import { useAvatar } from '@/hooks/useAvatar';
@@ -35,8 +32,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const { data: posts, error } = await supabase
     .from('posts')
     .select('*')
-    .order('created_at', { ascending: false })
-    .limit(10);
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('データ取得エラー:', error);
@@ -45,12 +41,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return { props: { initialPosts: posts } };
 };
-
-const StyledCard = styled(Card)(({}) => ({
-  marginBottom: '16px',
-  position: 'relative',
-  borderRadus: '16px',
-}));
 
 const MAX_CHARS = 280;
 

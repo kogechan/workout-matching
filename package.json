@@ -27,6 +27,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.13",
+    "framer-motion": "^12.6.3",
     "jotai": "^2.11.1",
     "jotai-location": "^0.5.5",
     "jsonwebtoken": "^9.0.2",
