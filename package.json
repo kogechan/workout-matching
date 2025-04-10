@@ -26,6 +26,7 @@
     "argon2": "^0.41.1",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.6.3",
     "jotai": "^2.11.1",

@@ -50,7 +50,7 @@ export const MenuList = () => {
 
             <ListItem disablePadding>
               <ListItemButton component={Link} href="/search">
-                <ListItemText primary="探す" />
+                <ListItemText primary="合トレ仲間を探す" />
               </ListItemButton>
             </ListItem>
 
@@ -68,7 +68,7 @@ export const MenuList = () => {
 
             <ListItem disablePadding>
               <ListItemButton component={Link} href="/setting">
-                <ListItemText primary="設定" />
+                <ListItemText primary="各種設定" />
               </ListItemButton>
             </ListItem>
           </Box>

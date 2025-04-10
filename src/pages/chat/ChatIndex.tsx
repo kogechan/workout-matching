@@ -11,23 +11,39 @@ import {
   AppBar,
   Toolbar,
   CircularProgress,
+  Paper,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+  ListItemButton,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import supabase from '@/lib/supabase';
 import { useAtom } from 'jotai';
 import { currentUserAtom, isLoadingAtom } from '@/jotai/Jotai';
+import { formatDistanceToNow } from 'date-fns';
+import { ja } from 'date-fns/locale';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { MoreHoriz } from './MoreHoriz';
 
-interface ChatRoomWithUser {
+interface UserProfile {
+  id: string;
+  username: string;
+  avatar_url?: string;
+}
+
+interface ChatRoom {
   id: string;
   name: string;
   created_at: string;
   updated_at: string;
   last_message?: string;
-  otherUser: {
-    id: string;
-    username: string;
-    avatar_url?: string;
-  } | null;
+  user1_id: string;
+  user2_id: string;
+}
+
+interface ChatRoomWithUser extends ChatRoom {
+  otherUser: UserProfile | null;
 }
 
 const ChatRoomsList = () => {
@@ -35,35 +51,32 @@ const ChatRoomsList = () => {
   const [rooms, setRooms] = useState<ChatRoomWithUser[]>([]);
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
   const [currentUserId] = useAtom(currentUserAtom);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // チャットルーム一覧を取得
   useEffect(() => {
     const fetchRooms = async () => {
+      if (!currentUserId) return;
+
       try {
-        /*  // 現在のユーザーを取得
-        const { data: userData, error: userError } =
-          await supabase.auth.getUser();
-        if (userError) throw userError;
-
-        if (!userData?.user) {
-          return;
-        } */
-
-        const userId = currentUserId;
+        setIsLoading(true);
 
         // ユーザーが参加しているチャットルームを取得
         const { data: roomsData, error: roomsError } = await supabase
           .from('chat_rooms')
           .select('*')
-          .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+          .or(`user1_id.eq.${currentUserId},user2_id.eq.${currentUserId}`)
           .order('updated_at', { ascending: false });
 
         if (roomsError) throw roomsError;
+        if (!roomsData) return;
 
         // 各ルームの相手ユーザー情報を取得
         const roomsWithUsers = await Promise.all(
-          (roomsData || []).map(async (room) => {
+          roomsData.map(async (room) => {
             const otherUserId =
-              room.user1_id === userId ? room.user2_id : room.user1_id;
+              room.user1_id === currentUserId ? room.user2_id : room.user1_id;
 
             const { data: userData, error: userError } = await supabase
               .from('profiles')
@@ -87,10 +100,21 @@ const ChatRoomsList = () => {
     };
 
     fetchRooms();
-  }, [router, setIsLoading, currentUserId]);
+  }, [currentUserId, setIsLoading]);
 
   const handleRoomClick = (roomId: string) => {
     router.push(`/chat/${roomId}`);
+  };
+
+  const formatUpdatedTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return formatDistanceToNow(date, { addSuffix: true, locale: ja });
+  };
+
+  // メッセージの一部を表示（長すぎる場合は切り詰める）
+  const truncateMessage = (message?: string) => {
+    if (!message) return 'メッセージはまだありません';
+    return message.length > 30 ? `${message.substring(0, 30)}...` : message;
   };
 
   if (isLoading) {
@@ -100,18 +124,53 @@ const ChatRoomsList = () => {
         justifyContent="center"
         alignItems="center"
         minHeight="100vh"
+        sx={{ backgroundColor: theme.palette.background.default }}
       >
-        <CircularProgress />
+        <CircularProgress size={60} thickness={4} />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <AppBar position="static">
+    <Paper
+      elevation={0}
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: 0,
+        backgroundColor: theme.palette.background.default,
+      }}
+    >
+      <AppBar
+        position="static"
+        color="default"
+        elevation={1}
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          borderBottom: `1px solid ${theme.palette.divider}`,
+        }}
+      >
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            チャット一覧
+          {isMobile && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => router.back()}
+              sx={{ mr: 1 }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          )}
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              flexGrow: 1,
+              fontWeight: 600,
+            }}
+          >
+            メッセージ一覧
           </Typography>
         </Toolbar>
       </AppBar>
@@ -129,68 +188,101 @@ const ChatRoomsList = () => {
             display="flex"
             justifyContent="center"
             alignItems="center"
-            minHeight="50vh"
+            flexDirection="column"
+            minHeight="70vh"
+            gap={2}
           >
-            <Typography color="textSecondary">
+            <Typography color="textSecondary" variant="body1">
               チャットルームはまだありません
             </Typography>
           </Box>
         ) : (
           rooms.map((room, index) => (
             <React.Fragment key={room.id}>
-              <ListItem
-                onClick={() => handleRoomClick(room.id)}
-                alignItems="flex-start"
-                sx={{ py: 2 }}
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    src={room.otherUser?.avatar_url}
-                    alt={room.otherUser?.username || ''}
-                  >
-                    {room.otherUser?.username?.charAt(0).toUpperCase() || '?'}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography variant="subtitle1">
-                      {room.otherUser?.username || '不明なユーザー'}
-                    </Typography>
-                  }
-                  secondary={
-                    <React.Fragment>
+              <ListItem alignItems="flex-start" disablePadding>
+                <ListItemButton
+                  onClick={() => handleRoomClick(room.id)}
+                  alignItems="flex-start"
+                  sx={{
+                    py: 2,
+                    px: 2,
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s',
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover,
+                    },
+                  }}
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      src={
+                        room.otherUser?.avatar_url ||
+                        '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+                      }
+                      alt={room.otherUser?.username || ''}
+                      sx={{
+                        width: isMobile ? 70 : 80,
+                        height: isMobile ? 70 : 80,
+                        mr: 2,
+                      }}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
                       <Typography
-                        sx={{ display: 'inline' }}
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 600,
+                          mb: 0.5,
+                        }}
                       >
-                        {room.last_message || 'メッセージはまだありません'}
+                        {room.otherUser?.username || '不明なユーザー'}
                       </Typography>
-                      <Typography
-                        component="span"
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ display: 'block', mt: 0.5 }}
-                      >
-                        {new Date(room.updated_at).toLocaleDateString()}{' '}
-                        {new Date(room.updated_at).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </Typography>
-                    </React.Fragment>
-                  }
-                />
+                    }
+                    secondary={
+                      <>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            display: 'block',
+                            mb: 0.5,
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {truncateMessage(room.last_message)}
+                        </Typography>
+                        <Typography
+                          component="span"
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ display: 'block' }}
+                        >
+                          {formatUpdatedTime(room.updated_at)}
+                        </Typography>
+                      </>
+                    }
+                  />
+                </ListItemButton>
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                  }}
+                >
+                  <MoreHoriz roomId={room.id} />
+                </Box>
               </ListItem>
               {index < rooms.length - 1 && (
-                <Divider variant="inset" component="li" />
+                <Divider sx={{ ml: isMobile ? 9 : 10 }} />
               )}
             </React.Fragment>
           ))
         )}
       </List>
-    </Box>
+    </Paper>
   );
 };
 

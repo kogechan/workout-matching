@@ -36,15 +36,6 @@ const ChatRoomPage: NextPage = () => {
   useEffect(() => {
     if (!router.isReady || !roomId) return;
 
-    /*  const fetchCurrentUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error('現在のユーザー取得エラー:', error);
-        return null;
-      }
-      return data?.user?.id || null;
-    }; */
-
     const fetchRoom = async () => {
       try {
         // 現在のユーザーIDを取得
@@ -172,7 +163,7 @@ const ChatRoomPage: NextPage = () => {
               <Avatar
                 src={otherUser.avatar_url}
                 alt={otherUser.username}
-                sx={{ mr: 1, width: 32, height: 32 }}
+                sx={{ mr: 1, width: 50, height: 50 }}
               >
                 {otherUser.username?.charAt(0).toUpperCase()}
               </Avatar>

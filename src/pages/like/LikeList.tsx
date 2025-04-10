@@ -79,7 +79,7 @@ const LikeList = () => {
     }
   };
 
-  const MotionGridItem = motion(Grid2);
+  const MotionGridItem = motion.create(Grid2);
 
   // タブパネルの内容を表示するコンポーネント
   const UserList = ({ users }: { users: User[] }) => {

@@ -3,9 +3,9 @@ import ChatRoomsList from './ChatIndex';
 
 const Home: NextPage = () => {
   return (
-    <div>
+    <>
       <ChatRoomsList />
-    </div>
+    </>
   );
 };
 

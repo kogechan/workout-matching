@@ -18,7 +18,7 @@ const BubbleContainer = styled(Box)(({ theme }) => ({
 const MessageBubble = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'isCurrentUser',
 })<{ isCurrentUser: boolean }>(({ theme, isCurrentUser }) => ({
-  maxWidth: '70%',
+  maxWidth: '100%',
   padding: theme.spacing(1.5),
   borderRadius: theme.spacing(2),
   backgroundColor: isCurrentUser
@@ -41,19 +41,25 @@ export const ChatBubble = ({ message, isCurrentUser }: ChatBubbleProps) => {
     >
       {!isCurrentUser && otherUser && (
         <Avatar
-          src={otherUser.avatar_url}
+          src={
+            otherUser.avatar_url ||
+            '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+          }
           alt={otherUser.username || ''}
-          sx={{ mr: 1 }}
+          sx={{
+            mr: 1,
+            width: { xs: 60, md: 100 },
+            height: { xs: 60, md: 100 },
+            cursor: 'pointer',
+          }}
           onClick={() =>
             router.push(`/profile/${otherUser?.username || otherUser?.id}`)
           }
-        >
-          {otherUser.username?.charAt(0).toUpperCase()}
-        </Avatar>
+        ></Avatar>
       )}
       <Box>
         {!isCurrentUser && otherUser && (
-          <Typography variant="caption" color="textSecondary">
+          <Typography variant="inherit" color="textSecondary">
             {otherUser.username}
           </Typography>
         )}
