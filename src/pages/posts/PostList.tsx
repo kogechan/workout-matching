@@ -234,9 +234,9 @@ export const PostList = ({ initialPosts = [] }) => {
                         src={
                           post.user_id === currentUserId
                             ? profile.avatar_url ||
-                              '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+                              '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
                             : post.profiles?.avatar_url ||
-                              '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+                              '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
                         }
                         sx={{ width: 48, height: 48, cursor: 'pointer' }}
                         onClick={() => {

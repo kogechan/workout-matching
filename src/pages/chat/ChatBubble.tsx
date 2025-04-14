@@ -18,7 +18,7 @@ const BubbleContainer = styled(Box)(({ theme }) => ({
 const MessageBubble = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'isCurrentUser',
 })<{ isCurrentUser: boolean }>(({ theme, isCurrentUser }) => ({
-  maxWidth: '100%',
+  maxWidth: '80%',
   padding: theme.spacing(1.5),
   borderRadius: theme.spacing(2),
   backgroundColor: isCurrentUser
@@ -43,7 +43,7 @@ export const ChatBubble = ({ message, isCurrentUser }: ChatBubbleProps) => {
         <Avatar
           src={
             otherUser.avatar_url ||
-            '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+            '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
           }
           alt={otherUser.username || ''}
           sx={{

@@ -328,7 +328,7 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
         <Avatar
           src={
             profile?.avatar_url ||
-            '/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+            '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
           }
           alt={profile?.username}
           sx={{

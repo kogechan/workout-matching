@@ -174,7 +174,7 @@ const LikeList = () => {
                       <CardMedia
                         component="img"
                         className="styles.profileImage"
-                        src="/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399_801/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg"
+                        src="/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg"
                         alt={user.username}
                         sx={{
                           width: '100%',
