@@ -34,6 +34,7 @@ import { ProfileData } from '@/type/chat';
 import { createServerSupabaseClient } from '@/lib/server';
 import { MoreVert } from './MoreVert';
 import { UserReport } from '@/components/UserReport';
+import Head from 'next/head';
 
 // インターフェース
 interface SubImage {
@@ -270,6 +271,10 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
         pb: 6,
       }}
     >
+      <Head>
+        <title>プロフィール情報</title>
+        <meta name="description" content="プロフィール情報" />
+      </Head>
       {/* ヘッダーセクション */}
       <Box
         sx={{

@@ -22,6 +22,7 @@ import {
 } from '@/jotai/Jotai';
 import { MessageList } from './MessageList';
 import { NextPage } from 'next';
+import Head from 'next/head';
 
 const ChatRoomPage: NextPage = () => {
   const router = useRouter();
@@ -146,6 +147,10 @@ const ChatRoomPage: NextPage = () => {
 
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Head>
+        <title>メッセージルーム</title>
+        <meta name="description" content="メッセージルーム" />
+      </Head>
       <AppBar position="static">
         <Toolbar>
           <IconButton

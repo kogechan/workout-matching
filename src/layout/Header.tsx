@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/router';
+import { Avatar } from '@mui/material';
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
@@ -22,32 +23,48 @@ export const Header = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar
+        position="fixed"
+        sx={{
+          backgroundColor: 'transparent',
+          backdropFilter: 'blur(10px)',
+          boxShadow: 'none',
+        }}
+      >
         <Toolbar>
           {user && (
             <IconButton
               size="large"
               edge="start"
-              color="inherit"
               aria-label="menu"
               sx={{ mr: 2, cursor: 'pointer' }}
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              <MenuIcon />
+              <MenuIcon sx={{ color: '#ffffff' }} />
             </IconButton>
           )}
 
-          <Typography
-            variant="h6"
-            component="div"
-            align="center"
-            sx={{ flexGrow: 1, cursor: 'pointer' }}
-            onClick={() => {
-              router.push('/');
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              mx: 'auto',
+              cursor: 'pointer',
+              gap: 1,
             }}
+            onClick={() => router.push('/')}
           >
-            KINTA
-          </Typography>
+            <Avatar
+              sx={{
+                width: 40,
+                height: 40,
+              }}
+              src="/ServiceIcon/B3023787-242E-40F0-983C-2596861E7695.webp"
+            />
+            <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
+              KINTA
+            </Typography>
+          </Box>
 
           {/* ログイン状態に応じてボタンを切り替える */}
           {loading ? null : user ? (
@@ -67,6 +84,7 @@ export const Header = () => {
           )}
         </Toolbar>
       </AppBar>
+      <Toolbar />
       <MenuList />
       <Login />
       <LogoutAlert />

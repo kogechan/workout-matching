@@ -14,6 +14,7 @@ import {
 import { NextPage } from 'next';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 const steps = ['プロフィール情報', '基本情報', 'アカウント情報'];
 
@@ -35,6 +36,10 @@ const Home: NextPage = () => {
   };
   return (
     <>
+      <Head>
+        <title>プロフィール編集</title>
+        <meta name="description" content="プロフィール編集" />
+      </Head>
       <Container maxWidth="sm">
         <Box sx={{ my: 4 }}>
           <Typography

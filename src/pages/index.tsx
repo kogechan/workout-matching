@@ -11,16 +11,22 @@ import Image from 'next/image';
 import { Person } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import PsychologyIcon from '@mui/icons-material/Psychology';
+import Head from 'next/head';
+import { NextPage } from 'next';
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <>
+      <Head>
+        <title>KINTA | 合トレ仲間を探すなら</title>
+        <meta name="description" content="筋トレ仲間を見つけよう！" />
+      </Head>
       <Container sx={{ width: { md: 1200, sm: 700, xs: 420 } }} disableGutters>
         <Paper
           elevation={0}
           sx={{
             position: 'relative',
-            mb: 6,
+            mb: 10,
             borderRadius: 2,
             overflow: 'hidden',
           }}
@@ -89,13 +95,24 @@ const Home = () => {
       <Container maxWidth="lg">
         {/* サービス紹介セクション */}
         <Typography
-          variant="h4"
+          variant="h3"
           component="h2"
           align="center"
           fontWeight="bold"
+          sx={{ mb: 10 }}
+        >
+          叶える、筋トレ仲間作り
+        </Typography>
+
+        <Typography
+          align="center"
+          variant="h4"
+          fontWeight="bold"
+          color="primary"
+          gutterBottom
           sx={{ mb: 6 }}
         >
-          KINTAで叶える、筋トレ仲間作り
+          KINTAについて
         </Typography>
 
         {/* 特徴説明１ */}
@@ -223,7 +240,9 @@ const Home = () => {
                 <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
                   <PeopleIcon />
                 </Avatar>
-                <Typography variant="h6" fontWeight="bold"></Typography>
+                <Typography variant="h6" fontWeight="bold">
+                  新しい出会い
+                </Typography>
               </Box>
               <Typography variant="body1">
                 筋トレや合トレのコミュニティなどは至る所に存在しています。KINTAを利用すればより多くのトレーニーや仲間と繋がることができ、新しい出会いや新たなコミュニティを築くことも可能です。

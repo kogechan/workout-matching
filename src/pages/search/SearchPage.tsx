@@ -25,7 +25,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import Head from 'next/head';
 import { useCallback, useState } from 'react';
 import { SearchFilters } from '@/type/search';
 import { useRouter } from 'next/router';
@@ -126,10 +125,6 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
 
   return (
     <>
-      <Head>
-        <title>ユーザー検索</title>
-      </Head>
-
       <AppBar
         position="static"
         color="default"
