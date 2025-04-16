@@ -283,7 +283,6 @@ export const ProfileImg = () => {
             p: 4,
             mb: 4,
             borderRadius: 2,
-            bgcolor: '#f8f9fa',
             textAlign: 'center',
           }}
         >
@@ -362,7 +361,6 @@ export const ProfileImg = () => {
           sx={{
             p: 4,
             borderRadius: 2,
-            bgcolor: '#f8f9fa',
           }}
         >
           <Box

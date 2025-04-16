@@ -267,8 +267,6 @@ export const PostList = ({ initialPosts = [] }) => {
                             sx={{
                               height: '20px',
                               fontSize: '0.7rem',
-                              backgroundColor: (theme) =>
-                                theme.palette.grey[100],
                             }}
                           />
                           <Typography

@@ -18,7 +18,7 @@ export const Header = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
   const [logoutModalOpen, setLogoutModalOpen] = useAtom(logoutModalAtom);
-  const { user, loading } = useUser(); // ログイン状態を取得
+  const { user, loading } = useUser();
   const router = useRouter();
 
   return (

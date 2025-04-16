@@ -1,4 +1,4 @@
-import { Box, Typography, Avatar } from '@mui/material';
+import { Box, Typography, Avatar, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Message } from '@/type/chat';
 import { useAtom } from 'jotai';
@@ -18,15 +18,15 @@ const BubbleContainer = styled(Box)(({ theme }) => ({
 const MessageBubble = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'isCurrentUser',
 })<{ isCurrentUser: boolean }>(({ theme, isCurrentUser }) => ({
-  maxWidth: '80%',
-  padding: theme.spacing(1.5),
+  maxWidth: '90%',
+  padding: theme.spacing(1.5, 2),
   borderRadius: theme.spacing(2),
   backgroundColor: isCurrentUser
     ? theme.palette.primary.main
     : theme.palette.grey[200],
   color: isCurrentUser
     ? theme.palette.primary.contrastText
-    : theme.palette.text.primary,
+    : theme.palette.primary.contrastText,
   marginLeft: isCurrentUser ? 'auto' : 0,
   marginRight: isCurrentUser ? 0 : 'auto',
 }));
@@ -40,22 +40,32 @@ export const ChatBubble = ({ message, isCurrentUser }: ChatBubbleProps) => {
       sx={{ flexDirection: isCurrentUser ? 'row-reverse' : 'row' }}
     >
       {!isCurrentUser && otherUser && (
-        <Avatar
-          src={
-            otherUser.avatar_url ||
-            '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
-          }
-          alt={otherUser.username || ''}
-          sx={{
-            mr: 1,
-            width: { xs: 60, md: 100 },
-            height: { xs: 60, md: 100 },
-            cursor: 'pointer',
-          }}
-          onClick={() =>
-            router.push(`/profile/${otherUser?.username || otherUser?.id}`)
-          }
-        ></Avatar>
+        <Tooltip
+          title={`${otherUser.username}のプロフィールを表示`}
+          arrow
+          placement="left"
+        >
+          <Avatar
+            src={
+              otherUser.avatar_url ||
+              '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+            }
+            alt={otherUser.username || ''}
+            sx={{
+              mr: 1,
+              width: { xs: 60, md: 100 },
+              height: { xs: 60, md: 100 },
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease-in-out',
+              '&:hover': {
+                transform: 'scale(1.1)',
+              },
+            }}
+            onClick={() =>
+              router.push(`/profile/${otherUser?.username || otherUser?.id}`)
+            }
+          />
+        </Tooltip>
       )}
       <Box>
         {!isCurrentUser && otherUser && (

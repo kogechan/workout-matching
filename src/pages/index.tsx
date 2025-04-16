@@ -378,7 +378,7 @@ const Home: NextPage = () => {
             さあ、始めよう
           </Typography>
           <Typography variant="h6" sx={{ maxWidth: '700px', mx: 'auto' }}>
-            理想の合トレがあなたの成長、幸せに導きます。
+            理想の合トレがあなたの成長へと導きます。
           </Typography>
           <Typography
             variant="h6"

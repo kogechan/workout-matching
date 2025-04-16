@@ -69,7 +69,7 @@ const Home: NextPage = () => {
                   <Typography variant="h5" gutterBottom>
                     内容を確認してください
                   </Typography>
-                  <Typography variant="body1" paragraph>
+                  <Typography variant="body1" component="p">
                     すべての情報が正しければ「完了」をクリックしてください。
                   </Typography>
                 </Box>

@@ -164,7 +164,7 @@ export const MenuList = () => {
                 },
               }}
             >
-              <ListItemButton component={Link} href="/setting">
+              <ListItemButton component={Link} href="/contactForm">
                 <ListItemIcon>
                   <ContactSupportIcon sx={{ color: '#ffffff' }} />
                 </ListItemIcon>

@@ -98,6 +98,13 @@ export const UserReport = () => {
         onClose={() => setReportModalOpen(false)}
         maxWidth="sm"
         fullWidth
+        slotProps={{
+          paper: {
+            style: {
+              borderRadius: 16,
+            },
+          },
+        }}
       >
         <form onSubmit={handleSubmit}>
           <DialogTitle>ユーザーを報告</DialogTitle>

@@ -96,10 +96,7 @@ export const CreateAcount = () => {
       <Box sx={{ maxWidth: 800, margin: '0 auto' }}>
         <Grid2 container spacing={4}>
           <Grid2 size={{ xs: 12 }}>
-            <Paper
-              elevation={0}
-              sx={{ p: 3, borderRadius: 2, bgcolor: '#f8f9fa' }}
-            >
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 2 }}>
               <Typography
                 variant="h6"
                 gutterBottom
@@ -253,10 +250,7 @@ export const CreateAcount = () => {
           </Grid2>
 
           <Grid2 size={{ xs: 12 }}>
-            <Paper
-              elevation={0}
-              sx={{ p: 3, borderRadius: 2, bgcolor: '#f8f9fa' }}
-            >
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 2 }}>
               <Typography
                 variant="h6"
                 gutterBottom
@@ -384,10 +378,7 @@ export const CreateAcount = () => {
           </Grid2>
 
           <Grid2 size={{ xs: 12 }}>
-            <Paper
-              elevation={0}
-              sx={{ p: 3, borderRadius: 2, bgcolor: '#f8f9fa' }}
-            >
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 2 }}>
               <Typography
                 variant="h6"
                 gutterBottom
