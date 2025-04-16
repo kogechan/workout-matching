@@ -8,7 +8,7 @@ import { currentUserAtom } from '@/jotai/Jotai';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 
-const darkTheme = createTheme({
+export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     background: {

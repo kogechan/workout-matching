@@ -77,7 +77,10 @@ export const Header = () => {
           ) : (
             <Button
               color="inherit"
-              onClick={() => setLoginModalOpen(!loginModalOpen)}
+              onClick={() => {
+                setLoginModalOpen(!loginModalOpen);
+                router.push('/');
+              }}
             >
               ログイン
             </Button>

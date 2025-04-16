@@ -95,11 +95,10 @@ const Home: NextPage = () => {
       <Container maxWidth="lg">
         {/* サービス紹介セクション */}
         <Typography
-          variant="h3"
           component="h2"
           align="center"
           fontWeight="bold"
-          sx={{ mb: 10 }}
+          sx={{ mb: 10, typography: { md: 'h3', xs: 'h4' } }}
         >
           叶える、筋トレ仲間作り
         </Typography>
