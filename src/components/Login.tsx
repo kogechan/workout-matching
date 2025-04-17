@@ -1,46 +1,78 @@
+import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { loginModalAtom, emailAtom, passwordAtom } from '@/jotai/Jotai';
+import supabase from '@/lib/supabase';
+import Link from 'next/link';
 import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
   Dialog,
-  DialogContent,
   DialogTitle,
-  IconButton,
+  DialogContent,
+  Box,
   TextField,
-  ThemeProvider,
+  Button,
   Typography,
+  Alert,
+  CircularProgress,
+  IconButton,
+  ThemeProvider,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import LoginIcon from '@mui/icons-material/Login';
-import supabase from '@/lib/supabase';
-import Link from 'next/link';
-import { useState } from 'react';
 import { darkTheme } from '@/pages/_app';
+import { z } from 'zod';
+
+// メールアドレスとパスワードのバリデーションスキーマ
+const loginSchema = z.object({
+  email: z
+    .string()
+    .email('有効なメールアドレスを入力してください')
+    .min(1, 'メールアドレスは必須です'),
+  password: z.string().min(1, 'パスワードは必須です'),
+});
 
 export const Login = () => {
   const [email, setEmail] = useAtom(emailAtom);
   const [password, setPassword] = useAtom(passwordAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [generalError, setGeneralError] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // 入力変更時のバリデーション
+  useEffect(() => {
+    if (email || password) {
+      try {
+        loginSchema.parse({ email, password });
+        setErrors({});
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const newErrors: Record<string, string> = {};
+          error.errors.forEach((err) => {
+            const path = err.path[0] as string;
+            newErrors[path] = err.message;
+          });
+          setErrors(newErrors);
+        }
+      }
+    }
+  }, [email, password]);
 
   const handleClose = () => {
     setLoginModalOpen(false);
-    setError('');
+    setGeneralError('');
+    setErrors({});
   };
 
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!email || !password) return;
-
-    setIsLoading(true);
-    setError('');
-
     try {
+      // フォーム送信時の最終バリデーション
+      loginSchema.parse({ email, password });
+
+      setIsLoading(true);
+      setGeneralError('');
+
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
@@ -49,9 +81,22 @@ export const Login = () => {
       if (signInError) {
         throw signInError;
       }
+
       handleClose();
-    } catch {
-      setError('エラーが発生しました');
+    } catch (error) {
+      console.log(error);
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          const path = err.path[0] as string;
+          newErrors[path] = err.message;
+        });
+        setErrors(newErrors);
+      } else {
+        setGeneralError(
+          'ログインに失敗しました。メールアドレスとパスワードを確認してください。'
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -88,9 +133,9 @@ export const Login = () => {
         </DialogTitle>
 
         <DialogContent>
-          {error && (
+          {generalError && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+              {generalError}
             </Alert>
           )}
 
@@ -106,6 +151,8 @@ export const Login = () => {
               autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              error={!!errors.email}
+              helperText={errors.email}
             />
             <TextField
               margin="normal"
@@ -118,6 +165,8 @@ export const Login = () => {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              error={!!errors.password}
+              helperText={errors.password}
             />
             <Button
               type="submit"
@@ -125,7 +174,7 @@ export const Login = () => {
               variant="contained"
               startIcon={<LoginIcon />}
               sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
+              disabled={isLoading || Object.keys(errors).length > 0}
             >
               {isLoading ? <CircularProgress size={24} /> : 'ログイン'}
             </Button>

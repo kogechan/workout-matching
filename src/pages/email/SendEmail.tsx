@@ -1,34 +1,60 @@
+import { useState, useEffect } from 'react';
 import supabase from '@/lib/supabase';
 import { useAtom } from 'jotai';
 import { emailAtom } from '@/jotai/Jotai';
-import { useState } from 'react';
 import {
-  Alert,
   Box,
+  TextField,
   Button,
-  CircularProgress,
+  Typography,
   Container,
   Paper,
-  TextField,
-  Typography,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
+import { z } from 'zod';
+
+// メールアドレスのバリデーションスキーマ
+const emailSchema = z.object({
+  email: z
+    .string()
+    .email('有効なメールアドレスを入力してください')
+    .min(1, 'メールアドレスは必須です'),
+});
 
 export const SendEmail = () => {
   const [email, setEmail] = useAtom(emailAtom);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [emailError, setEmailError] = useState('');
+
+  // メールアドレス入力のバリデーション
+  useEffect(() => {
+    if (email) {
+      try {
+        emailSchema.parse({ email });
+        setEmailError('');
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          setEmailError(error.errors[0].message);
+        }
+      }
+    }
+  }, [email]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email) return;
-
-    setIsLoading(true);
-    setError('');
-    setSuccess(false);
 
     try {
+      // フォーム送信時の最終バリデーション
+      emailSchema.parse({ email });
+
+      setIsLoading(true);
+      setError('');
+      setSuccess(false);
+
       const { error: sendEmailError } =
         await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: 'http://localhost:3000/passwordReset/',
@@ -39,7 +65,11 @@ export const SendEmail = () => {
       setSuccess(true);
     } catch (error) {
       console.log(error);
-      setError('エラーが発生しました');
+      if (error instanceof z.ZodError) {
+        setEmailError(error.errors[0].message);
+      } else {
+        setError('メール送信中にエラーが発生しました');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +77,13 @@ export const SendEmail = () => {
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          mt: 4,
+        }}
+      >
         <Typography variant="h5" component="h1" gutterBottom>
           パスワードリセット
         </Typography>
@@ -79,6 +115,8 @@ export const SendEmail = () => {
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            error={!!emailError}
+            helperText={emailError}
             type="email"
           />
           <Button
@@ -87,7 +125,7 @@ export const SendEmail = () => {
             variant="contained"
             startIcon={<EmailIcon />}
             sx={{ mt: 3, mb: 2 }}
-            disabled={isLoading || !email}
+            disabled={isLoading || !!emailError || !email}
           >
             {isLoading ? <CircularProgress size={24} /> : 'メールを送信'}
           </Button>

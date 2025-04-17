@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import { emailAtom, passwordAtom } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   Box,
@@ -18,6 +18,19 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
+import { z } from 'zod';
+
+const signUpSchema = z.object({
+  email: z
+    .string()
+    .email('有効なメールアドレスを入力してください')
+    .min(1, 'メールアドレスは必須です'),
+  password: z
+    .string()
+    .min(8, 'パスワードは8文字以上で入力してください')
+    .regex(/[a-z]/, '小文字を含める必要があります')
+    .regex(/[0-9]/, '数字を含める必要があります'),
+});
 
 export const SignUp = () => {
   const [email, setEmail] = useAtom(emailAtom);
@@ -29,6 +42,25 @@ export const SignUp = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>(
     'success'
   );
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (email || password) {
+      try {
+        signUpSchema.parse({ email, password });
+        setErrors({});
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const newErrors: Record<string, string> = {};
+          error.errors.forEach((err) => {
+            const path = err.path[0] as string;
+            newErrors[path] = err.message;
+          });
+          setErrors(newErrors);
+        }
+      }
+    }
+  }, [email, password]);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -45,11 +77,13 @@ export const SignUp = () => {
     setIsLoading(true);
 
     try {
+      signUpSchema.parse({ email, password });
+
       const { error: signUpError } = await supabase.auth.signUp({
         email: email,
         password: password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`, // 認証後のリダイレクト先
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
         },
       });
       if (signUpError) {
@@ -62,9 +96,18 @@ export const SignUp = () => {
       setOpenSnackbar(true);
     } catch (error) {
       console.log(error);
-      setSnackbarMessage('エラーが発生しました。再度お試しください。');
-      setSnackbarSeverity('error');
-      setOpenSnackbar(true);
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          const path = err.path[0] as string;
+          newErrors[path] = err.message;
+        });
+        setErrors(newErrors);
+      } else {
+        setSnackbarMessage('エラーが発生しました。再度お試しください。');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -101,6 +144,8 @@ export const SignUp = () => {
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            error={!!errors.email}
+            helperText={errors.email}
             slotProps={{
               input: {
                 startAdornment: (
@@ -122,6 +167,8 @@ export const SignUp = () => {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password}
             slotProps={{
               input: {
                 startAdornment: (
@@ -153,7 +200,7 @@ export const SignUp = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2, py: 1.5 }}
-            disabled={isLoading || !email || !password}
+            disabled={isLoading || Object.keys(errors).length > 0}
           >
             {isLoading ? '処理中...' : '新規登録'}
           </Button>
