@@ -52,7 +52,10 @@ export const Setting = () => {
         <Paper elevation={3} sx={{ mt: 4, p: 3 }}>
           <List>
             {/* サービスについて */}
-            <ListItem onClick={() => router.push('/')}>
+            <ListItem
+              sx={{ cursor: 'pointer' }}
+              onClick={() => router.push('/')}
+            >
               <ListItemIcon>
                 <InfoIcon />
               </ListItemIcon>
@@ -62,7 +65,10 @@ export const Setting = () => {
             <Divider />
 
             {/* 利用規約 */}
-            <ListItem>
+            <ListItem
+              sx={{ cursor: 'pointer' }}
+              onClick={() => router.push('/terms')}
+            >
               <ListItemIcon>
                 <GavelIcon />
               </ListItemIcon>
@@ -72,7 +78,10 @@ export const Setting = () => {
             <Divider />
 
             {/* プライバシーポリシー */}
-            <ListItem>
+            <ListItem
+              sx={{ cursor: 'pointer' }}
+              onClick={() => router.push('/privacy')}
+            >
               <ListItemIcon>
                 <PrivacyTipIcon />
               </ListItemIcon>
@@ -82,7 +91,7 @@ export const Setting = () => {
             <Divider />
 
             {/* 通知設定 */}
-            <ListItem>
+            <ListItem sx={{ cursor: 'pointer' }}>
               <ListItemIcon>
                 <NotificationsIcon />
               </ListItemIcon>
@@ -100,7 +109,10 @@ export const Setting = () => {
             <Divider />
 
             {/* ログアウト */}
-            <ListItem onClick={() => setLogoutModalOpen(true)}>
+            <ListItem
+              sx={{ cursor: 'pointer' }}
+              onClick={() => setLogoutModalOpen(true)}
+            >
               <ListItemIcon>
                 <LogoutIcon />
               </ListItemIcon>
@@ -110,7 +122,10 @@ export const Setting = () => {
             <Divider />
 
             {/* 退会 */}
-            <ListItem onClick={() => setDeleteAccountDialogOpen(true)}>
+            <ListItem
+              sx={{ cursor: 'pointer' }}
+              onClick={() => setDeleteAccountDialogOpen(true)}
+            >
               <ListItemIcon>
                 <DeleteIcon />
               </ListItemIcon>

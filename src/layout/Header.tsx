@@ -1,4 +1,4 @@
-import { menuAtom, loginModalAtom, logoutModalAtom } from '@/jotai/Jotai';
+import { menuAtom, loginModalAtom } from '@/jotai/Jotai';
 import { useAtom } from 'jotai';
 import { MenuList } from '@/components/MenuList';
 import { Login } from '@/components/Login';
@@ -17,8 +17,7 @@ import { Avatar } from '@mui/material';
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
-  const [logoutModalOpen, setLogoutModalOpen] = useAtom(logoutModalAtom);
-  const { user, loading } = useUser();
+  const { user } = useUser();
   const router = useRouter();
 
   return (
@@ -67,14 +66,7 @@ export const Header = () => {
           </Box>
 
           {/* ログイン状態に応じてボタンを切り替える */}
-          {loading ? null : user ? (
-            <Button
-              color="inherit"
-              onClick={() => setLogoutModalOpen(!logoutModalOpen)}
-            >
-              ログアウト
-            </Button>
-          ) : (
+          {!user && (
             <Button
               color="inherit"
               onClick={() => {

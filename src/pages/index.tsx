@@ -13,6 +13,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import Head from 'next/head';
 import { NextPage } from 'next';
+import Link from 'next/link';
 
 const Home: NextPage = () => {
   return (
@@ -360,6 +361,7 @@ const Home: NextPage = () => {
         <Paper
           sx={{
             p: { xs: 4, md: 8 },
+            position: 'relative',
             textAlign: 'center',
             borderRadius: 2,
             background: 'linear-gradient(135deg, #4568dc 0%, #b06ab3 100%)',
@@ -402,6 +404,23 @@ const Home: NextPage = () => {
           >
             無料で登録する
           </Button>
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 8,
+              right: 8,
+            }}
+          >
+            <Typography
+              sx={{ typography: { md: 'body2', xs: 'caption' } }}
+              color="text.secondary"
+              align="center"
+            >
+              <Link href="/terms">利用規約</Link> |{' '}
+              <Link href="/privacy">プライバシーポリシー</Link> |{' '}
+              <Link href="/contactForm">お問い合わせ</Link>
+            </Typography>{' '}
+          </Box>
         </Paper>
       </Container>
     </>
