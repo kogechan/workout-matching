@@ -4,6 +4,9 @@ export const useAlert = () => {
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [postAlert, setPostAlert] = useState(false);
   const [reportAlert, setReportAlert] = useState(false);
+  const [blockAlert, setBlockAlert] = useState(false);
+  const [messageDeleteAlert, setMessageDeleteAlert] = useState(false);
+  const [accountDeleteAlert, setAccountDeleteAlert] = useState(false);
 
   // 投稿の削除アラート
   const DeleteAlert = () => {
@@ -29,9 +32,30 @@ export const useAlert = () => {
     }, 3000);
   };
 
-  // プロフィール写真変更完了のアラート
+  // ブロックのアラート
+  const BlockAlert = () => {
+    setBlockAlert(true);
+    setTimeout(() => {
+      setBlockAlert(false);
+    }, 3000);
+  };
 
-  // プロフィール写真の削除アラート
+  // メッセージルームの削除アラート
+  const MessageDeleteAlert = () => {
+    setMessageDeleteAlert(true);
+    setTimeout(() => {
+      setMessageDeleteAlert(false);
+    }, 3000);
+  };
+
+  // 大会のアラート
+  const AccountDeleteAlert = () => {
+    setAccountDeleteAlert(true);
+    setTimeout(() => {
+      setAccountDeleteAlert(false);
+    }, 3000);
+  };
+
   return {
     deleteAlert,
     DeleteAlert,
@@ -39,5 +63,11 @@ export const useAlert = () => {
     PostAlert,
     reportAlert,
     ReportAlert,
+    blockAlert,
+    BlockAlert,
+    messageDeleteAlert,
+    MessageDeleteAlert,
+    accountDeleteAlert,
+    AccountDeleteAlert,
   };
 };

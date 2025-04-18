@@ -264,297 +264,301 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
   }
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        minHeight: '100vh',
-        pb: 6,
-      }}
-    >
+    <>
       <Head>
         <title>プロフィール情報</title>
         <meta name="description" content="プロフィール情報" />
       </Head>
-      {/* ヘッダーセクション */}
       <Box
         sx={{
           width: '100%',
-          height: { xs: 120, sm: 150, md: 180 },
-          position: 'relative',
-          mb: 2,
+          minHeight: '100vh',
+          pb: 6,
         }}
       >
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="back"
-          sx={{
-            position: 'absolute',
-            top: 16,
-            left: 16,
-            zIndex: 2,
-          }}
-          onClick={() => router.back()}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-
         <Box
           sx={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            zIndex: 2,
+            width: '100%',
+            height: { xs: 120, sm: 150, md: 180 },
+            position: 'relative',
+            mb: 2,
           }}
         >
-          <MoreVert profile={profile} />
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="back"
+            sx={{
+              position: 'absolute',
+              top: 16,
+              left: 16,
+              zIndex: 2,
+            }}
+            onClick={() => router.back()}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+            }}
+          >
+            <MoreVert profile={profile} />
+          </Box>
+
+          <IconButton
+            sx={{
+              position: 'absolute',
+              top: 64,
+              right: 16,
+              zIndex: 2,
+            }}
+            onClick={handleChatButtonClick}
+            disabled={isCreatingRoom}
+          >
+            {isCreatingRoom ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              <ChatBubbleIcon />
+            )}
+          </IconButton>
         </Box>
 
-        <IconButton
-          sx={{
-            position: 'absolute',
-            top: 64,
-            right: 16,
-            zIndex: 2,
-          }}
-          onClick={handleChatButtonClick}
-          disabled={isCreatingRoom}
-        >
-          {isCreatingRoom ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            <ChatBubbleIcon />
+        <Container maxWidth="lg">
+          {/* プロフィール画像 */}
+          <Avatar
+            src={
+              profile?.avatar_url ||
+              '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+            }
+            alt={profile?.username}
+            sx={{
+              width: { xs: 200, sm: 180, md: 250 },
+              height: { xs: 200, sm: 180, md: 250 },
+              border: '4px solid white',
+              boxShadow: 3,
+              backgroundColor: 'white',
+              zIndex: 1,
+              cursor: 'pointer',
+              position: 'relative',
+              top: { xs: -50, sm: -60, md: -70 },
+              mx: 'auto',
+            }}
+            onClick={() => handlePreview(profile?.avatar_url || '')}
+          />
+
+          {/* サブ写真 */}
+          {Array.isArray(subImages) && subImages.length > 0 && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: 2,
+                mb: 10,
+                flexWrap: 'wrap',
+              }}
+            >
+              {subImages.map((image, index) => (
+                <Avatar
+                  key={`${image.id || index}`}
+                  src={image.url}
+                  sx={{
+                    width: { xs: 60, sm: 70, md: 80 },
+                    height: { xs: 60, sm: 70, md: 80 },
+                    border: '3px solid white',
+                    boxShadow: 2,
+                    backgroundColor: 'white',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handlePreview(image.url)}
+                />
+              ))}
+            </Box>
           )}
-        </IconButton>
-      </Box>
 
-      <Container maxWidth="lg">
-        {/* プロフィール画像 */}
-        <Avatar
-          src={
-            profile?.avatar_url ||
-            '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
-          }
-          alt={profile?.username}
-          sx={{
-            width: { xs: 200, sm: 180, md: 250 },
-            height: { xs: 200, sm: 180, md: 250 },
-            border: '4px solid white',
-            boxShadow: 3,
-            backgroundColor: 'white',
-            zIndex: 1,
-            cursor: 'pointer',
-            position: 'relative',
-            top: { xs: -50, sm: -60, md: -70 },
-            mx: 'auto',
-          }}
-          onClick={() => handlePreview(profile?.avatar_url || '')}
-        />
+          {/* ユーザー名と場所 */}
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 'bold',
+              textAlign: 'center',
+              mt: { xs: -4, sm: -5 },
+              mb: 2,
+            }}
+          >
+            {profile?.username}
+          </Typography>
 
-        {/* サブ写真 */}
-        {Array.isArray(subImages) && subImages.length > 0 && (
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              gap: 2,
-              mb: 10,
-              flexWrap: 'wrap',
-            }}
-          >
-            {subImages.map((image, index) => (
-              <Avatar
-                key={`${image.id || index}`}
-                src={image.url}
-                sx={{
-                  width: { xs: 60, sm: 70, md: 80 },
-                  height: { xs: 60, sm: 70, md: 80 },
-                  border: '3px solid white',
-                  boxShadow: 2,
-                  backgroundColor: 'white',
-                  cursor: 'pointer',
-                }}
-                onClick={() => handlePreview(image.url)}
-              />
-            ))}
-          </Box>
-        )}
-
-        {/* ユーザー名と場所 */}
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 'bold',
-            textAlign: 'center',
-            mt: { xs: -4, sm: -5 },
-            mb: 2,
-          }}
-        >
-          {profile?.username}
-        </Typography>
-
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            mb: 3,
-          }}
-        >
-          <LocationOnIcon fontSize="small" color="action" />
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            {profile?.location || '未設定'}
-          </Typography>
-        </Box>
-
-        {/* 基本情報セクション */}
-        <Paper
-          sx={{
-            p: { xs: 3, sm: 4 },
-            mb: 3,
-            borderRadius: 2,
-            bgcolor: 'background.paper',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-          }}
-        >
-          <Typography
-            sx={{
-              fontWeight: 600,
-              fontSize: { xs: '1.1rem', sm: '1.25rem' },
+              alignItems: 'center',
               mb: 3,
-              borderBottom: '1px solid #f0f0f0',
-              pb: 1,
             }}
           >
-            基本情報
-          </Typography>
-
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(3, 1fr)',
-              },
-              gap: 3,
-            }}
-          >
-            <InfoItem icon={<WcIcon />} label="性別" value={profile?.gender} />
-
-            <InfoItem
-              icon={<CalendarTodayIcon />}
-              label="年齢"
-              value={profile?.age}
-            />
-
-            <InfoItem
-              icon={<HomeIcon />}
-              label="居住地"
-              value={profile?.location}
-            />
-
-            <InfoItem
-              icon={<FitnessCenterIcon />}
-              label="得意部位"
-              value={profile?.favorite_muscle}
-            />
-
-            <InfoItem
-              icon={<FitnessCenterIcon />}
-              label="苦手部位"
-              value={profile?.difficult_muscle}
-            />
-
-            <InfoItem
-              icon={<FitnessCenterIcon />}
-              label="トレーニング歴"
-              value={profile?.training_experience}
-            />
-
-            <InfoItem
-              icon={<FitnessCenterIcon />}
-              label="所属ジム"
-              value={profile?.belong_gym}
-            />
+            <LocationOnIcon fontSize="small" color="action" />
+            <Typography variant="body1" sx={{ ml: 1 }}>
+              {profile?.location || '未設定'}
+            </Typography>
           </Box>
-        </Paper>
 
-        {/* 自己紹介セクション */}
-        <Paper
-          sx={{
-            p: { xs: 3, sm: 4 },
-            mb: 3,
-            borderRadius: 2,
-            bgcolor: 'background.paper',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-          }}
-        >
-          <Typography
+          {/* 基本情報セクション */}
+          <Paper
             sx={{
-              fontWeight: 600,
-              fontSize: { xs: '1.1rem', sm: '1.25rem' },
+              p: { xs: 3, sm: 4 },
               mb: 3,
-              borderBottom: '1px solid #f0f0f0',
-              pb: 1,
+              borderRadius: 2,
+              bgcolor: 'background.paper',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
             }}
           >
-            自己紹介
-          </Typography>
-          <Typography
-            sx={{
-              lineHeight: 1.8,
-              color: 'text.secondary',
-              whiteSpace: 'pre-line',
-            }}
-          >
-            {profile.bio || '自己紹介はまだ設定されていません'}
-          </Typography>
-        </Paper>
-
-        {/* エラー表示 */}
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        {/* アクションボタン */}
-        <CardActions
-          sx={{
-            justifyContent: 'center',
-            px: 2,
-            pb: 2,
-            mt: 2,
-          }}
-        >
-          <LikeButton profileId={profile.id} />
-        </CardActions>
-
-        <UserReport />
-      </Container>
-
-      {/* 画像プレビューダイアログ */}
-      <Dialog
-        open={!!previewImage}
-        onClose={() => setPreviewImage(null)}
-        maxWidth="md"
-      >
-        <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
-          {previewImage && (
-            <img
-              src={previewImage}
-              alt="画像プレビュー"
-              style={{
-                width: '100%',
-                maxHeight: '80vh',
-                objectFit: 'contain',
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                mb: 3,
+                borderBottom: '1px solid #f0f0f0',
+                pb: 1,
               }}
-            />
+            >
+              基本情報
+            </Typography>
+
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                },
+                gap: 3,
+              }}
+            >
+              <InfoItem
+                icon={<WcIcon />}
+                label="性別"
+                value={profile?.gender}
+              />
+
+              <InfoItem
+                icon={<CalendarTodayIcon />}
+                label="年齢"
+                value={profile?.age}
+              />
+
+              <InfoItem
+                icon={<HomeIcon />}
+                label="居住地"
+                value={profile?.location}
+              />
+
+              <InfoItem
+                icon={<FitnessCenterIcon />}
+                label="得意部位"
+                value={profile?.favorite_muscle}
+              />
+
+              <InfoItem
+                icon={<FitnessCenterIcon />}
+                label="苦手部位"
+                value={profile?.difficult_muscle}
+              />
+
+              <InfoItem
+                icon={<FitnessCenterIcon />}
+                label="トレーニング歴"
+                value={profile?.training_experience}
+              />
+
+              <InfoItem
+                icon={<FitnessCenterIcon />}
+                label="所属ジム"
+                value={profile?.belong_gym}
+              />
+            </Box>
+          </Paper>
+
+          {/* 自己紹介セクション */}
+          <Paper
+            sx={{
+              p: { xs: 3, sm: 4 },
+              mb: 3,
+              borderRadius: 2,
+              bgcolor: 'background.paper',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+            }}
+          >
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                mb: 3,
+                borderBottom: '1px solid #f0f0f0',
+                pb: 1,
+              }}
+            >
+              自己紹介
+            </Typography>
+            <Typography
+              sx={{
+                lineHeight: 1.8,
+                color: 'text.secondary',
+                whiteSpace: 'pre-line',
+              }}
+            >
+              {profile.bio || '自己紹介はまだ設定されていません'}
+            </Typography>
+          </Paper>
+
+          {/* エラー表示 */}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
           )}
-        </DialogContent>
-      </Dialog>
-    </Box>
+
+          {/* アクションボタン */}
+          <CardActions
+            sx={{
+              justifyContent: 'center',
+              px: 2,
+              pb: 2,
+              mt: 2,
+            }}
+          >
+            <LikeButton profileId={profile.id} />
+          </CardActions>
+
+          <UserReport />
+        </Container>
+
+        {/* 画像プレビューダイアログ */}
+        <Dialog
+          open={!!previewImage}
+          onClose={() => setPreviewImage(null)}
+          maxWidth="md"
+        >
+          <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="画像プレビュー"
+                style={{
+                  width: '100%',
+                  maxHeight: '80vh',
+                  objectFit: 'contain',
+                }}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+      </Box>
+    </>
   );
 };
 

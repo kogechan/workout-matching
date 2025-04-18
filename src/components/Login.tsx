@@ -15,9 +15,11 @@ import {
   CircularProgress,
   IconButton,
   ThemeProvider,
+  Snackbar,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import LoginIcon from '@mui/icons-material/Login';
+import CheckIcon from '@mui/icons-material/Check';
 import { darkTheme } from '@/pages/_app';
 import { z } from 'zod';
 
@@ -37,6 +39,7 @@ export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [generalError, setGeneralError] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   // 入力変更時のバリデーション
   useEffect(() => {
@@ -72,6 +75,8 @@ export const Login = () => {
 
       setIsLoading(true);
       setGeneralError('');
+      setLoginSuccess(true);
+      setTimeout(() => setLoginSuccess(false), 3000);
 
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: email,
@@ -104,6 +109,21 @@ export const Login = () => {
 
   return (
     <ThemeProvider theme={darkTheme}>
+      <Snackbar
+        open={loginSuccess}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert
+          severity="success"
+          icon={<CheckIcon fontSize="inherit" />}
+          sx={{ mb: 2 }}
+        >
+          ログインに成功しました
+        </Alert>
+      </Snackbar>
       <Dialog
         open={loginModalOpen}
         onClose={handleClose}

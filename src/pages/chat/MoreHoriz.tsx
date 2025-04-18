@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -8,10 +9,12 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Snackbar,
 } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
+import { useAlert } from '@/hooks/useAlert';
 
 interface ChatProps {
   roomId: string;
@@ -20,6 +23,7 @@ interface ChatProps {
 export const MoreHoriz = ({ roomId }: ChatProps) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [chatDeleteModalOpen, setChatDeleteModalOpen] = useState(false);
+  const { messageDeleteAlert, MessageDeleteAlert } = useAlert();
 
   // メニューを開く
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -32,6 +36,15 @@ export const MoreHoriz = ({ roomId }: ChatProps) => {
   };
   return (
     <>
+      <Snackbar
+        open={messageDeleteAlert}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert severity="error">この操作は現在行えません</Alert>
+      </Snackbar>
       {/*  チャットルーム削除ボタン */}
       <IconButton
         aria-label="more"
@@ -89,16 +102,17 @@ export const MoreHoriz = ({ roomId }: ChatProps) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
+          <Button onClick={() => setChatDeleteModalOpen(false)}>
+            キャンセル
+          </Button>
           <Button
+            color="error"
             onClick={() => {
-              alert('削除しました');
+              MessageDeleteAlert();
               setChatDeleteModalOpen(false);
             }}
           >
             削除
-          </Button>
-          <Button onClick={() => setChatDeleteModalOpen(false)}>
-            キャンセル
           </Button>
         </DialogActions>
       </Dialog>

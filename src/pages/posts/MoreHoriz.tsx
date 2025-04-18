@@ -5,12 +5,25 @@ import {
 } from '@/jotai/Jotai';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Menu,
+  MenuItem,
+  Snackbar,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import BlockIcon from '@mui/icons-material/Block';
 import ReportIcon from '@mui/icons-material/Report';
 import { Post } from '@/type/post';
+import { useAlert } from '@/hooks/useAlert';
 
 interface MoreHorizProps {
   post: Post;
@@ -22,6 +35,8 @@ export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
   const [currentUserId] = useAtom(currentUserAtom);
   const [reportModalOpen, setReportModalOpen] = useAtom(reportPostModalAtom);
   const [, setReportTarget] = useAtom(reportPostTargetAtom);
+  const [deletePostDialogOpen, setDeletePostDialogOpen] = useState(false);
+  const { blockAlert, BlockAlert } = useAlert();
 
   // メニューを開く
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -40,6 +55,16 @@ export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
 
   return (
     <>
+      <Snackbar
+        open={blockAlert}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert severity="error">この操作は現在行えません</Alert>
+      </Snackbar>
+
       <IconButton
         aria-label="more"
         onClick={handleMenuOpen}
@@ -65,7 +90,7 @@ export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
         {post.user_id === currentUserId ? (
           <MenuItem
             onClick={() => {
-              handleDelete();
+              setDeletePostDialogOpen(!deletePostDialogOpen);
             }}
           >
             <DeleteIcon sx={{ marginRight: 1 }} />
@@ -76,7 +101,7 @@ export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
             <MenuItem
               key="block"
               onClick={() => {
-                alert('ブロックしました');
+                BlockAlert();
                 handleMenuClose();
               }}
             >
@@ -97,6 +122,40 @@ export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
           ]
         )}
       </Menu>
+      <Dialog
+        open={deletePostDialogOpen}
+        onClose={() => setDeletePostDialogOpen(false)}
+        slotProps={{
+          paper: {
+            style: {
+              borderRadius: 16,
+            },
+          },
+        }}
+        aria-labelledby="delete-account-dialog-title"
+        aria-describedby="delete-account-dialog-description"
+      >
+        <DialogTitle id="delete-account-dialog-title">投稿の削除</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-account-dialog-description">
+            本当に削除しますか？この操作は元に戻すことができません。
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeletePostDialogOpen(false)}>
+            キャンセル
+          </Button>
+          <Button
+            color="error"
+            autoFocus
+            onClick={() => {
+              handleDelete();
+            }}
+          >
+            削除する
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

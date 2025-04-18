@@ -17,6 +17,8 @@ import {
   DialogContentText,
   DialogTitle,
   Paper,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import {
   Info as InfoIcon,
@@ -28,12 +30,14 @@ import {
 } from '@mui/icons-material';
 import { useAtom } from 'jotai';
 import { logoutModalAtom } from '@/jotai/Jotai';
+import { useAlert } from '@/hooks/useAlert';
 
 export const Setting = () => {
   const router = useRouter();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [, setLogoutModalOpen] = useAtom(logoutModalAtom);
   const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false);
+  const { accountDeleteAlert, AccountDeleteAlert } = useAlert();
 
   const handleNotificationChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -43,6 +47,16 @@ export const Setting = () => {
 
   return (
     <Container maxWidth="md">
+      <Snackbar
+        open={accountDeleteAlert}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert severity="error">この操作は現在行えません</Alert>
+      </Snackbar>
+
       <Box my={4}>
         <Typography variant="h4" component="h1" gutterBottom align="center">
           各種設定
@@ -138,6 +152,13 @@ export const Setting = () => {
       <Dialog
         open={deleteAccountDialogOpen}
         onClose={() => setDeleteAccountDialogOpen(false)}
+        slotProps={{
+          paper: {
+            style: {
+              borderRadius: 16,
+            },
+          },
+        }}
         aria-labelledby="delete-account-dialog-title"
         aria-describedby="delete-account-dialog-description"
       >
@@ -151,7 +172,14 @@ export const Setting = () => {
           <Button onClick={() => setDeleteAccountDialogOpen(false)}>
             キャンセル
           </Button>
-          <Button color="error" autoFocus>
+          <Button
+            color="error"
+            autoFocus
+            onClick={() => {
+              AccountDeleteAlert();
+              setDeleteAccountDialogOpen(false);
+            }}
+          >
             退会する
           </Button>
         </DialogActions>

@@ -8,10 +8,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Snackbar,
   ThemeProvider,
   Typography,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import CheckIcon from '@mui/icons-material/Check';
 import { useRouter } from 'next/router';
 import supabase from '@/lib/supabase';
 import { useState } from 'react';
@@ -21,6 +23,7 @@ export const LogoutAlert = () => {
   const [logoutModalOpen, setLogoutModalOpen] = useAtom(logoutModalAtom);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [logoutSuccess, setLogoutSuccess] = useState(false);
   const router = useRouter();
 
   const handleClose = () => {
@@ -38,6 +41,8 @@ export const LogoutAlert = () => {
         throw logoutError;
       }
       handleClose();
+      setLogoutSuccess(true);
+      setTimeout(() => setLogoutSuccess(false), 3000);
       router.push('/');
     } catch (error) {
       console.error(error);
@@ -48,6 +53,21 @@ export const LogoutAlert = () => {
   };
   return (
     <ThemeProvider theme={darkTheme}>
+      <Snackbar
+        open={logoutSuccess}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert
+          severity="success"
+          icon={<CheckIcon fontSize="inherit" />}
+          sx={{ mb: 2 }}
+        >
+          ログアウトしました
+        </Alert>
+      </Snackbar>
       <Dialog
         open={logoutModalOpen}
         onClose={handleClose}

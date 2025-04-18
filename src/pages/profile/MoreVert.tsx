@@ -1,11 +1,12 @@
 import { reportUserModalAtom, reportUserTargetAtom } from '@/jotai/Jotai';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { Alert, IconButton, Menu, MenuItem, Snackbar } from '@mui/material';
 import BlockIcon from '@mui/icons-material/Block';
 import ReportIcon from '@mui/icons-material/Report';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { ProfileData } from '@/type/chat';
+import { useAlert } from '@/hooks/useAlert';
 
 interface MoreVertProps {
   profile: ProfileData;
@@ -15,6 +16,7 @@ export const MoreVert = ({ profile }: MoreVertProps) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [reportModalOpen, setReportModalOpen] = useAtom(reportUserModalAtom);
   const [, setReportTarget] = useAtom(reportUserTargetAtom);
+  const { blockAlert, BlockAlert } = useAlert();
 
   // メニューを開く
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -28,6 +30,16 @@ export const MoreVert = ({ profile }: MoreVertProps) => {
 
   return (
     <>
+      <Snackbar
+        open={blockAlert}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert severity="error">この操作は現在行えません</Alert>
+      </Snackbar>
+
       <IconButton
         aria-label="more"
         onClick={handleMenuOpen}
@@ -53,7 +65,7 @@ export const MoreVert = ({ profile }: MoreVertProps) => {
         <MenuItem
           key="block"
           onClick={() => {
-            alert('ブロックしました');
+            BlockAlert();
             handleMenuClose();
           }}
         >

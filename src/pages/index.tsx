@@ -15,9 +15,12 @@ import Head from 'next/head';
 import { NextPage } from 'next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
+import { loginModalAtom } from '@/jotai/Jotai';
 
 const Home: NextPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -107,6 +110,7 @@ const Home: NextPage = () => {
                     },
                     transition: 'all 0.3s ease',
                   }}
+                  onClick={() => setLoginModalOpen(!loginModalOpen)}
                 >
                   今すぐ始める
                 </Button>
@@ -138,7 +142,7 @@ const Home: NextPage = () => {
               },
             }}
           >
-            叶える、筋トレ仲間作り
+            広がる、筋トレの絆
           </Typography>
 
           <Typography
@@ -299,7 +303,7 @@ const Home: NextPage = () => {
                   </Typography>
                 </Box>
                 <Typography variant="body1">
-                  KINTAのコンセプトはマッチングサービスですが、多くの方々に誰でも平等にマッチできるようなシステムを提供しています。つまり、合トレしたい気になるユーザーがいれば簡単にメッセージを送ることができます。
+                  KINTAのコンセプトはマッチングサービスですが、多くの方々に誰でも平等に合トレができるようなシステムを提供しています。つまり、合トレしたい気になるユーザーがいれば簡単にメッセージを送ることができます。
                 </Typography>
               </Paper>
             </Grid2>
@@ -353,7 +357,7 @@ const Home: NextPage = () => {
                   </Typography>
                 </Box>
                 <Typography variant="body1">
-                  筋トレや合トレのコミュニティなどは至る所に存在しています。KINTAを利用すればより多くのトレーニーや仲間と繋がることができ、新しい出会いや新たなコミュニティを築くことも可能です。
+                  筋トレや合トレのコミュニティなどは至る所に存在しています。KINTAを利用すればより多くのトレーニーや仲間と繋がることができ、新しい出会いや新たなコミュニティを築くことが可能です。
                 </Typography>
               </Paper>
             </Grid2>
@@ -571,6 +575,7 @@ const Home: NextPage = () => {
                 },
                 transition: 'all 0.3s ease',
               }}
+              onClick={() => setLoginModalOpen(!loginModalOpen)}
             >
               無料で登録する
             </Button>
