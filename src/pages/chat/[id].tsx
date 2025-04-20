@@ -50,7 +50,7 @@ const ChatRoomPage: NextPage = () => {
         const { data: roomData, error: roomError } = await supabase
           .from('chat_rooms')
           .select('*')
-          .eq('id', roomId)
+          .eq('id', Array.isArray(roomId) ? roomId[0] : roomId)
           .single();
 
         if (roomError) throw roomError;
@@ -64,7 +64,7 @@ const ChatRoomPage: NextPage = () => {
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', otherUserId)
+          .eq('id', otherUserId || '')
           .single();
 
         if (profileError) throw profileError;
@@ -82,7 +82,7 @@ const ChatRoomPage: NextPage = () => {
             )
           `
           )
-          .eq('room_id', roomId)
+          .eq('room_id', Array.isArray(roomId) ? roomId[0] : roomId)
           .order('created_at', { ascending: true });
 
         if (messagesError) throw messagesError;
@@ -166,7 +166,7 @@ const ChatRoomPage: NextPage = () => {
           {otherUser && (
             <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
               <Avatar
-                src={otherUser.avatar_url}
+                src={otherUser.avatar_url || ''}
                 alt={otherUser.username}
                 sx={{ mr: 1, width: 50, height: 50 }}
               >

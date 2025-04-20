@@ -27,7 +27,7 @@ import { useAlert } from '@/hooks/useAlert';
 
 interface MoreHorizProps {
   post: Post;
-  onDeletePost: (postId: number) => Promise<void>;
+  onDeletePost: (postId: string) => Promise<void>;
 }
 
 export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {

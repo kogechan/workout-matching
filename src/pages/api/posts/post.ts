@@ -10,7 +10,7 @@ export const getPost = async () => {
   const { data, error } = await supabase
     .from('posts')
     .select(
-      'id, content, created_at, user_id, profiles(username, avatar_url,gender,age,location,training_experience,bio,favorite_muscle,difficult_muscle,belong_gym)'
+      'id, content, created_at, user_id, profiles(id,username, avatar_url,gender,age,location,training_experience,bio,favorite_muscle,difficult_muscle,belong_gym)'
     )
     .order('created_at', { ascending: false });
 
@@ -39,7 +39,7 @@ export const addPost = async (content: string) => {
 };
 
 // 投稿の削除
-export const deletePost = async (postId: number) => {
+export const deletePost = async (postId: string) => {
   const { error } = await supabase.from('posts').delete().eq('id', postId);
 
   if (error) {

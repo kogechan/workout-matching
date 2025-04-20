@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-const steps = ['プロフィール情報', '基本情報', 'アカウント情報'];
+const steps = ['プロフィール写真', '基本情報', '完了'];
 
 const Home: NextPage = () => {
   const [activeStep, setActiveStep] = useState(0);

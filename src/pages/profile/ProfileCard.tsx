@@ -20,14 +20,19 @@ import WcIcon from '@mui/icons-material/Wc';
 import HomeIcon from '@mui/icons-material/Home';
 import { useAtom } from 'jotai';
 import { currentUserAtom, subImgeAtom } from '@/jotai/Jotai';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import supabase from '@/lib/supabase';
 import { ProfileImageType } from '@/type/user';
 
-// 情報アイテムコンポーネント
-const InfoItem = ({ icon, label, value }) => (
+type InfoItemProps = {
+  icon: ReactElement;
+  label: string;
+  value: string | number | null | undefined;
+};
+
+const InfoItem = ({ icon, label, value }: InfoItemProps) => (
   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-    {React.cloneElement(icon, {
+    {React.cloneElement(icon as React.ReactElement<{ sx?: object }>, {
       sx: { color: 'text.secondary', mr: 2, fontSize: 28 },
     })}
     <Box>
@@ -318,6 +323,14 @@ export const ProfileCard = () => {
         open={!!previewImage}
         onClose={() => setPreviewImage(null)}
         maxWidth="md"
+        slotProps={{
+          paper: {
+            style: {
+              borderRadius: 2,
+              overflow: 'hidden',
+            },
+          },
+        }}
       >
         <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
           {previewImage && (

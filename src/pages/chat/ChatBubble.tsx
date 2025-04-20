@@ -85,7 +85,7 @@ export const ChatBubble = ({ message, isCurrentUser }: ChatBubbleProps) => {
             mt: 0.5,
           }}
         >
-          {new Date(message.created_at).toLocaleTimeString([], {
+          {new Date(message.created_at || '').toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           })}

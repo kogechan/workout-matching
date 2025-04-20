@@ -118,7 +118,7 @@ export const ProfileImg = () => {
       const { error: updateError } = await supabase
         .from('profiles')
         .upsert(
-          { id: currentUserId, avatar_url: data.publicUrl },
+          { id: currentUserId || '', avatar_url: data.publicUrl },
           { onConflict: 'id' }
         );
 
@@ -191,7 +191,7 @@ export const ProfileImg = () => {
       // データベースにサブ画像の URL を保存
       const { error: updateError } = await supabase.from('profiles').upsert(
         {
-          id: currentUserId,
+          id: currentUserId || '',
           sub_images: updatedSubImages.map((img) => img.url),
         },
         { onConflict: 'id' }
@@ -224,7 +224,7 @@ export const ProfileImg = () => {
       // データベースを更新
       const { error } = await supabase.from('profiles').upsert(
         {
-          id: currentUserId,
+          id: currentUserId || '',
           sub_images: updatedSubImages.map((img) => img.url),
         },
         { onConflict: 'id' }

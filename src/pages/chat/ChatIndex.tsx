@@ -29,17 +29,17 @@ import { MoreHoriz } from './MoreHoriz';
 interface UserProfile {
   id: string;
   username: string;
-  avatar_url?: string;
+  avatar_url?: string | null;
 }
 
 interface ChatRoom {
   id: string;
   name: string;
-  created_at: string;
-  updated_at: string;
-  last_message?: string;
-  user1_id: string;
-  user2_id: string;
+  created_at: string | null;
+  updated_at: string | null;
+  last_message?: string | null;
+  user1_id: string | null;
+  user2_id: string | null;
 }
 
 interface ChatRoomWithUser extends ChatRoom {
@@ -81,7 +81,7 @@ const ChatRoomsList = () => {
             const { data: userData, error: userError } = await supabase
               .from('profiles')
               .select('*')
-              .eq('id', otherUserId)
+              .eq('id', otherUserId || '')
               .single();
 
             return {
@@ -251,7 +251,7 @@ const ChatRoomsList = () => {
                             lineHeight: 1.4,
                           }}
                         >
-                          {truncateMessage(room.last_message)}
+                          {truncateMessage(room.last_message || '')}
                         </Typography>
                         <Typography
                           component="span"
@@ -259,7 +259,7 @@ const ChatRoomsList = () => {
                           color="text.secondary"
                           sx={{ display: 'block' }}
                         >
-                          {formatUpdatedTime(room.updated_at)}
+                          {formatUpdatedTime(room.updated_at || '')}
                         </Typography>
                       </>
                     }

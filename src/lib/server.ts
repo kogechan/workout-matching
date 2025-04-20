@@ -6,21 +6,12 @@ import { NextRequest } from 'next/server';
 // サーバーサイドでSupabaseクライアントを作成する関数
 export const createServerSupabaseClient = ({
   req,
-  res,
 }: {
   req: NextApiRequest | NextRequest | Request;
   res?: NextApiResponse;
 }) => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  /* const cookies = new Map(
-    // Cookie文字列を解析
-    (req.headers as IncomingHttpHeaders).cookie?.split(';').map(cookie => {
-      const [key, value] = cookie.split('=')
-      return [key.trim(), value]
-    }) || []
-  ) */
 
   return createClient(supabaseUrl, supabaseKey, {
     auth: {

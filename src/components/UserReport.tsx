@@ -55,6 +55,12 @@ export const UserReport = () => {
     setLoading(true);
 
     try {
+      if (!currentUserId || !reportTarget?.id) {
+        console.error('報告者または報告対象のIDが無効です');
+        setLoading(false);
+        return;
+      }
+
       const { error: submitError } = await supabase.from('reports').insert({
         reporter_id: currentUserId,
         reported_id: reportTarget?.id,

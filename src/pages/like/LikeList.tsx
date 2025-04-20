@@ -21,9 +21,9 @@ import { motion } from 'framer-motion';
 interface User {
   id: string;
   username: string;
-  avatar_url: string;
-  location: string;
-  training_experience: string;
+  avatar_url: string | null;
+  location: string | null;
+  training_experience: string | null;
 }
 
 const LikeList = () => {
@@ -61,7 +61,9 @@ const LikeList = () => {
 
     // ユーザー情報を取得
     if (likedByMe?.length) {
-      const userIds = likedByMe.map((like) => like.user_id);
+      const userIds = likedByMe
+        .map((like) => like.user_id)
+        .filter((id): id is string => id !== null);
       const { data } = await supabase
         .from('profiles')
         .select('*')
@@ -70,7 +72,9 @@ const LikeList = () => {
     }
 
     if (iLiked?.length) {
-      const userIds = iLiked.map((like) => like.liked_user_id);
+      const userIds = iLiked
+        .map((like) => like.liked_user_id)
+        .filter((id): id is string => id !== null);
       const { data } = await supabase
         .from('profiles')
         .select('*')

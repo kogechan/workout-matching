@@ -1,14 +1,14 @@
 export interface User {
   username: string;
-  gender: string;
-  age: string;
-  location: string;
-  training_experience: string;
-  bio: string;
+  gender: string | null;
+  age: number | null;
+  location: string | null;
+  training_experience: string | null;
+  bio: string | null;
   avatar_url: string;
-  favorite_muscle?: string;
-  difficult_muscle?: string;
-  belong_gym?: string;
+  favorite_muscle?: string | null;
+  difficult_muscle?: string | null;
+  belong_gym?: string | null;
 }
 
 // サブ写真の型定義

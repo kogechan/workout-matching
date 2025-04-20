@@ -29,17 +29,6 @@ export default async function handler(
       query = query.neq('id', currentUserId);
     }
 
-    // 距離フィルターの適用
-    /*  if (useLocationDistance && userLocation) {
-        // Postgresの地理空間関数を使用して距離を計算
-        // ST_MakePoint(lon, lat)とST_DWithin(geom1, geom2, distance)を使用
-        query = query.rpc('profiles_within_distance', { 
-          lat: userLocation.latitude,
-          lng: userLocation.longitude,
-          distance_in_km: distance
-        });
-      } */
-
     // 年齢フィルターの適用
     if (age) {
       const [minAge, maxAge] = age.split('_');

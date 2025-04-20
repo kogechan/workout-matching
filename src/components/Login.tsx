@@ -22,6 +22,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import CheckIcon from '@mui/icons-material/Check';
 import { darkTheme } from '@/pages/_app';
 import { z } from 'zod';
+import { useRouter } from 'next/router';
 
 // メールアドレスとパスワードのバリデーションスキーマ
 const loginSchema = z.object({
@@ -40,6 +41,7 @@ export const Login = () => {
   const [generalError, setGeneralError] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const router = useRouter();
 
   // 入力変更時のバリデーション
   useEffect(() => {
@@ -194,6 +196,7 @@ export const Login = () => {
               variant="contained"
               startIcon={<LoginIcon />}
               sx={{ mt: 3, mb: 2 }}
+              onClick={() => router.push('profile')}
               disabled={isLoading || Object.keys(errors).length > 0}
             >
               {isLoading ? <CircularProgress size={24} /> : 'ログイン'}

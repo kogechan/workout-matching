@@ -5,7 +5,7 @@ export interface Report {
   reporter_id: string;
   reported_id: string;
   reason: string;
-  details?: string;
+  details?: string | null;
   status: ReportStatus;
   created_at: string;
   updated_at: string;

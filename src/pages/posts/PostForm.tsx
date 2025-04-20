@@ -20,7 +20,6 @@ import {
 import { useAvatar } from '@/hooks/useAvatar';
 import styles from '@/styles/postDialog.module.css';
 import CloseIcon from '@mui/icons-material/Close';
-import ImageIcon from '@mui/icons-material/Image';
 import CheckIcon from '@mui/icons-material/Check';
 import { useAlert } from '@/hooks/useAlert';
 

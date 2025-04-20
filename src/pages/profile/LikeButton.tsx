@@ -29,7 +29,7 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
       const { data: likeData, error: likeError } = await supabase
         .from('likes')
         .select('*')
-        .eq('user_id', currentUserId)
+        .eq('user_id', currentUserId || '')
         .eq('liked_user_id', profileId)
         .maybeSingle();
 

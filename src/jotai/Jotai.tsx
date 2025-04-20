@@ -28,7 +28,7 @@ export const postAtom = atom<Post[]>([]);
 export const profileAtom = atom<User>({
   username: '',
   gender: '',
-  age: '',
+  age: 0,
   location: '',
   training_experience: '',
   bio: '',

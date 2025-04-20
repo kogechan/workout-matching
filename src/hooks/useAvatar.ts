@@ -21,21 +21,22 @@ export const useAvatar = () => {
         .maybeSingle();
 
       if (error) console.error('プロフィール取得エラー:', error);
-      if (data) setProfile(data);
 
-      setProfile(() => ({
-        username: data?.username || '',
-        bio: data?.bio || '',
-        gender: data?.gender || '',
-        age: data?.age || '',
-        location: data?.location || '',
-        training_experience: data?.training_experience || '',
-        avatar_url: data?.avatar_url || '',
-        favorite_muscle: data?.favorite_muscle || '',
-        difficult_muscle: data?.difficult_muscle || '',
-        belong_gym: data?.belong_gym || '',
-      }));
-
+      if (data) {
+        setProfile({
+          ...data,
+          avatar_url: data.avatar_url || '',
+          username: data.username || '',
+          bio: data.bio || '',
+          gender: data.gender || '',
+          age: data.age || 0,
+          location: data.location || '',
+          training_experience: data.training_experience || '',
+          favorite_muscle: data.favorite_muscle || '',
+          difficult_muscle: data.difficult_muscle || '',
+          belong_gym: data.belong_gym || '',
+        });
+      }
       setLoading(false);
     };
 

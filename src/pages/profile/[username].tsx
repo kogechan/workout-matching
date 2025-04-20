@@ -25,7 +25,7 @@ import {
   NextPage,
 } from 'next';
 import supabase from '@/lib/supabase';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { chatRoomAtom, currentUserAtom } from '@/jotai/Jotai';
 import { useRouter } from 'next/router';
@@ -48,10 +48,15 @@ interface ProfileCardProps {
   subImages: SubImage[];
 }
 
-// 情報アイテムコンポーネント
-const InfoItem = ({ icon, label, value }) => (
+type InfoItemProps = {
+  icon: ReactElement;
+  label: string;
+  value: string | number | null | undefined;
+};
+
+const InfoItem = ({ icon, label, value }: InfoItemProps) => (
   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-    {React.cloneElement(icon, {
+    {React.cloneElement(icon as React.ReactElement<{ sx?: object }>, {
       sx: { color: 'text.secondary', mr: 2, fontSize: 28 },
     })}
     <Box>
@@ -87,11 +92,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let formattedSubImages = [];
   if (profile.sub_images && Array.isArray(profile.sub_images)) {
-    formattedSubImages = profile.sub_images.map((url, index) => ({
-      id: `sub-${index}`,
-      url: url,
-      profile_id: profile.id,
-    }));
+    formattedSubImages = profile.sub_images.map(
+      (url: string, index: string) => ({
+        id: `sub-${index}`,
+        url: url,
+        profile_id: profile.id,
+      })
+    );
   }
 
   return { props: { profile, subImages: formattedSubImages } };

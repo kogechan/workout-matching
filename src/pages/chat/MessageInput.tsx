@@ -19,6 +19,11 @@ export const MessageInput = ({ roomId }: MessageInputProps) => {
 
     if (!message.trim()) return;
 
+    if (!currentUserId) {
+      console.error('Error: currentUserId is null');
+      return;
+    }
+
     setSending(true);
 
     try {
