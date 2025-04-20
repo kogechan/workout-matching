@@ -593,7 +593,14 @@ const Home: NextPage = () => {
               >
                 <Link href="/terms">利用規約</Link> |{' '}
                 <Link href="/privacy">プライバシーポリシー</Link> |{' '}
-                <Link href="/contactForm">お問い合わせ</Link>
+                <Link
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  passHref
+                  href="https://docs.google.com/forms/d/e/1FAIpQLSeN-5vgeAYsh6cc2hvL8IJiz0jQfCR6F4RWS3E9S0X_ZPrN-A/viewform?usp=dialog"
+                >
+                  お問い合わせ
+                </Link>
               </Typography>{' '}
             </Box>
           </Paper>

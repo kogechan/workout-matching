@@ -164,7 +164,13 @@ export const MenuList = () => {
                 },
               }}
             >
-              <ListItemButton component={Link} href="/contactForm">
+              <ListItemButton
+                component={Link}
+                target="_blank"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSeN-5vgeAYsh6cc2hvL8IJiz0jQfCR6F4RWS3E9S0X_ZPrN-A/viewform?usp=dialog"
+                rel="noopener noreferrer"
+                passHref
+              >
                 <ListItemIcon>
                   <ContactSupportIcon sx={{ color: '#ffffff' }} />
                 </ListItemIcon>
