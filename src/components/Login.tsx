@@ -40,7 +40,7 @@ export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [generalError, setGeneralError] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [loginAlert, setLoginAlert] = useState(false);
   const router = useRouter();
 
   // 入力変更時のバリデーション
@@ -71,14 +71,16 @@ export const Login = () => {
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    /* setLoginAlert(true);
+    setTimeout(() => setLoginAlert(false), 3000);
+    router.push('/search');
+ */
     try {
       // フォーム送信時の最終バリデーション
       loginSchema.parse({ email, password });
 
       setIsLoading(true);
       setGeneralError('');
-      setLoginSuccess(true);
-      setTimeout(() => setLoginSuccess(false), 3000);
 
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: email,
@@ -89,7 +91,11 @@ export const Login = () => {
         throw signInError;
       }
 
+      setLoginAlert(true);
+      setTimeout(() => setLoginAlert(false), 3000);
+
       handleClose();
+      router.push('/search');
     } catch (error) {
       console.log(error);
       if (error instanceof z.ZodError) {
@@ -112,7 +118,7 @@ export const Login = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <Snackbar
-        open={loginSuccess}
+        open={loginAlert}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'center',
@@ -196,7 +202,6 @@ export const Login = () => {
               variant="contained"
               startIcon={<LoginIcon />}
               sx={{ mt: 3, mb: 2 }}
-              onClick={() => router.push('/search')}
               disabled={isLoading || Object.keys(errors).length > 0}
             >
               {isLoading ? <CircularProgress size={24} /> : 'ログイン'}
