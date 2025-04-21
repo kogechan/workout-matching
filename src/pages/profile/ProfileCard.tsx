@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CardActions,
+  CircularProgress,
   Container,
   Dialog,
   DialogContent,
@@ -52,6 +53,7 @@ export const ProfileCard = () => {
   const router = useRouter();
   const [subImages, setSubImages] = useAtom(subImgeAtom);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSubImages = async () => {
@@ -78,6 +80,7 @@ export const ProfileCard = () => {
       } catch (error) {
         console.error('サブ画像取得エラー:', error);
       }
+      setLoading(false);
     };
     fetchSubImages();
   }, [currentUserId, setSubImages]);
@@ -86,6 +89,26 @@ export const ProfileCard = () => {
   const handlePreview = (url: string) => {
     setPreviewImage(url);
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '50vh',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
+        <CircularProgress color="primary" />
+        <Typography variant="body2" color="text.secondary">
+          プロフィールを読み込み中...
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box

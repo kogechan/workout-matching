@@ -16,8 +16,8 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WcIcon from '@mui/icons-material/Wc';
 import HomeIcon from '@mui/icons-material/Home';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import MarkunreadIcon from '@mui/icons-material/Markunread';
 import {
   GetServerSideProps,
   NextApiRequest,
@@ -111,6 +111,7 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
   const [error, setError] = useState<string | null>(null);
   const [isCheckingRoom, setIsCheckingRoom] = useState(true);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   // 既存のチャットルームを検索
@@ -155,6 +156,7 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
       } finally {
         setIsCheckingRoom(false);
       }
+      setLoading(false);
     };
 
     checkExistingRoom();
@@ -270,6 +272,26 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
     );
   }
 
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '50vh',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
+        <CircularProgress color="primary" />
+        <Typography variant="body2" color="text.secondary">
+          プロフィールを読み込み中...
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -329,7 +351,7 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
             {isCreatingRoom ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              <ChatBubbleIcon />
+              <MarkunreadIcon />
             )}
           </IconButton>
         </Box>

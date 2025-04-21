@@ -196,7 +196,7 @@ export const Login = () => {
               variant="contained"
               startIcon={<LoginIcon />}
               sx={{ mt: 3, mb: 2 }}
-              onClick={() => router.push('profile')}
+              onClick={() => router.push('/search')}
               disabled={isLoading || Object.keys(errors).length > 0}
             >
               {isLoading ? <CircularProgress size={24} /> : 'ログイン'}

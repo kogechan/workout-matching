@@ -47,8 +47,7 @@ export const TermsPage = () => {
 
 ---
 
-【制定日】2025年4月17日  
-【運営者】[岩瀬潤]  `}
+【制定日】2025年4月17日    `}
           </Typography>
         </Box>
       </Container>

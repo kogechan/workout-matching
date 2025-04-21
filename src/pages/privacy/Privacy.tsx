@@ -43,7 +43,6 @@ export const PrivacyPolicyPage = () => {
 ---
 
 【制定日】2025年4月17日  
-【運営者】[岩瀬潤]  
 `}
           </Typography>
         </Box>
