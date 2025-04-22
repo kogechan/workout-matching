@@ -71,10 +71,6 @@ export const Login = () => {
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    /* setLoginAlert(true);
-    setTimeout(() => setLoginAlert(false), 3000);
-    router.push('/search');
- */
     try {
       // フォーム送信時の最終バリデーション
       loginSchema.parse({ email, password });

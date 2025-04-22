@@ -31,11 +31,24 @@ export default async function handler(
 
     // 年齢フィルターの適用
     if (age) {
-      const [minAge, maxAge] = age.split('_');
-      if (maxAge) {
-        query = query.gte('age', parseInt(minAge)).lte('age', parseInt(maxAge));
-      } else {
-        query = query.gte('age', parseInt(minAge.replace('+', '')));
+      // 年齢文字列から数値部分を抽出
+      const ageRange = age.match(/\d+/g);
+
+      if (ageRange) {
+        if (ageRange.length === 2) {
+          // 範囲指定の場合（例: 18〜25歳）
+          const minAge = parseInt(ageRange[0]);
+          const maxAge = parseInt(ageRange[1]);
+          query = query.gte('age', minAge).lte('age', maxAge);
+        } else if (ageRange.length === 1 && age.includes('以上')) {
+          // 〜以上の場合（例: 51歳以上）
+          const minAge = parseInt(ageRange[0]);
+          query = query.gte('age', minAge);
+        } else {
+          // 単一年齢の場合
+          const exactAge = parseInt(ageRange[0]);
+          query = query.eq('age', exactAge);
+        }
       }
     }
 

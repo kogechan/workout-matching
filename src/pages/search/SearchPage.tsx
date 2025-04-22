@@ -394,7 +394,7 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
                   sx={{ fontSize: 60, color: 'text.disabled', mb: 2 }}
                 />
                 <Typography variant="h6" color="text.secondary" gutterBottom>
-                  該当するパートナーが見つかりませんでした
+                  該当するトレーニーが見つかりませんでした
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   検索条件を変更して再度お試しください

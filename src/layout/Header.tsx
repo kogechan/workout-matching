@@ -20,6 +20,13 @@ export const Header = () => {
   const { user } = useUser();
   const router = useRouter();
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -51,7 +58,7 @@ export const Header = () => {
               cursor: 'pointer',
               gap: 1,
             }}
-            onClick={() => router.push('/')}
+            onClick={scrollToTop}
           >
             <Avatar
               sx={{
@@ -71,7 +78,7 @@ export const Header = () => {
               color="inherit"
               onClick={() => {
                 setLoginModalOpen(!loginModalOpen);
-                router.push('/');
+                router.push('/search');
               }}
             >
               ログイン

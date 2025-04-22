@@ -1,8 +1,9 @@
 import { currentUserAtom, isLoadingAtom } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
-import { Box, Button, Typography } from '@mui/material';
+import { Alert, Box, Button, Snackbar, Typography } from '@mui/material';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
+import CheckIcon from '@mui/icons-material/Check';
 
 export const LikeButton = ({ profileId }: { profileId: string }) => {
   // いいね状態を管理
@@ -11,6 +12,7 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
   const [likeCount, setLikeCount] = useState(0);
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
   const [currentUserId] = useAtom(currentUserAtom);
+  const [likeAlert, setLikeAlert] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -79,6 +81,8 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
           setLikeCount((prev) => prev + 1);
         }
       }
+      setLikeAlert(true);
+      setTimeout(() => setLikeAlert(false), 3000);
     } catch (error) {
       console.error('いいね処理中のエラー:', error);
     } finally {
@@ -88,12 +92,28 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
 
   return (
     <Box>
+      <Snackbar
+        open={likeAlert}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert
+          severity="success"
+          icon={<CheckIcon fontSize="inherit" />}
+          sx={{ mb: 2 }}
+        >
+          いいねしました
+        </Alert>
+      </Snackbar>
       <Button
         variant="contained"
+        size="large"
         sx={{
           borderRadius: 20,
           backgroundColor: '#f26a63',
-          width: { md: 1200, xs: 400, sm: 700 },
+          width: { md: 1130, xs: 400, sm: 700 },
         }}
         onClick={handleLike}
         disabled={isLoading || !currentUserId || isLiked}

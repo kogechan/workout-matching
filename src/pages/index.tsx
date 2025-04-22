@@ -15,12 +15,11 @@ import Head from 'next/head';
 import { NextPage } from 'next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useAtom } from 'jotai';
-import { loginModalAtom } from '@/jotai/Jotai';
+import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
+  const router = useRouter();
 
   useEffect(() => {
     setIsLoaded(true);
@@ -110,7 +109,7 @@ const Home: NextPage = () => {
                     },
                     transition: 'all 0.3s ease',
                   }}
-                  onClick={() => setLoginModalOpen(!loginModalOpen)}
+                  onClick={() => router.push('/acount')}
                 >
                   今すぐ始める
                 </Button>
@@ -515,7 +514,7 @@ const Home: NextPage = () => {
                   image: '/home/image2.png',
                   title: 'サイト内の監視',
                   description:
-                    'サイト内のを監視し、不適切な投稿や悪質なユーザーを迅速に対応します。',
+                    'サイト内を監視し、不適切な投稿や悪質なユーザーを迅速に対応します。',
                 },
                 {
                   image: '/home/image.png',
@@ -623,7 +622,7 @@ const Home: NextPage = () => {
                 },
                 transition: 'all 0.3s ease',
               }}
-              onClick={() => setLoginModalOpen(!loginModalOpen)}
+              onClick={() => router.push('/acount')}
             >
               無料で登録する
             </Button>
