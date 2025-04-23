@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import ChatRoomsList from './ChatIndex';
+import ChatRoomsList from '@/components/chat/ChatIndex';
 import Head from 'next/head';
 
 const Home: NextPage = () => {

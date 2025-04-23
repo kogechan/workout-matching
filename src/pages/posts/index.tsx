@@ -1,8 +1,8 @@
-import { PostForm } from './PostForm';
-import { PostList } from './PostList';
-import { AddPost } from './AddPost';
+import { PostForm } from '../../components/post/PostForm';
+import { PostList } from '../../components/post/PostList';
+import { AddPost } from '../../components/post/AddPost';
 import { NextPage } from 'next';
-import { PostReport } from '@/components/PostReport';
+import { PostReport } from '@/components/Report/PostReport';
 import Head from 'next/head';
 
 const Home: NextPage = () => {

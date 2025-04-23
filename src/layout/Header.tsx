@@ -1,8 +1,8 @@
 import { menuAtom, loginModalAtom } from '@/jotai/Jotai';
 import { useAtom } from 'jotai';
-import { MenuList } from '@/components/MenuList';
-import { Login } from '@/components/Login';
-import { LogoutAlert } from '@/components/LogoutAlert';
+import { MenuList } from '@/layout/MenuList';
+import { Login } from '@/components/auth/Login';
+import { LogoutAlert } from '@/components/auth/LogoutAlert';
 import { useUser } from '@/hooks/useUser';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';

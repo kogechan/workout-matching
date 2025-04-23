@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { Setting } from './Setting';
+import { Setting } from '../../components/other/Setting';
 
 const Home: NextPage = () => {
   return (

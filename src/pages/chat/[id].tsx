@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import supabase from '@/lib/supabase';
-import { MessageInput } from './MessageInput';
+import { MessageInput } from '../../components/chat/MessageInput';
 import { useAtom } from 'jotai';
 import {
   chatRoomAtom,
@@ -20,7 +20,7 @@ import {
   messageAtom,
   otherUserAtom,
 } from '@/jotai/Jotai';
-import { MessageList } from './MessageList';
+import { MessageList } from '../../components/chat/MessageList';
 import { NextPage } from 'next';
 import Head from 'next/head';
 

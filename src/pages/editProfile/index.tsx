@@ -1,5 +1,5 @@
-import { CreateAcount } from '@/pages/editProfile/EditAcount';
-import { ProfileImg } from '@/pages/editProfile/ProfileImg';
+import { CreateAcount } from '@/components/profile/EditAcount';
+import { ProfileImg } from '@/components/profile/ProfileImg';
 import {
   Box,
   Button,

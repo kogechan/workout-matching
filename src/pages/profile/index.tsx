@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { ProfileCard } from './ProfileCard';
+import { ProfileCard } from '../../components/profile/ProfileCard';
 import { NextPage } from 'next';
 
 const Home: NextPage = () => {

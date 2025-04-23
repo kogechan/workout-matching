@@ -357,15 +357,17 @@ export const ProfileCard = () => {
       >
         <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
           {previewImage && (
-            <img
-              src={previewImage}
-              alt="画像プレビュー"
-              style={{
-                width: '100%',
-                maxHeight: '80vh',
-                objectFit: 'contain',
-              }}
-            />
+            <picture>
+              <img
+                src={previewImage}
+                alt="画像プレビュー"
+                style={{
+                  width: '100%',
+                  maxHeight: '80vh',
+                  objectFit: 'contain',
+                }}
+              />
+            </picture>
           )}
         </DialogContent>
       </Dialog>

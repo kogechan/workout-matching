@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { SignUp } from './SignUp';
+import { SignUp } from '../../components/auth/SignUp';
 
 const Home: NextPage = () => {
   return (

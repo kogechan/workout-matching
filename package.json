@@ -22,7 +22,7 @@
     "@mui/x-date-pickers": "^7.24.1",
     "@react-spring/web": "^9.7.5",
     "@supabase/ssr": "github:supabase/ssr",
-    "@supabase/supabase-js": "^2.48.1",
+    "@supabase/supabase-js": "^2.49.4",
     "@types/jsonwebtoken": "^9.0.8",
     "argon2": "^0.41.1",
     "bcrypt": "^5.1.1",

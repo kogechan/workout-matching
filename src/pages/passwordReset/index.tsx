@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { PasswordReset } from './PasswordReset';
+import { PasswordReset } from '../../components/auth/PasswordReset';
 import { NextPage } from 'next';
 
 const Home: NextPage = () => {

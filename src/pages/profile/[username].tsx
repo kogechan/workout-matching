@@ -29,11 +29,11 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { chatRoomAtom, currentUserAtom } from '@/jotai/Jotai';
 import { useRouter } from 'next/router';
-import { LikeButton } from './LikeButton';
+import { LikeButton } from '../../components/profile/LikeButton';
 import { ProfileData } from '@/type/chat';
 import { createServerSupabaseClient } from '@/lib/server';
-import { MoreVert } from './MoreVert';
-import { UserReport } from '@/components/UserReport';
+import { MoreVert } from '../../components/profile/MoreVert';
+import { UserReport } from '@/components/Report/UserReport';
 import Head from 'next/head';
 
 // インターフェース
@@ -574,15 +574,17 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
         >
           <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
             {previewImage && (
-              <img
-                src={previewImage}
-                alt="画像プレビュー"
-                style={{
-                  width: '100%',
-                  maxHeight: '80vh',
-                  objectFit: 'contain',
-                }}
-              />
+              <picture>
+                <img
+                  src={previewImage}
+                  alt="画像プレビュー"
+                  style={{
+                    width: '100%',
+                    maxHeight: '80vh',
+                    objectFit: 'contain',
+                  }}
+                />
+              </picture>
             )}
           </DialogContent>
         </Dialog>

@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { SearchPage } from './SearchPage';
+import { SearchPage } from '../../components/search/SearchPage';
 import supabase from '@/lib/supabase';
 import { ProfileData } from '@/type/chat';
 import Head from 'next/head';

@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { SendEmail } from './SendEmail';
+import { SendEmail } from '../../components/auth/SendEmail';
 import Head from 'next/head';
 
 const Home: NextPage = () => {

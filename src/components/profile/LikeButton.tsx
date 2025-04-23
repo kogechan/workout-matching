@@ -104,7 +104,7 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
           icon={<CheckIcon fontSize="inherit" />}
           sx={{ mb: 2 }}
         >
-          いいねしました
+          いいね！を送りました
         </Alert>
       </Snackbar>
       <Button
@@ -119,7 +119,7 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
         disabled={isLoading || !currentUserId || isLiked}
         aria-label={isLiked ? 'いいね解除' : 'いいね'}
       >
-        {isLiked ? 'いいね済み' : 'いいね'}
+        {isLiked ? 'いいね！済み' : 'いいね！'}
         <Typography variant="caption" fontSize={16} sx={{ ml: 1 }}>
           {likeCount}
         </Typography>

@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { TermsPage } from './Terms';
+import { TermsPage } from '../../components/other/Terms';
 
 const Home: NextPage = () => {
   return (

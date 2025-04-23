@@ -22,7 +22,7 @@ import supabase from '@/lib/supabase';
 import { useAvatar } from '@/hooks/useAvatar';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { getPost, addPost, deletePost } from '../api/posts/post';
+import { getPost, addPost, deletePost } from '../../pages/api/posts/post';
 import styles from '@/styles/postDialog.module.css';
 import { MoreHoriz } from './MoreHoriz';
 import dayjs from '@/hooks/dayjs';

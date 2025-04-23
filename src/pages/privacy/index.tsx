@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { PrivacyPolicyPage } from './Privacy';
+import { PrivacyPolicyPage } from '../../components/other/Privacy';
 
 const Home: NextPage = () => {
   return (

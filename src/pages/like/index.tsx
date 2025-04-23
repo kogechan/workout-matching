@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import LikeList from './LikeList';
+import LikeList from '../../components/like/LikeList';
 import Head from 'next/head';
 import { Box, Container } from '@mui/material';
 

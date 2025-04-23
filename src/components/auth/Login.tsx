@@ -89,7 +89,6 @@ export const Login = () => {
 
       setLoginAlert(true);
       setTimeout(() => setLoginAlert(false), 3000);
-
       handleClose();
       router.push('/search');
     } catch (error) {
