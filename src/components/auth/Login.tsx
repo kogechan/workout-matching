@@ -78,19 +78,26 @@ export const Login = () => {
       setIsLoading(true);
       setGeneralError('');
 
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
+      const { data, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
 
       if (signInError) {
-        throw signInError;
+        console.error(signInError);
       }
 
-      setLoginAlert(true);
-      setTimeout(() => setLoginAlert(false), 3000);
-      handleClose();
-      router.push('/search');
+      if (data?.session) {
+        setLoginAlert(true);
+        setTimeout(() => setLoginAlert(false), 3000);
+        handleClose();
+        router.push('/search');
+      } else {
+        setGeneralError(
+          'ログイン処理中にエラーが発生しました。再度お試しください。'
+        );
+      }
     } catch (error) {
       console.log(error);
       if (error instanceof z.ZodError) {

@@ -8,19 +8,9 @@ interface SearchPageProps {
   initialProfiles: ProfileData[];
 }
 
-const Home: NextPage<SearchPageProps> = ({ initialProfiles }) => {
-  return (
-    <>
-      <Head>
-        <title>合トレ仲間を探す</title>
-        <meta name="description" content="合トレ仲間を探そう！" />
-      </Head>
-      <SearchPage initialProfiles={initialProfiles} />
-    </>
-  );
-};
-
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps<
+  SearchPageProps
+> = async () => {
   const { data, error } = await supabase.from('profiles').select('*').limit(20);
 
   if (error) {
@@ -37,6 +27,18 @@ export const getServerSideProps: GetServerSideProps = async () => {
       initialProfiles: data || [],
     },
   };
+};
+
+const Home: NextPage<SearchPageProps> = ({ initialProfiles }) => {
+  return (
+    <>
+      <Head>
+        <title>合トレ仲間を探す</title>
+        <meta name="description" content="合トレ仲間を探そう！" />
+      </Head>
+      <SearchPage initialProfiles={initialProfiles} />
+    </>
+  );
 };
 
 export default Home;

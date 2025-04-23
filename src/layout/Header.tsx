@@ -11,14 +11,12 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useRouter } from 'next/router';
 import { Avatar } from '@mui/material';
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useAtom(menuAtom);
   const [loginModalOpen, setLoginModalOpen] = useAtom(loginModalAtom);
   const { user } = useUser();
-  const router = useRouter();
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -78,7 +76,6 @@ export const Header = () => {
               color="inherit"
               onClick={() => {
                 setLoginModalOpen(!loginModalOpen);
-                router.push('/search');
               }}
             >
               ログイン

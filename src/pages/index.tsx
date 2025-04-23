@@ -385,7 +385,7 @@ const Home: NextPage = () => {
                   }}
                 >
                   <Image
-                    src="/images/team-1.jpg"
+                    src="/home/2025-04-22 20.18の画像.jpg"
                     alt="使い方1"
                     fill
                     style={{
@@ -424,7 +424,7 @@ const Home: NextPage = () => {
                   }}
                 >
                   <Image
-                    src="/images/team-2.jpg"
+                    src="/home/2025-04-22 20.19の画像.jpg"
                     alt="使い方2"
                     fill
                     style={{
@@ -463,7 +463,7 @@ const Home: NextPage = () => {
                   }}
                 >
                   <Image
-                    src="/images/team-3.jpg"
+                    src="/home/2025-04-22 21.48の画像.jpg"
                     alt="使い方3"
                     fill
                     style={{
