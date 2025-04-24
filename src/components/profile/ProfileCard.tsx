@@ -5,9 +5,8 @@ import {
   CardActions,
   CircularProgress,
   Container,
-  Dialog,
-  DialogContent,
   IconButton,
+  Modal,
   Paper,
   Typography,
 } from '@mui/material';
@@ -16,6 +15,7 @@ import { useRouter } from 'next/router';
 import EditIcon from '@mui/icons-material/Edit';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import CloseIcon from '@mui/icons-material/Close';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WcIcon from '@mui/icons-material/Wc';
 import HomeIcon from '@mui/icons-material/Home';
@@ -342,35 +342,40 @@ export const ProfileCard = () => {
         </CardActions>
       </Container>
       {/* プレビューダイアログ */}
-      <Dialog
-        open={!!previewImage}
-        onClose={() => setPreviewImage(null)}
-        maxWidth="md"
-        slotProps={{
-          paper: {
-            style: {
-              borderRadius: 2,
-              overflow: 'hidden',
-            },
-          },
-        }}
-      >
-        <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
+      <Modal open={!!previewImage} onClose={() => setPreviewImage(null)}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            outline: 'none',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={() => setPreviewImage(null)}
+            aria-label="close"
+            sx={{ position: 'absolute', top: 0, left: 0 }}
+          >
+            <CloseIcon />
+          </IconButton>
           {previewImage && (
-            <picture>
-              <img
-                src={previewImage}
-                alt="画像プレビュー"
-                style={{
-                  width: '100%',
-                  maxHeight: '80vh',
-                  objectFit: 'contain',
-                }}
-              />
-            </picture>
+            <Avatar
+              src={previewImage}
+              alt="画像プレビュー"
+              sx={{
+                width: { xs: 350, sm: 160, md: 350 },
+                height: { xs: 350, sm: 160, md: 350 },
+              }}
+            />
           )}
-        </DialogContent>
-      </Dialog>
+        </Box>
+      </Modal>
     </Box>
   );
 };

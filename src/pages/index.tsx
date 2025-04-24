@@ -85,7 +85,7 @@ const Home: NextPage = () => {
                   gutterBottom
                   sx={{ fontSize: { xs: '2rem', md: '3.5rem' } }}
                 >
-                  合トレマッチングサービス
+                  合トレマッチング
                 </Typography>
                 <Typography
                   variant="h1"

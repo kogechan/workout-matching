@@ -7,17 +7,17 @@ import {
   CircularProgress,
   Button,
   Grid2,
-  Dialog,
-  DialogContent,
   CardActions,
   Backdrop,
   Paper,
   Zoom,
   Fab,
   Tooltip,
+  Modal,
 } from '@mui/material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { useAvatar } from '@/hooks/useAvatar';
@@ -472,28 +472,55 @@ export const ProfileImg = () => {
           </Grid2>
         </Paper>
         {/* プレビューダイアログ */}
-        <Dialog
-          open={!!previewImage}
-          onClose={() => setPreviewImage(null)}
-          maxWidth="md"
-        >
-          <DialogContent sx={{ p: 0, height: { md: 600, xs: 270 } }}>
+        <Modal open={!!previewImage} onClose={() => setPreviewImage(null)}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              outline: 'none',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setPreviewImage(null)}
+              aria-label="close"
+              sx={{ position: 'absolute', top: 0, left: 0 }}
+            >
+              <CloseIcon />
+            </IconButton>
             {previewImage && (
-              <picture>
-                <img
-                  src={previewImage}
-                  alt="画像プレビュー"
-                  style={{
-                    width: '100%',
-                    maxHeight: '80vh',
-                    objectFit: 'contain',
-                  }}
-                />
-              </picture>
+              <Avatar
+                src={previewImage}
+                alt="画像プレビュー"
+                sx={{
+                  width: { xs: 350, sm: 160, md: 350 },
+                  height: { xs: 350, sm: 160, md: 350 },
+                }}
+              />
             )}
-          </DialogContent>
-        </Dialog>
+          </Box>
+        </Modal>
       </Box>
     </>
   );
 };
+
+{
+  /* <picture>
+<img
+  src={previewImage}
+  alt="画像プレビュー"
+  style={{
+    width: '100%',
+    maxHeight: '80vh',
+    objectFit: 'contain',
+  }}
+/>
+</picture> */
+}
