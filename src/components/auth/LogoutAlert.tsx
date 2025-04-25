@@ -101,6 +101,7 @@ export const LogoutAlert = () => {
           </Button>
           <Button
             onClick={handleLogout}
+            color="error"
             startIcon={
               isLoading ? (
                 <CircularProgress size={20} color="inherit" />

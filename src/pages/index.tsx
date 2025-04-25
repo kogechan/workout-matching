@@ -6,6 +6,7 @@ import {
   Paper,
   Button,
   Grid2,
+  BottomNavigation,
 } from '@mui/material';
 import Image from 'next/image';
 import { Person } from '@mui/icons-material';
@@ -13,9 +14,9 @@ import PeopleIcon from '@mui/icons-material/People';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import Head from 'next/head';
 import { NextPage } from 'next';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const Home: NextPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -627,25 +628,60 @@ const Home: NextPage = () => {
               無料で登録する
             </Button>
           </Box>
-          <Box sx={{ mb: 4 }}>
-            <Typography
-              sx={{ typography: { md: 'body2', xs: 'caption' } }}
-              color="rgba(255,255,255,0.8)"
-              align="center"
-            >
-              <Link href="/terms">利用規約</Link> |{' '}
-              <Link href="/privacy">プライバシーポリシー</Link> |{' '}
-              <Link
-                rel="noopener noreferrer"
-                target="_blank"
-                passHref
-                href="https://docs.google.com/forms/d/e/1FAIpQLSeN-5vgeAYsh6cc2hvL8IJiz0jQfCR6F4RWS3E9S0X_ZPrN-A/viewform?usp=dialog"
-              >
-                お問い合わせ
-              </Link>
-            </Typography>{' '}
-          </Box>
         </Container>
+        <Box
+          component="footer"
+          sx={{
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            bgcolor: 'background.paper',
+            borderTop: 1,
+            borderColor: 'divider',
+            zIndex: (theme) => theme.zIndex.appBar,
+          }}
+        >
+          <BottomNavigation
+            showLabels
+            sx={{
+              justifyContent: 'center',
+              gap: { xs: 2, sm: 3, md: 4 }, // 画面幅に応じてリンク間隔
+              py: { xs: 1, sm: 1.5 },
+
+              '& a': {
+                px: { xs: 0.5, sm: 1 },
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                fontWeight: 500,
+                color: 'text.secondary',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                transition: 'color 0.2s ease',
+
+                '&:hover, &:focus-visible': {
+                  color: 'primary.main',
+                  outline: 'none',
+                },
+              },
+            }}
+          >
+            <Link href="/terms" passHref legacyBehavior>
+              <Typography component="a">利用規約</Typography>
+            </Link>
+
+            <Link href="/privacy" passHref legacyBehavior>
+              <Typography component="a">プライバシーポリシー</Typography>
+            </Link>
+
+            <Typography
+              component="a"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSeN-5vgeAYsh6cc2hvL8IJiz0jQfCR6F4RWS3E9S0X_ZPrN-A/viewform?usp=dialog"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              お問い合わせ
+            </Typography>
+          </BottomNavigation>
+        </Box>
       </Box>
     </>
   );
