@@ -138,7 +138,11 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              mx: 'auto',
+            }}
           >
             合トレする仲間を見つけよう！
           </Typography>

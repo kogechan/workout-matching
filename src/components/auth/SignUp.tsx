@@ -18,6 +18,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
+import CheckIcon from '@mui/icons-material/Check';
 import { z } from 'zod';
 
 const signUpSchema = z.object({
@@ -211,8 +212,13 @@ export const SignUp = () => {
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
       >
         <Alert
+          icon={<CheckIcon fontSize="inherit" />}
           onClose={handleCloseSnackbar}
           severity={snackbarSeverity}
           sx={{ width: '100%' }}

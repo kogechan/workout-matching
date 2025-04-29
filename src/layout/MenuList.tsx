@@ -83,7 +83,7 @@ export const MenuList = () => {
                 <ListItemIcon>
                   <PostAddIcon sx={{ color: '#ffffff' }} />
                 </ListItemIcon>
-                <ListItemText primary="掲示板" />
+                <ListItemText primary="タイムライン" />
               </ListItemButton>
             </ListItem>
 

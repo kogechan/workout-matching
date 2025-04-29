@@ -49,8 +49,9 @@ export const PostList = ({ initialPosts = [] }) => {
   const [currentUserId] = useAtom(currentUserAtom);
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState('');
+  const [postSuccess, setPostSuccess] = useState(false);
   const { profile } = useAvatar();
-  const { deleteAlert, DeleteAlert, postAlert, PostAlert } = useAlert();
+  const { deleteAlert, DeleteAlert } = useAlert();
   const router = useRouter();
 
   const remainingChars = MAX_CHARS - content.length;
@@ -76,10 +77,15 @@ export const PostList = ({ initialPosts = [] }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (content === '') return;
-    await addPost(content);
-    setContent('');
-    setPosts(await getPost());
-    PostAlert();
+    try {
+      await addPost(content);
+      setContent('');
+      setPosts(await getPost());
+      setPostSuccess(true);
+      setTimeout(() => setPostSuccess(false), 3000);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (loading) {
@@ -110,7 +116,7 @@ export const PostList = ({ initialPosts = [] }) => {
             </Alert>
           </Snackbar>
           <Snackbar
-            open={postAlert}
+            open={postSuccess}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'center',

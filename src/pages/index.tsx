@@ -3,7 +3,6 @@ import {
   Box,
   Container,
   Typography,
-  Paper,
   Button,
   Grid2,
   BottomNavigation,
@@ -40,16 +39,11 @@ const Home: NextPage = () => {
           transition: 'opacity 0.5s ease-in-out',
         }}
       >
-        <Container
-          sx={{ width: { md: 1200, sm: 700, xs: 420 } }}
-          disableGutters
-        >
-          <Paper
-            elevation={0}
+        <Box sx={{ width: 1 }}>
+          <Box
             sx={{
               position: 'relative',
               mb: 10,
-              borderRadius: 2,
               overflow: 'hidden',
             }}
           >
@@ -116,8 +110,8 @@ const Home: NextPage = () => {
                 </Button>
               </Box>
             </Box>
-          </Paper>
-        </Container>
+          </Box>
+        </Box>
 
         <Container maxWidth="lg">
           {/* サービス紹介セクション */}
@@ -396,10 +390,10 @@ const Home: NextPage = () => {
                   />
                 </Box>
                 <Typography variant="h6" gutterBottom>
-                  合トレ募集機能
+                  掲示板機能
                 </Typography>
                 <Typography variant="body2" sx={{ flex: 1 }}>
-                  掲示板に合トレを募集することができます。いつでも募集をかけたり、募集を閲覧することが可能なので気軽に最短で合トレをすることも可能です。
+                  タイムラインに合トレを募集したり、筋トレに関することを呟くことができます。投稿をすることで合トレを最短で行えたり、多くのユーザーと交流をすることが可能です。
                 </Typography>
               </Box>
             </Grid2>

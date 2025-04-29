@@ -13,6 +13,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
+import CheckIcon from '@mui/icons-material/Check';
 import { z } from 'zod';
 
 // メールアドレスのバリデーションスキーマ
@@ -98,7 +99,11 @@ export const SendEmail = () => {
         )}
 
         {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
+          <Alert
+            severity="success"
+            icon={<CheckIcon fontSize="inherit" />}
+            sx={{ mb: 2 }}
+          >
             パスワード設定メールを送信しました。メールを確認してください。
           </Alert>
         )}
