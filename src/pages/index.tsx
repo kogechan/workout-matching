@@ -265,71 +265,150 @@ const Home: NextPage = () => {
             KINTAのメリット
           </Typography>
 
-          <Grid2 container spacing={4} sx={{ mb: 10 }}>
-            <Grid2 size={{ xs: 12, md: 4 }}>
-              <Box
-                sx={{
-                  p: 4,
-                  height: '100%',
-                  borderRadius: 2,
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
-                    <Person />
-                  </Avatar>
-                  <Typography variant="h6" fontWeight="bold">
-                    簡単マッチング
+          {/* デスクトップ表示 */}
+          <Box sx={{ display: { xs: 'none', md: 'block' }, mb: 10 }}>
+            <Grid2 container spacing={4}>
+              <Grid2 size={{ xs: 12, md: 4 }}>
+                <Box
+                  sx={{
+                    p: 4,
+                    height: '100%',
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                      <Person />
+                    </Avatar>
+                    <Typography variant="h6" fontWeight="bold">
+                      簡単マッチング
+                    </Typography>
+                  </Box>
+                  <Typography variant="body1">
+                    KINTAのコンセプトはマッチングサービスですが、多くの方々に誰でも平等に合トレができるようなシステムを提供しています。つまり、合トレしたい気になるユーザーがいれば簡単にメッセージを送ることができます。
                   </Typography>
                 </Box>
-                <Typography variant="body1">
-                  KINTAのコンセプトはマッチングサービスですが、多くの方々に誰でも平等に合トレができるようなシステムを提供しています。つまり、合トレしたい気になるユーザーがいれば簡単にメッセージを送ることができます。
-                </Typography>
-              </Box>
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 4 }}>
-              <Box
-                sx={{
-                  p: 4,
-                  height: '100%',
-                  borderRadius: 2,
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
-                    <PsychologyIcon />
-                  </Avatar>
-                  <Typography variant="h6" fontWeight="bold">
-                    体とマインドの成長
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 4 }}>
+                <Box
+                  sx={{
+                    p: 4,
+                    height: '100%',
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                      <PsychologyIcon />
+                    </Avatar>
+                    <Typography variant="h6" fontWeight="bold">
+                      体とマインドの成長
+                    </Typography>
+                  </Box>
+                  <Typography variant="body1">
+                    合トレをすることによって一人で筋トレしている時では得られない知識や経験、刺激を得ることができます。体だけなくマインドも共に成長させることが可能です。
                   </Typography>
                 </Box>
-                <Typography variant="body1">
-                  合トレをすることによって一人で筋トレしている時では得られない知識や経験、刺激を得ることができます。体だけなくマインドも共に成長させることが可能です。
-                </Typography>
-              </Box>
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 4 }}>
-              <Box
-                sx={{
-                  p: 4,
-                  height: '100%',
-                  borderRadius: 2,
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
-                    <PeopleIcon />
-                  </Avatar>
-                  <Typography variant="h6" fontWeight="bold">
-                    新しい出会い
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 4 }}>
+                <Box
+                  sx={{
+                    p: 4,
+                    height: '100%',
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                      <PeopleIcon />
+                    </Avatar>
+                    <Typography variant="h6" fontWeight="bold">
+                      新しい出会い
+                    </Typography>
+                  </Box>
+                  <Typography variant="body1">
+                    筋トレや合トレのコミュニティなどは至る所に存在しています。KINTAを利用すればより多くのトレーニーや仲間と繋がることができ、新しい出会いや新たなコミュニティを築くことが可能です。
                   </Typography>
                 </Box>
-                <Typography variant="body1">
-                  筋トレや合トレのコミュニティなどは至る所に存在しています。KINTAを利用すればより多くのトレーニーや仲間と繋がることができ、新しい出会いや新たなコミュニティを築くことが可能です。
-                </Typography>
-              </Box>
+              </Grid2>
             </Grid2>
-          </Grid2>
+          </Box>
+
+          {/* モバイル表示 - 横スクロール */}
+          <Box
+            sx={{
+              display: { xs: 'block', md: 'none' },
+              mb: 10,
+              position: 'relative',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: '40px',
+                height: '100%',
+                pointerEvents: 'none',
+              },
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                overflowX: 'auto',
+                scrollSnapType: 'x mandatory',
+                '&::-webkit-scrollbar': {
+                  display: 'none',
+                },
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                pb: 2,
+              }}
+            >
+              {[
+                {
+                  icon: <Person />,
+                  title: '簡単マッチング',
+                  description:
+                    'KINTAのコンセプトはマッチングサービスですが、多くの方々に誰でも平等に合トレができるようなシステムを提供しています。つまり、合トレしたい気になるユーザーがいれば簡単にメッセージを送ることができます。',
+                },
+                {
+                  icon: <PsychologyIcon />,
+                  title: '体とマインドの成長',
+                  description:
+                    '合トレをすることによって一人で筋トレしている時では得られない知識や経験、刺激を得ることができます。体だけなくマインドも共に成長させることが可能です。',
+                },
+                {
+                  icon: <PeopleIcon />,
+                  title: '新しい出会い',
+                  description:
+                    '筋トレや合トレのコミュニティなどは至る所に存在しています。KINTAを利用すればより多くのトレーニーや仲間と繋がることができ、新しい出会いや新たなコミュニティを築くことが可能です。',
+                },
+              ].map((item, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    flex: '0 0 85%',
+                    scrollSnapAlign: 'center',
+                    p: 3,
+                    mr: 2,
+                    minWidth: '280px',
+                    maxWidth: '350px',
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                      {item.icon}
+                    </Avatar>
+                    <Typography variant="h6" fontWeight="bold">
+                      {item.title}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body1">{item.description}</Typography>
+                </Box>
+              ))}
+            </Box>
+          </Box>
 
           {/* 使用方法 */}
           <Typography
@@ -357,7 +436,12 @@ const Home: NextPage = () => {
             使い方
           </Typography>
 
-          <Grid2 container spacing={3} sx={{ mb: 10 }}>
+          {/* デスクトップ表示 */}
+          <Grid2
+            container
+            spacing={3}
+            sx={{ mb: 10, display: { xs: 'none', md: 'flex' } }}
+          >
             <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
               <Box
                 sx={{
@@ -477,6 +561,98 @@ const Home: NextPage = () => {
             </Grid2>
           </Grid2>
 
+          {/* モバイル表示 - 横スクロール */}
+          <Box
+            sx={{
+              display: { xs: 'block', md: 'none' },
+              mb: 10,
+              position: 'relative',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: '40px',
+                height: '100%',
+                pointerEvents: 'none',
+              },
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                overflowX: 'auto',
+                scrollSnapType: 'x mandatory',
+                '&::-webkit-scrollbar': {
+                  display: 'none',
+                },
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                pb: 2,
+              }}
+            >
+              {[
+                {
+                  image: '/home/2025-04-22 20.18の画像.jpg',
+                  title: '掲示板機能',
+                  description:
+                    'タイムラインに合トレを募集したり、筋トレに関することを呟くことができます。投稿をすることで合トレを最短で行えたり、多くのユーザーと交流をすることが可能です。',
+                },
+                {
+                  image: '/home/2025-04-22 20.19の画像.jpg',
+                  title: 'ユーザー検索機能',
+                  description:
+                    '合トレしたい仲間を見つけたい時などに最も有効です。マッチしたい、合トレしたいユーザーを特定の条件でフィルタリングして探すことが可能です。',
+                },
+                {
+                  image: '/home/2025-04-22 21.48の画像.jpg',
+                  title: 'メッセージ機能',
+                  description:
+                    '気になるユーザーや合トレしたいと思うユーザーに自由にメッセージを送ることができます。いきなり会うのが不安という方もメッセージで仲を深めてから合トレすることが可能です。',
+                },
+              ].map((item, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    flex: '0 0 85%',
+                    scrollSnapAlign: 'center',
+                    p: 3,
+                    mr: 2,
+                    minWidth: '280px',
+                    maxWidth: '350px',
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      height: 0,
+                      paddingBottom: '66.67%',
+                      marginBottom: 2,
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      style={{
+                        objectFit: 'cover',
+                      }}
+                      quality={75}
+                    />
+                  </Box>
+                  <Typography variant="h6" gutterBottom>
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2">{item.description}</Typography>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+
           {/* 安心安全 */}
           <Box component="section" sx={{ py: 5 }}>
             <Typography
@@ -503,7 +679,12 @@ const Home: NextPage = () => {
               安心・安全について
             </Typography>
 
-            <Grid2 container spacing={5} sx={{ mb: 5 }}>
+            {/* デスクトップ表示 */}
+            <Grid2
+              container
+              spacing={5}
+              sx={{ mb: 5, display: { xs: 'none', md: 'flex' } }}
+            >
               {[
                 {
                   image: '/home/image2.png',
@@ -570,6 +751,98 @@ const Home: NextPage = () => {
                 </Grid2>
               ))}
             </Grid2>
+
+            {/* モバイル表示 - 横スクロール */}
+            <Box
+              sx={{
+                display: { xs: 'block', md: 'none' },
+                mb: 5,
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  right: 0,
+                  width: '40px',
+                  height: '100%',
+                  pointerEvents: 'none',
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  overflowX: 'auto',
+                  scrollSnapType: 'x mandatory',
+                  '&::-webkit-scrollbar': {
+                    display: 'none',
+                  },
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  pb: 2,
+                }}
+              >
+                {[
+                  {
+                    image: '/home/image2.png',
+                    title: 'サイト内の監視',
+                    description:
+                      'サイト内を監視し、不適切な投稿や悪質なユーザーを迅速に対応します。',
+                  },
+                  {
+                    image: '/home/image.png',
+                    title: 'サポート体制',
+                    description:
+                      '報告機能や問い合わせ機能で、あらゆる問題に迅速に対応いたします。',
+                  },
+                  {
+                    image: '/home/image3.png',
+                    title: '実名は非公開',
+                    description:
+                      'ニックネームでの登録が可能なため、安心してご利用いただけます。',
+                  },
+                ].map((item, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      flex: '0 0 85%',
+                      scrollSnapAlign: 'center',
+                      p: 3,
+                      mr: 2,
+                      minWidth: '280px',
+                      maxWidth: '350px',
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        position: 'relative',
+                        width: '100%',
+                        height: 0,
+                        paddingBottom: '66.67%',
+                        marginBottom: 2,
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        style={{
+                          objectFit: 'cover',
+                        }}
+                        quality={75}
+                      />
+                    </Box>
+                    <Typography variant="h6" gutterBottom>
+                      {item.title}
+                    </Typography>
+                    <Typography variant="body2">{item.description}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
           </Box>
 
           <Box
