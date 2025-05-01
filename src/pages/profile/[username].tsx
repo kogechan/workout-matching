@@ -124,10 +124,10 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
 
       setIsCheckingRoom(true);
       try {
-        console.log('既存ルーム検索:', {
+        /*  console.log('既存ルーム検索:', {
           currentUserId,
           profileId: profile.id,
-        });
+        }); */
 
         // 既存のチャットルームを検索
         const { data: roomData, error: roomError } = await supabase
@@ -138,20 +138,20 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
           )
           .maybeSingle();
 
-        console.log('ルーム検索結果:', { roomData, roomError });
+        /* console.log('ルーム検索結果:', { roomData, roomError }); */
 
         if (roomError) {
-          console.error('既存ルーム検索エラー:', roomError);
+          /*  console.error('既存ルーム検索エラー:', roomError); */
           setRoom(null);
         } else if (roomData) {
-          console.log('既存ルームを発見:', roomData);
+          /*     console.log('既存ルームを発見:', roomData); */
           setRoom(roomData);
         } else {
-          console.log('既存ルームなし、roomにnullをセット');
+          /* console.log('既存ルームなし、roomにnullをセット'); */
           setRoom(null);
         }
       } catch (err) {
-        console.error('ルーム検索エラー:', err);
+        console.error(err);
         setRoom(null);
       } finally {
         setIsCheckingRoom(false);
@@ -164,20 +164,20 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
 
   // 新規チャットルーム作成
   const createNewChatRoom = async () => {
-    console.log('createNewChatRoom開始', {
+    /* console.log('createNewChatRoom開始', {
       currentUserId,
       profileId: profile?.id,
     });
-
+ */
     if (!currentUserId) {
       setError('ログインしていないか、ユーザー情報が取得できません');
-      console.error('ユーザーIDなし');
+      /* console.error('ユーザーIDなし'); */
       return;
     }
 
     if (!profile?.id) {
       setError('プロフィール情報が取得できません');
-      console.error('プロフィールIDなし');
+      /*  console.error('プロフィールIDなし'); */
       return;
     }
 
@@ -190,10 +190,10 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
       setIsCreatingRoom(true);
       setError(null);
 
-      console.log('新規ルーム作成開始:', {
+      /*  console.log('新規ルーム作成開始:', {
         currentUserId,
         profileId: profile.id,
-      });
+      }); */
 
       // チャットルーム名を生成
       const roomName = `${currentUserId} & ${profile.username || 'User'}`;
@@ -209,20 +209,20 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
         .select()
         .single();
 
-      console.log('ルーム作成応答:', { newRoom, error });
+      /*   console.log('ルーム作成応答:', { newRoom, error }); */
 
       if (error) {
-        console.error('ルーム作成エラー:', error);
+        console.error(error);
         throw error;
       }
 
-      console.log('新規ルーム作成成功:', newRoom);
+      /*  console.log('新規ルーム作成成功:', newRoom); */
       setRoom(newRoom);
 
       // 作成したチャットルームに遷移
       router.push(`/chat/${newRoom.id}`);
     } catch (error) {
-      console.error('チャットルーム作成エラー:', error);
+      console.error(error);
       setError('チャットルームの作成に失敗しました');
     } finally {
       setIsCreatingRoom(false);
@@ -231,12 +231,12 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
 
   // ボタンクリックハンドラ
   const handleChatButtonClick = () => {
-    console.log('チャットボタンクリック', {
+    /*   console.log('チャットボタンクリック', {
       room,
       isCheckingRoom,
       currentUserId,
       profileId: profile?.id,
-    });
+    }); */
 
     if (isCheckingRoom) {
       console.log('ルーム確認中...');
@@ -244,10 +244,10 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
     }
 
     if (room) {
-      console.log('既存ルームへ移動:', room.id);
+      /* console.log('既存ルームへ移動:', room.id); */
       router.push(`/chat/${room.id}`);
     } else {
-      console.log('新規ルーム作成開始');
+      /* console.log('新規ルーム作成開始'); */
       createNewChatRoom();
     }
   };

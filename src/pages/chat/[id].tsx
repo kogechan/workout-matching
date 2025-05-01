@@ -166,7 +166,10 @@ const ChatRoomPage: NextPage = () => {
           {otherUser && (
             <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
               <Avatar
-                src={otherUser.avatar_url || ''}
+                src={
+                  otherUser.avatar_url ||
+                  '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+                }
                 alt={otherUser.username}
                 sx={{ mr: 1, width: 50, height: 50 }}
               >
