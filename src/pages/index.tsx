@@ -457,7 +457,7 @@ const Home: NextPage = () => {
                     position: 'relative',
                     width: '100%',
                     height: 0,
-                    paddingBottom: '66.67%', // 3:2のアスペクト比
+                    paddingBottom: '66.67%',
                     marginBottom: 2,
                     borderRadius: '8px',
                     overflow: 'hidden',
@@ -496,7 +496,7 @@ const Home: NextPage = () => {
                     position: 'relative',
                     width: '100%',
                     height: 0,
-                    paddingBottom: '66.67%', // 3:2のアスペクト比
+                    paddingBottom: '66.67%',
                     marginBottom: 2,
                     borderRadius: '8px',
                     overflow: 'hidden',
@@ -535,7 +535,7 @@ const Home: NextPage = () => {
                     position: 'relative',
                     width: '100%',
                     height: 0,
-                    paddingBottom: '66.67%', // 3:2のアスペクト比
+                    paddingBottom: '66.67%',
                     marginBottom: 2,
                     borderRadius: '8px',
                     overflow: 'hidden',
@@ -707,7 +707,6 @@ const Home: NextPage = () => {
               ].map((item, index) => (
                 <Grid2 size={{ xs: 12, md: 4 }} key={index}>
                   <Box sx={{ height: '100%' }}>
-                    {/* 画像部分 */}
                     <Box
                       sx={{
                         position: 'relative',
@@ -715,8 +714,8 @@ const Home: NextPage = () => {
                         height: 0,
                         paddingBottom: '66.67%',
                         overflow: 'hidden',
-                        borderRadius: 2, // 画像だけ角丸に
-                        mb: 2, // 画像と文字の間にマージン
+                        borderRadius: 2,
+                        mb: 2,
                       }}
                     >
                       <Image
@@ -730,12 +729,11 @@ const Home: NextPage = () => {
                       />
                     </Box>
 
-                    {/* テキスト部分 - 影や背景色なし */}
                     <Typography
                       variant="h6"
                       component="h3"
                       fontWeight="bold"
-                      align="center" // 中央揃え
+                      align="center"
                       gutterBottom
                     >
                       {item.title}
@@ -743,7 +741,7 @@ const Home: NextPage = () => {
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      align="center" // 中央揃え
+                      align="center"
                     >
                       {item.description}
                     </Typography>
@@ -912,7 +910,7 @@ const Home: NextPage = () => {
             showLabels
             sx={{
               justifyContent: 'center',
-              gap: { xs: 2, sm: 3, md: 4 }, // 画面幅に応じてリンク間隔
+              gap: { xs: 2, sm: 3, md: 4 },
               py: { xs: 1, sm: 1.5 },
 
               '& a': {
