@@ -113,7 +113,7 @@ export const LikeButton = ({ profileId }: { profileId: string }) => {
         sx={{
           borderRadius: 20,
           backgroundColor: '#f26a63',
-          width: { md: 1130, xs: 400, sm: 700 },
+          width: { md: 1130, xs: 370, sm: 700 },
         }}
         onClick={handleLike}
         disabled={isLoading || !currentUserId || isLiked}
