@@ -64,6 +64,7 @@ export const Header = () => {
                 height: 40,
               }}
               src="/ServiceIcon/B3023787-242E-40F0-983C-2596861E7695.webp"
+              alt="サービスのアイコン"
             />
             <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
               KINTA

@@ -50,6 +50,7 @@ export const MenuList = () => {
               <Avatar
                 sx={{ width: 100, height: 100 }}
                 src="/ServiceIcon/B3023787-242E-40F0-983C-2596861E7695.webp"
+                alt="サービスのアイコン"
               />
             </Box>
 
