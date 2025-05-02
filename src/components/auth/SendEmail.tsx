@@ -58,7 +58,7 @@ export const SendEmail = () => {
 
       const { error: sendEmailError } =
         await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: 'http://localhost:3000/passwordReset/',
+          redirectTo: 'https://workout-matching.vercel.app/passwordReset/',
         });
       if (sendEmailError) {
         throw sendEmailError;
@@ -75,6 +75,8 @@ export const SendEmail = () => {
       setIsLoading(false);
     }
   };
+
+  // http://localhost:3000/passwordReset/
 
   return (
     <Container maxWidth="sm">
