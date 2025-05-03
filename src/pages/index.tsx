@@ -28,8 +28,8 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>KINTA（キンタ） 合トレ・筋トレマッチングアプリ</title>
-        <meta name="description" content="合トレ・筋トレマッチングアプリ" />
+        <title>KINTA（キンタ） 合トレ・筋トレマッチングサイト</title>
+        <meta name="description" content="合トレ・筋トレマッチングサイト" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Box
