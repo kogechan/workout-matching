@@ -7,6 +7,7 @@ import { useAtom } from 'jotai';
 import { currentUserAtom } from '@/jotai/Jotai';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
+import { Analytics } from '@vercel/analytics/next';
 
 export const darkTheme = createTheme({
   palette: {
@@ -78,6 +79,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <ThemeProvider theme={darkTheme}>
           <CssBaseline /> {/* MUIのリセットCSS */}
           <Component {...pageProps} />
+          <Analytics />
         </ThemeProvider>
       </main>
     </div>
