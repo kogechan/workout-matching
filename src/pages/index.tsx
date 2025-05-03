@@ -28,7 +28,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>KINTA | 合トレ仲間を探すなら</title>
+        <title>KINTA（キンタ） 合トレマッチングアプリ</title>
         <meta name="description" content="筋トレ仲間を見つけよう！" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
