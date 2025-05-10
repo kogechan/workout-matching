@@ -214,6 +214,7 @@ export const PostList = ({ initialPosts = [] }) => {
                 </Box>
               </CardContent>
             </Card>
+            <Divider />
           </form>
 
           {posts.length === 0 && !loading ? (
