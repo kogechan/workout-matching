@@ -55,6 +55,9 @@ export const PostList = ({ initialPosts = [] }) => {
   const router = useRouter();
 
   const remainingChars = MAX_CHARS - content.length;
+  const isOverLimit = remainingChars < 0;
+  const isNearLimit = remainingChars <= 20 && remainingChars >= 0;
+  const isEmpty = content.trim() === '';
 
   useEffect(() => {
     if (initialPosts.length > 0) {
@@ -132,7 +135,7 @@ export const PostList = ({ initialPosts = [] }) => {
           </Snackbar>
 
           <form onSubmit={handleSubmit}>
-            <Card sx={{ mb: 2, borderRadius: 4 }}>
+            <Card sx={{ mb: 0, borderRadius: 0 }}>
               <CardContent className={styles.dialogContent}>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   <Avatar
@@ -161,7 +164,6 @@ export const PostList = ({ initialPosts = [] }) => {
 
                     <Divider className={styles.divider} />
 
-                    {/* アイコンツールバー */}
                     <Box className={styles.toolbar}>
                       <Box>
                         <input
@@ -170,45 +172,39 @@ export const PostList = ({ initialPosts = [] }) => {
                           accept="image/*"
                           multiple
                         />
-                        {/* <IconButton className={styles.toolbarIcon} size="small">
-                          <ImageIcon className={styles.icon} />
-                        </IconButton> */}
                       </Box>
                       <Box className={styles.postControls}>
-                        {/* 文字数カウンター（残り文字数が少なくなると円形プログレス表示） */}
-                        {remainingChars <= 20 ? (
-                          <CircularProgress
-                            variant="determinate"
-                            value={(remainingChars / MAX_CHARS) * 100}
-                            size={24}
-                            thickness={5}
-                            className={
-                              remainingChars < 0
-                                ? styles.negativeProgress
-                                : styles.progress
-                            }
-                          />
-                        ) : null}
-
-                        {/* 残り文字数表示 */}
-                        {remainingChars <= 20 && (
-                          <Typography
-                            variant="body2"
-                            className={
-                              remainingChars < 0
-                                ? styles.negativeCounter
-                                : styles.counter
-                            }
-                          >
-                            {remainingChars}
-                          </Typography>
+                        {(isNearLimit || isOverLimit) && (
+                          <>
+                            <CircularProgress
+                              variant="determinate"
+                              value={(remainingChars / MAX_CHARS) * 100}
+                              size={24}
+                              thickness={5}
+                              className={
+                                isOverLimit
+                                  ? styles.negativeProgress
+                                  : styles.progress
+                              }
+                            />
+                            <Typography
+                              variant="body2"
+                              className={
+                                isOverLimit
+                                  ? styles.negativeCounter
+                                  : styles.counter
+                              }
+                            >
+                              {remainingChars}
+                            </Typography>
+                          </>
                         )}
 
-                        {/* 投稿ボタン */}
                         <Button
                           type="submit"
                           variant="contained"
                           className={styles.postButton}
+                          disabled={isEmpty || isOverLimit}
                         >
                           投稿する
                         </Button>
@@ -228,85 +224,104 @@ export const PostList = ({ initialPosts = [] }) => {
             </Paper>
           ) : (
             <Box sx={{ mb: 2 }}>
-              {posts.map((post) => (
-                <Card
-                  sx={{ mb: 2, position: 'relative', borderRadius: 4 }}
-                  key={post.id}
-                >
-                  <CardContent>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                      {/* 自分のアイコンをクリックしてもプロフィールが表示されないようにする三項演算子 */}
-                      <Avatar
-                        src={
-                          post.user_id === currentUserId
-                            ? profile.avatar_url ||
-                              '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
-                            : post.profiles?.avatar_url ||
-                              '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
-                        }
-                        sx={{ width: 48, height: 48, cursor: 'pointer' }}
-                        onClick={() => {
-                          if (post.user_id !== currentUserId) {
-                            router.push(
-                              `/profile/${
-                                post.profiles?.username || post.user_id
-                              }`
-                            );
+              {posts.map((post, idx) => (
+                <Box key={post.id}>
+                  <Card sx={{ mb: 0, position: 'relative', borderRadius: 0 }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', gap: 2 }}>
+                        {/* 自分のアイコンをクリックしてもプロフィールが表示されないようにする三項演算子 */}
+                        <Avatar
+                          src={
+                            post.user_id === currentUserId
+                              ? profile.avatar_url ||
+                                '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
+                              : post.profiles?.avatar_url ||
+                                '/Avatar/vecteezy_default-profile-account-unknown-icon-black-silhouette_20765399.jpg'
                           }
-                        }}
-                      ></Avatar>
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Box
                           sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1,
-                            mb: 1,
+                            width: 48,
+                            height: 48,
+                            cursor:
+                              post.user_id === currentUserId
+                                ? 'default'
+                                : 'pointer',
                           }}
-                        >
-                          <Typography variant="subtitle1" fontWeight="bold">
-                            {post.profiles?.username}
-                          </Typography>
-                          <Chip
-                            label={dayjs(post.created_at).format('YYYY/MM/DD')}
-                            size="small"
+                          onClick={() => {
+                            if (post.user_id !== currentUserId) {
+                              router.push(
+                                `/profile/${
+                                  post.profiles?.username || post.user_id
+                                }`
+                              );
+                            }
+                          }}
+                        ></Avatar>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Box
                             sx={{
-                              height: '20px',
-                              fontSize: '0.7rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 1,
                             }}
-                          />
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ fontStyle: 'italic' }}
                           >
-                            {dayjs(post.created_at).fromNow()}
-                          </Typography>
-                        </Box>
+                            <Typography variant="subtitle1" fontWeight="bold">
+                              {post.profiles?.username}
+                            </Typography>
+                            <Chip
+                              label={dayjs(post.created_at).format(
+                                'YYYY/MM/DD'
+                              )}
+                              size="small"
+                              sx={{
+                                height: '20px',
+                                fontSize: '0.7rem',
+                              }}
+                            />
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{ fontStyle: 'italic' }}
+                            >
+                              {dayjs(post.created_at).fromNow()}
+                            </Typography>
+                          </Box>
 
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            mb: 2,
-                            lineHeight: 1.6,
-                            whiteSpace: 'pre-wrap',
-                          }}
-                        >
-                          {post.content}
-                        </Typography>
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                          }}
-                        >
-                          <MoreHoriz post={post} onDeletePost={handleDelete} />
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              mb: 2,
+                              lineHeight: 1.6,
+                              whiteSpace: 'pre-wrap',
+                            }}
+                          >
+                            {post.content}
+                          </Typography>
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              right: 8,
+                            }}
+                          >
+                            <MoreHoriz
+                              post={post}
+                              onDeletePost={handleDelete}
+                            />
+                          </Box>
                         </Box>
                       </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                  {idx !== posts.length - 1 && (
+                    <Divider
+                      sx={{
+                        borderBottomWidth: '0.1px',
+                        borderColor: '#636B74',
+                      }}
+                    />
+                  )}
+                </Box>
               ))}
             </Box>
           )}
