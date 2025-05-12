@@ -66,7 +66,6 @@ export const PostList = ({ initialPosts = [] }) => {
     setLoading(false);
   }, [setPosts, initialPosts]);
 
-  // 投稿を削除する関数
   const handleDelete = async (postId: string) => {
     try {
       await deletePost(postId);

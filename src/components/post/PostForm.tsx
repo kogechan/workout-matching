@@ -127,13 +127,9 @@ export const PostForm = () => {
                       accept="image/*"
                       multiple
                     />
-                    {/* <IconButton className={styles.toolbarIcon} size="small">
-                      <ImageIcon className={styles.icon} />
-                    </IconButton> */}
                   </Box>
 
                   <Box className={styles.postControls}>
-                    {/* 文字数カウンター（残り文字数が少なくなると円形プログレス表示） */}
                     {remainingChars <= 20 ? (
                       <CircularProgress
                         variant="determinate"
@@ -148,7 +144,6 @@ export const PostForm = () => {
                       />
                     ) : null}
 
-                    {/* 残り文字数表示 */}
                     {remainingChars <= 20 && (
                       <Typography
                         variant="body2"
@@ -168,6 +163,7 @@ export const PostForm = () => {
                       variant="contained"
                       onClick={() => setPostModalOpen(false)}
                       className={styles.postButton}
+                      disabled={!content.trim()}
                     >
                       投稿する
                     </Button>
