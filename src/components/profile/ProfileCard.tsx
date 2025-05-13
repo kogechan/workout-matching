@@ -5,6 +5,7 @@ import {
   CardActions,
   CircularProgress,
   Container,
+  Divider,
   IconButton,
   Modal,
   Paper,
@@ -21,7 +22,7 @@ import WcIcon from '@mui/icons-material/Wc';
 import HomeIcon from '@mui/icons-material/Home';
 import { useAtom } from 'jotai';
 import { currentUserAtom, subImgeAtom } from '@/jotai/Jotai';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import supabase from '@/lib/supabase';
 import { ProfileImageType } from '@/type/user';
 
@@ -86,24 +87,22 @@ export const ProfileCard = () => {
   }, [currentUserId, setSubImages]);
 
   // 画像プレビュー
-  const handlePreview = (url: string) => {
+  const handlePreview = useCallback((url: string) => {
     setPreviewImage(url);
-  };
+  }, []);
 
   if (loading) {
     return (
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '50vh',
           flexDirection: 'column',
-          gap: 2,
+          alignItems: 'center',
+          py: 6,
         }}
       >
-        <CircularProgress color="primary" />
-        <Typography variant="body2" color="text.secondary">
+        <CircularProgress />
+        <Typography mt={2} color="text.secondary">
           プロフィールを読み込み中...
         </Typography>
       </Box>
@@ -173,10 +172,11 @@ export const ProfileCard = () => {
         >
           {subImages &&
             subImages.length > 0 &&
-            subImages.map((image) => (
+            subImages.map((image, index) => (
               <Avatar
                 key={image.id}
                 src={image.url}
+                alt={`サブ画像 ${index + 1}`}
                 sx={{
                   width: { xs: 60, sm: 70, md: 80 },
                   height: { xs: 60, sm: 70, md: 80 },
@@ -286,6 +286,8 @@ export const ProfileCard = () => {
             />
           </Box>
         </Paper>
+
+        <Divider sx={{ my: 4 }} />
 
         <Paper
           sx={{
