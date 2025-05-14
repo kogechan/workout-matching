@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { useAvatar } from '@/hooks/useAvatar';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export const CreateAcount = () => {
   const { profile, loading, setProfile } = useAvatar();
@@ -30,19 +30,23 @@ export const CreateAcount = () => {
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
-    // エラー状態をリセット
-    if (errors[e.target.name as keyof typeof errors]) {
-      setErrors({ ...errors, [e.target.name]: false });
-    }
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setProfile({ ...profile, [e.target.name]: e.target.value });
+      // エラー状態をリセット
+      if (errors[e.target.name as keyof typeof errors]) {
+        setErrors({ ...errors, [e.target.name]: false });
+      }
+    },
+    [errors, setProfile, setErrors, profile]
+  );
 
-  const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setProfile({ ...profile, gender: e.target.value });
-  };
+  const handleGenderChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setProfile({ ...profile, gender: e.target.value });
+    },
+    [setProfile, profile]
+  );
 
   const validateProfile = () => {
     const newErrors = {
