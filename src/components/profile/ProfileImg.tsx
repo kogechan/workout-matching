@@ -33,8 +33,32 @@ export const ProfileImg = () => {
   const [subImages, setSubImages] = useAtom(subImgeAtom);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hoverMain, setHoverMain] = useState(false);
+  const [isMainHover, setIsMainHover] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  const isValidImage = (file: File): boolean => {
+    // 画像ファイル形式チェック
+    if (!file.type.match('image/(jpeg|jpg|png|webp)')) {
+      alert('JPEG、PNG、WEBPファイルのみアップロードできます');
+      return false;
+    }
+    return true;
+  };
+
+  const startProgress = (
+    setter: React.Dispatch<React.SetStateAction<number>>
+  ) => {
+    const intervalId = setInterval(() => {
+      setter((prev) => {
+        if (prev >= 95) {
+          clearInterval(intervalId);
+          return prev;
+        }
+        return prev + 5;
+      });
+    }, 100);
+    return intervalId;
+  };
 
   // 既存のサブ画像を取得
   useEffect(() => {
@@ -75,30 +99,12 @@ export const ProfileImg = () => {
 
     const file = event.target.files[0];
 
-    // ファイルサイズチェック (5MB以下)
-    /*  if (file.size > 5 * 1024 * 1024) {
-      alert('ファイルサイズは5MB以下にしてください');
-      return;
-    } */
-
-    // 画像ファイル形式チェック
-    if (!file.type.match('image/(jpeg|jpg|png|webp)')) {
-      alert('JPEG、PNG、WEBPファイルのみアップロードできます');
-      return;
-    }
+    if (!isValidImage(file)) return;
 
     setIsLoading(true);
     setUploadProgress(0);
 
-    const progressInterval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 95) {
-          clearInterval(progressInterval);
-          return prev;
-        }
-        return prev + 5;
-      });
-    }, 100);
+    const intervalId = startProgress(setUploadProgress);
 
     try {
       const filePath = `avatars/${currentUserId}-${Date.now()}-${file.name}`;
@@ -127,7 +133,7 @@ export const ProfileImg = () => {
       console.error('画像アップロードエラー:', error);
       alert('画像のアップロードに失敗しました');
     } finally {
-      clearInterval(progressInterval);
+      clearInterval(intervalId);
       setTimeout(() => {
         setUploadProgress(0);
         setIsLoading(false);
@@ -146,10 +152,10 @@ export const ProfileImg = () => {
     setIsLoading(true);
     setUploadProgress(0);
 
-    const progressInterval = setInterval(() => {
+    const intervalId = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 95) {
-          clearInterval(progressInterval);
+          clearInterval(intervalId);
           return prev;
         }
         return prev + 5;
@@ -160,9 +166,7 @@ export const ProfileImg = () => {
       const newImages: ProfileImageType[] = [];
 
       for (const file of files) {
-        // 画像ファイル形式チェック
-        if (!file.type.match('image/(jpeg|jpg|png|webp)')) {
-          alert('JPEG、PNG、WEBPファイルのみアップロードできます');
+        if (!isValidImage(file)) {
           continue;
         }
 
@@ -202,7 +206,7 @@ export const ProfileImg = () => {
       console.error('サブ画像アップロードエラー:', error);
       alert('画像のアップロードに失敗しました');
     } finally {
-      clearInterval(progressInterval);
+      clearInterval(intervalId);
       setTimeout(() => {
         setIsLoading(false);
         setUploadProgress(0);
@@ -232,8 +236,7 @@ export const ProfileImg = () => {
 
       if (error) throw error;
 
-      // ストレージからファイルを削除 (オプション)
-      // 注: URLからファイルパスを取得する処理が必要
+      // ストレージからファイルを削除
       const filePath = imageUrl.split('/').pop();
       if (filePath) {
         await supabase.storage
@@ -295,11 +298,11 @@ export const ProfileImg = () => {
               display: 'inline-block',
               my: 2,
               borderRadius: '50%',
-              boxShadow: hoverMain ? 3 : 0,
+              boxShadow: isMainHover ? 3 : 0,
               transition: 'all 0.3s ease',
             }}
-            onMouseEnter={() => setHoverMain(true)}
-            onMouseLeave={() => setHoverMain(false)}
+            onMouseEnter={() => setIsMainHover(true)}
+            onMouseLeave={() => setIsMainHover(false)}
           >
             <IconButton component="span">
               <Avatar
@@ -316,7 +319,7 @@ export const ProfileImg = () => {
               </Avatar>
             </IconButton>
 
-            <Zoom in={hoverMain}>
+            <Zoom in={isMainHover}>
               <label htmlFor="avatar-upload">
                 <input
                   type="file"
@@ -510,17 +513,3 @@ export const ProfileImg = () => {
     </>
   );
 };
-
-{
-  /* <picture>
-<img
-  src={previewImage}
-  alt="画像プレビュー"
-  style={{
-    width: '100%',
-    maxHeight: '80vh',
-    objectFit: 'contain',
-  }}
-/>
-</picture> */
-}
