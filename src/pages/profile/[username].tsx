@@ -25,7 +25,7 @@ import {
   NextPage,
 } from 'next';
 import supabase from '@/lib/supabase';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { chatRoomAtom, currentUserAtom } from '@/jotai/Jotai';
 import { useRouter } from 'next/router';
@@ -124,11 +124,6 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
 
       setIsCheckingRoom(true);
       try {
-        /*  console.log('既存ルーム検索:', {
-          currentUserId,
-          profileId: profile.id,
-        }); */
-
         // 既存のチャットルームを検索
         const { data: roomData, error: roomError } = await supabase
           .from('chat_rooms')
@@ -138,16 +133,11 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
           )
           .maybeSingle();
 
-        /* console.log('ルーム検索結果:', { roomData, roomError }); */
-
         if (roomError) {
-          /*  console.error('既存ルーム検索エラー:', roomError); */
           setRoom(null);
         } else if (roomData) {
-          /*     console.log('既存ルームを発見:', roomData); */
           setRoom(roomData);
         } else {
-          /* console.log('既存ルームなし、roomにnullをセット'); */
           setRoom(null);
         }
       } catch (err) {
@@ -164,20 +154,15 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
 
   // 新規チャットルーム作成
   const createNewChatRoom = async () => {
-    /* console.log('createNewChatRoom開始', {
-      currentUserId,
-      profileId: profile?.id,
-    });
- */
     if (!currentUserId) {
       setError('ログインしていないか、ユーザー情報が取得できません');
-      /* console.error('ユーザーIDなし'); */
+
       return;
     }
 
     if (!profile?.id) {
       setError('プロフィール情報が取得できません');
-      /*  console.error('プロフィールIDなし'); */
+
       return;
     }
 
@@ -189,11 +174,6 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
     try {
       setIsCreatingRoom(true);
       setError(null);
-
-      /*  console.log('新規ルーム作成開始:', {
-        currentUserId,
-        profileId: profile.id,
-      }); */
 
       // チャットルーム名を生成
       const roomName = `${currentUserId} & ${profile.username || 'User'}`;
@@ -209,14 +189,11 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
         .select()
         .single();
 
-      /*   console.log('ルーム作成応答:', { newRoom, error }); */
-
       if (error) {
         console.error(error);
         throw error;
       }
 
-      /*  console.log('新規ルーム作成成功:', newRoom); */
       setRoom(newRoom);
 
       // 作成したチャットルームに遷移
@@ -229,33 +206,24 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
     }
   };
 
-  // ボタンクリックハンドラ
+  // チャットボタンのクリックイベント
   const handleChatButtonClick = () => {
-    /*   console.log('チャットボタンクリック', {
-      room,
-      isCheckingRoom,
-      currentUserId,
-      profileId: profile?.id,
-    }); */
-
     if (isCheckingRoom) {
-      console.log('ルーム確認中...');
+      console.log('ルーム確認中');
       return;
     }
 
     if (room) {
-      /* console.log('既存ルームへ移動:', room.id); */
       router.push(`/chat/${room.id}`);
     } else {
-      /* console.log('新規ルーム作成開始'); */
       createNewChatRoom();
     }
   };
 
   // 画像プレビュー
-  const handlePreview = (url: string) => {
+  const handlePreview = useCallback((url: string) => {
     setPreviewImage(url);
-  };
+  }, []);
 
   if (!profile) {
     return (
