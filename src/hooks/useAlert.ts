@@ -4,7 +4,6 @@ export const useAlert = () => {
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [postAlert, setPostAlert] = useState(false);
   const [reportAlert, setReportAlert] = useState(false);
-  const [blockAlert, setBlockAlert] = useState(false);
   const [messageDeleteAlert, setMessageDeleteAlert] = useState(false);
   const [accountDeleteAlert, setAccountDeleteAlert] = useState(false);
 
@@ -32,14 +31,6 @@ export const useAlert = () => {
     }, 3000);
   };
 
-  // ブロックのアラート
-  const BlockAlert = () => {
-    setBlockAlert(true);
-    setTimeout(() => {
-      setBlockAlert(false);
-    }, 3000);
-  };
-
   // メッセージルームの削除アラート
   const MessageDeleteAlert = () => {
     setMessageDeleteAlert(true);
@@ -48,7 +39,7 @@ export const useAlert = () => {
     }, 3000);
   };
 
-  // 大会のアラート
+  // 退会のアラート
   const AccountDeleteAlert = () => {
     setAccountDeleteAlert(true);
     setTimeout(() => {
@@ -63,8 +54,6 @@ export const useAlert = () => {
     PostAlert,
     reportAlert,
     ReportAlert,
-    blockAlert,
-    BlockAlert,
     messageDeleteAlert,
     MessageDeleteAlert,
     accountDeleteAlert,

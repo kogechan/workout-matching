@@ -1,3 +1,4 @@
+import { blockModalAtom } from '@/jotai/Jotai';
 import {
   Button,
   Dialog,
@@ -6,13 +7,15 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { useAtom } from 'jotai';
 
 const UserBlock = () => {
+  const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   return (
     <>
       <Dialog
-        open={deletePostDialogOpen}
-        onClose={() => setDeletePostDialogOpen(false)}
+        open={blockModalOpen}
+        onClose={() => setBlockModalOpen(false)}
         slotProps={{
           paper: {
             style: {
@@ -26,21 +29,13 @@ const UserBlock = () => {
         <DialogTitle id="delete-account-dialog-title">投稿の削除</DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-account-dialog-description">
-            本当に削除しますか？この操作は元に戻すことができません。
+            ユーザーをブロックしますか？ブロックすると互いのプロフィールとメッセージが表示されなくなりますが、後で設定画面から解除することができます。
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeletePostDialogOpen(false)}>
-            キャンセル
-          </Button>
-          <Button
-            color="error"
-            autoFocus
-            onClick={() => {
-              handleDelete();
-            }}
-          >
-            削除する
+          <Button onClick={() => setBlockModalOpen(false)}>キャンセル</Button>
+          <Button color="error" autoFocus>
+            ブロックする
           </Button>
         </DialogActions>
       </Dialog>

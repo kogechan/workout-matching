@@ -35,6 +35,7 @@ import { createServerSupabaseClient } from '@/lib/server';
 import { MoreVert } from '../../components/profile/MoreVert';
 import { UserReport } from '@/components/Report/UserReport';
 import Head from 'next/head';
+import UserBlock from '@/components/block/UserBlock';
 
 // インターフェース
 interface SubImage {
@@ -531,6 +532,7 @@ const ProfileCard: NextPage<ProfileCardProps> = ({ profile, subImages }) => {
             <LikeButton profileId={profile.id} />
           </CardActions>
 
+          <UserBlock />
           <UserReport />
         </Container>
 

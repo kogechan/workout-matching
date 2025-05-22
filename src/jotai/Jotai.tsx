@@ -12,6 +12,8 @@ export const loginModalAtom = atom(false);
 export const postModalAtom = atom(false);
 // ログアウトアラートモーダルの開閉状態を管理
 export const logoutModalAtom = atom(false);
+// ブロックモーダルの開閉状態を管理
+export const blockModalAtom = atom(false);
 // 報告モーダルの開閉状態を管理(投稿)
 export const reportPostModalAtom = atom(false);
 // 報告モーダルの開閉状態を管理(ユーザー)
