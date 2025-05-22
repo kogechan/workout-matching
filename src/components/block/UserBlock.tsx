@@ -1,4 +1,5 @@
-import { blockModalAtom } from '@/jotai/Jotai';
+import { blockModalAtom, currentUserAtom } from '@/jotai/Jotai';
+import supabase from '@/lib/supabase';
 import {
   Button,
   Dialog,
@@ -11,6 +12,21 @@ import { useAtom } from 'jotai';
 
 const UserBlock = () => {
   const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
+  const [currentUserId] = useAtom(currentUserAtom);
+
+  const handleBlock = async (targetUserId: string) => {
+    const { error } = await supabase
+      .from('user_blocks')
+      .insert({ user_id: currentUserId, blocked_user_id: targetUserId })
+      .throwOnError();
+
+    if (error) {
+      console.error(error);
+    }
+
+    // 楽観的 UI 更新などはここで
+  };
+
   return (
     <>
       <Dialog
@@ -26,7 +42,9 @@ const UserBlock = () => {
         aria-labelledby="delete-account-dialog-title"
         aria-describedby="delete-account-dialog-description"
       >
-        <DialogTitle id="delete-account-dialog-title">投稿の削除</DialogTitle>
+        <DialogTitle id="delete-account-dialog-title">
+          ユーザーをブロック
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-account-dialog-description">
             ユーザーをブロックしますか？ブロックすると互いのプロフィールとメッセージが表示されなくなりますが、後で設定画面から解除することができます。

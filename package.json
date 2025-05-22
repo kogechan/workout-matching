@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "gen:types": "supabase gen types typescript --linked > src/database.types.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

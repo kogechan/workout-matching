@@ -7,6 +7,31 @@ export type Json =
   | Json[]
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       admins: {
@@ -133,6 +158,13 @@ export type Database = {
             columns: ["room_id"]
             isOneToOne: false
             referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "v_my_chat_rooms"
             referencedColumns: ["id"]
           },
           {
@@ -273,6 +305,42 @@ export type Database = {
           },
         ]
       }
+      user_blocks: {
+        Row: {
+          blocked_user_id: string
+          created_at: string
+          unblocked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          blocked_user_id: string
+          created_at?: string
+          unblocked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          blocked_user_id?: string
+          created_at?: string
+          unblocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_blocks_blocked_user_id_fkey1"
+            columns: ["blocked_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_blocks_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           created_at: string | null
@@ -293,7 +361,71 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_my_blocked_users: {
+        Row: {
+          blocked_user_id: string | null
+        }
+        Insert: {
+          blocked_user_id?: string | null
+        }
+        Update: {
+          blocked_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_blocks_blocked_user_id_fkey1"
+            columns: ["blocked_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_my_chat_rooms: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          last_message: string | null
+          name: string | null
+          updated_at: string | null
+          user1_id: string | null
+          user2_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          last_message?: string | null
+          name?: string | null
+          updated_at?: string | null
+          user1_id?: string | null
+          user2_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          last_message?: string | null
+          name?: string | null
+          updated_at?: string | null
+          user1_id?: string | null
+          user2_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_rooms_user_id1_fkey"
+            columns: ["user1_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_rooms_user_id2_fkey"
+            columns: ["user2_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
@@ -413,6 +545,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       Role: ["USER", "ADMIN"],
