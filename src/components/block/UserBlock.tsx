@@ -6,6 +6,7 @@ import {
 import supabase from '@/lib/supabase';
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -13,23 +14,32 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { useAtom } from 'jotai';
+import { useState } from 'react';
+import useSWR from 'swr';
 
 const UserBlock = () => {
+  const [loading, setLoading] = useState(false);
   const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   const [currentUserId] = useAtom(currentUserAtom);
   const [blockTarget] = useAtom(blockTargetAtom);
 
+  // ユーザーブロック関数
   const handleBlock = async () => {
-    const { error } = await supabase
-      .from('user_blocks')
-      .insert({ user_id: currentUserId, blocked_user_id: blockTarget?.id })
-      .throwOnError();
+    try {
+      setLoading(true);
+      const { error } = await supabase
+        .from('user_blocks')
+        .insert({ user_id: currentUserId, blocked_user_id: blockTarget?.id })
+        .throwOnError();
 
-    if (error) {
-      console.error(error);
+      if (error) {
+        console.error(error);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
     }
-
-    // 楽観的 UI 更新などはここで
   };
 
   return (
@@ -61,6 +71,18 @@ const UserBlock = () => {
             ブロックする
           </Button>
         </DialogActions>
+        {loading && (
+          <CircularProgress
+            size={24}
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: '-12px',
+              marginLeft: '-12px',
+            }}
+          />
+        )}
       </Dialog>
     </>
   );
