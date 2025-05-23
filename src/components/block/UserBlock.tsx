@@ -1,4 +1,8 @@
-import { blockModalAtom, currentUserAtom } from '@/jotai/Jotai';
+import {
+  blockModalAtom,
+  blockTargetAtom,
+  currentUserAtom,
+} from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
 import {
   Button,
@@ -13,11 +17,12 @@ import { useAtom } from 'jotai';
 const UserBlock = () => {
   const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   const [currentUserId] = useAtom(currentUserAtom);
+  const [blockTarget] = useAtom(blockTargetAtom);
 
-  const handleBlock = async (targetUserId: string) => {
+  const handleBlock = async () => {
     const { error } = await supabase
       .from('user_blocks')
-      .insert({ user_id: currentUserId, blocked_user_id: targetUserId })
+      .insert({ user_id: currentUserId, blocked_user_id: blockTarget?.id })
       .throwOnError();
 
     if (error) {
@@ -52,7 +57,7 @@ const UserBlock = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setBlockModalOpen(false)}>キャンセル</Button>
-          <Button color="error" autoFocus>
+          <Button color="error" onClick={handleBlock}>
             ブロックする
           </Button>
         </DialogActions>

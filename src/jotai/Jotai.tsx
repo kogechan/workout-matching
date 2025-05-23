@@ -53,6 +53,8 @@ export const chatRoomAtom = atom<ChatRoom | null>(null);
 export const reportPostTargetAtom = atom<Post | null>(null);
 // 報告対象の管理(ユーザー)
 export const reportUserTargetAtom = atom<ProfileData | null>(null);
+// ブロック対象の管理
+export const blockTargetAtom = atom<ProfileData | null>(null);
 // サブ写真の情報を保持
 export const subImgeAtom = atom<ProfileImageType[]>([]);
 // フィルターしている値を保持

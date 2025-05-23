@@ -4,7 +4,6 @@ import { AddPost } from '../../components/post/AddPost';
 import { NextPage } from 'next';
 import { PostReport } from '@/components/Report/PostReport';
 import Head from 'next/head';
-import UserBlock from '@/components/block/UserBlock';
 
 const Home: NextPage = () => {
   return (
@@ -17,7 +16,6 @@ const Home: NextPage = () => {
       <PostList />
       <AddPost />
       <PostReport />
-      <UserBlock />
     </>
   );
 };

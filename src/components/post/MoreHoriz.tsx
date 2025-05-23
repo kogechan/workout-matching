@@ -1,5 +1,4 @@
 import {
-  blockModalAtom,
   currentUserAtom,
   reportPostModalAtom,
   reportPostTargetAtom,
@@ -19,7 +18,6 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import BlockIcon from '@mui/icons-material/Block';
 import ReportIcon from '@mui/icons-material/Report';
 import { Post } from '@/type/post';
 
@@ -32,7 +30,6 @@ export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [currentUserId] = useAtom(currentUserAtom);
   const [reportModalOpen, setReportModalOpen] = useAtom(reportPostModalAtom);
-  const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   const [, setReportTarget] = useAtom(reportPostTargetAtom);
   const [deletePostDialogOpen, setDeletePostDialogOpen] = useState(false);
 
@@ -86,16 +83,6 @@ export const MoreHoriz = ({ post, onDeletePost }: MoreHorizProps) => {
           </MenuItem>
         ) : (
           [
-            <MenuItem
-              key="block"
-              onClick={() => {
-                setBlockModalOpen(!blockModalOpen);
-                handleMenuClose();
-              }}
-            >
-              <BlockIcon sx={{ marginRight: 1 }} />
-              ブロック
-            </MenuItem>,
             <MenuItem
               key="report"
               onClick={() => {
