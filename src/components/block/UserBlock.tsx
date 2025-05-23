@@ -17,11 +17,24 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import useSWR from 'swr';
 
-const UserBlock = () => {
+export const UserBlock = () => {
   const [loading, setLoading] = useState(false);
   const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   const [currentUserId] = useAtom(currentUserAtom);
   const [blockTarget] = useAtom(blockTargetAtom);
+
+  const fetcher = async () => {
+    const { data, error } = await supabase
+      .from('user_blocks')
+      .select('blocked_user_id')
+      .is('unblocked_at', null);
+    if (error) throw error;
+    return data.map((d) => d.blocked_user_id as string);
+  };
+
+  const { mutate } = useSWR('myBlocked', fetcher, {
+    revalidateOnFocus: false,
+  });
 
   // ユーザーブロック関数
   const handleBlock = async () => {
@@ -31,6 +44,7 @@ const UserBlock = () => {
         .from('user_blocks')
         .insert({ user_id: currentUserId, blocked_user_id: blockTarget?.id })
         .throwOnError();
+      mutate();
 
       if (error) {
         console.error(error);
@@ -87,5 +101,3 @@ const UserBlock = () => {
     </>
   );
 };
-
-export default UserBlock;

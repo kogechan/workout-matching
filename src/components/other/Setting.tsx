@@ -27,6 +27,7 @@ import {
   Notifications as NotificationsIcon,
   Logout as LogoutIcon,
   Delete as DeleteIcon,
+  Block as BlockIcon,
 } from '@mui/icons-material';
 import { useAtom } from 'jotai';
 import { logoutModalAtom } from '@/jotai/Jotai';
@@ -117,6 +118,16 @@ export const Setting = () => {
                   'aria-labelledby': 'switch-notifications',
                 }}
               />
+            </ListItem>
+
+            <Divider />
+
+            {/* ブロック管理 */}
+            <ListItem sx={{ cursor: 'pointer' }}>
+              <ListItemIcon>
+                <BlockIcon />
+              </ListItemIcon>
+              <ListItemText primary="ブロックしたユーザー" />
             </ListItem>
 
             <Divider />
