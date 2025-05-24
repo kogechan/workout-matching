@@ -123,7 +123,10 @@ export const Setting = () => {
             <Divider />
 
             {/* ブロック管理 */}
-            <ListItem sx={{ cursor: 'pointer' }}>
+            <ListItem
+              sx={{ cursor: 'pointer' }}
+              onClick={() => router.push('/block')}
+            >
               <ListItemIcon>
                 <BlockIcon />
               </ListItemIcon>

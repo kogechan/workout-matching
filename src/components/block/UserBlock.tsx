@@ -1,6 +1,6 @@
 import {
+  blockedUserAtom,
   blockModalAtom,
-  blockTargetAtom,
   currentUserAtom,
 } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
@@ -21,7 +21,7 @@ export const UserBlock = () => {
   const [loading, setLoading] = useState(false);
   const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   const [currentUserId] = useAtom(currentUserAtom);
-  const [blockTarget] = useAtom(blockTargetAtom);
+  const [blockedUsers] = useAtom(blockedUserAtom);
 
   const fetcher = async () => {
     const { data, error } = await supabase
@@ -38,16 +38,22 @@ export const UserBlock = () => {
 
   // ユーザーブロック関数
   const handleBlock = async () => {
+    const blockedTarget = blockedUsers.map((user) => user.id);
     try {
       setLoading(true);
       const { error } = await supabase
         .from('user_blocks')
-        .insert({ user_id: currentUserId, blocked_user_id: blockTarget?.id })
+        .insert({
+          user_id: currentUserId,
+          blocked_user_id: blockedTarget.join(''),
+        })
         .throwOnError();
       mutate();
 
       if (error) {
         console.error(error);
+      } else {
+        setBlockModalOpen(false);
       }
     } catch (err) {
       console.log(err);

@@ -14,6 +14,8 @@ export const postModalAtom = atom(false);
 export const logoutModalAtom = atom(false);
 // ブロックモーダルの開閉状態を管理
 export const blockModalAtom = atom(false);
+// ブロック解除モーダルの開閉状態を管理
+export const unblockModalAtom = atom(false);
 // 報告モーダルの開閉状態を管理(投稿)
 export const reportPostModalAtom = atom(false);
 // 報告モーダルの開閉状態を管理(ユーザー)
@@ -67,3 +69,5 @@ export const filterAtom = atom<SearchFilters>({
   difficult_muscle: null,
   belong_gym: null,
 });
+// ブロックしたユーザーの情報を保持
+export const blockedUserAtom = atom<ProfileData[]>([]);

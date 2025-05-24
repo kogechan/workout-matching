@@ -1,6 +1,6 @@
 import {
+  blockedUserAtom,
   blockModalAtom,
-  blockTargetAtom,
   reportUserModalAtom,
   reportUserTargetAtom,
 } from '@/jotai/Jotai';
@@ -21,7 +21,7 @@ export const MoreVert = ({ profile }: MoreVertProps) => {
   const [reportModalOpen, setReportModalOpen] = useAtom(reportUserModalAtom);
   const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   const [, setReportTarget] = useAtom(reportUserTargetAtom);
-  const [, setBlockTarget] = useAtom(blockTargetAtom);
+  const [, setBlockedUsers] = useAtom(blockedUserAtom);
 
   // メニューを開く
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -63,7 +63,7 @@ export const MoreVert = ({ profile }: MoreVertProps) => {
             {
               handleMenuClose();
               setBlockModalOpen(!blockModalOpen);
-              setBlockTarget(profile);
+              setBlockedUsers([profile]);
             }
           }}
         >

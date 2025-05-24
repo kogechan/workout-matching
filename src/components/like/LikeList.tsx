@@ -244,7 +244,7 @@ const LikeList = () => {
       >
         <CircularProgress color="primary" />
         <Typography variant="body2" color="text.secondary">
-          いいね情報を読み込み中...
+          いいね一覧を読み込み中...
         </Typography>
       </Box>
     );
