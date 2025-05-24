@@ -161,13 +161,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "messages_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "v_my_chat_rooms"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "messages_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -309,19 +302,19 @@ export type Database = {
         Row: {
           blocked_user_id: string
           created_at: string
-          unblocked_at: string | null
+          is_deleted: boolean
           user_id: string
         }
         Insert: {
           blocked_user_id: string
           created_at?: string
-          unblocked_at?: string | null
+          is_deleted?: boolean
           user_id: string
         }
         Update: {
           blocked_user_id?: string
           created_at?: string
-          unblocked_at?: string | null
+          is_deleted?: boolean
           user_id?: string
         }
         Relationships: [
@@ -346,86 +339,25 @@ export type Database = {
           created_at: string | null
           email: string
           id: string
+          is_deleted: boolean | null
         }
         Insert: {
           created_at?: string | null
           email: string
           id: string
+          is_deleted?: boolean | null
         }
         Update: {
           created_at?: string | null
           email?: string
           id?: string
+          is_deleted?: boolean | null
         }
         Relationships: []
       }
     }
     Views: {
-      v_my_blocked_users: {
-        Row: {
-          blocked_user_id: string | null
-        }
-        Insert: {
-          blocked_user_id?: string | null
-        }
-        Update: {
-          blocked_user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_blocks_blocked_user_id_fkey1"
-            columns: ["blocked_user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      v_my_chat_rooms: {
-        Row: {
-          created_at: string | null
-          id: string | null
-          last_message: string | null
-          name: string | null
-          updated_at: string | null
-          user1_id: string | null
-          user2_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string | null
-          last_message?: string | null
-          name?: string | null
-          updated_at?: string | null
-          user1_id?: string | null
-          user2_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string | null
-          last_message?: string | null
-          name?: string | null
-          updated_at?: string | null
-          user1_id?: string | null
-          user2_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_rooms_user_id1_fkey"
-            columns: ["user1_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "chat_rooms_user_id2_fkey"
-            columns: ["user2_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never
