@@ -1,7 +1,6 @@
 import {
   blockedUserAtom,
   blockTargetAtom,
-  currentUserAtom,
   unblockModalAtom,
 } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
@@ -20,19 +19,17 @@ export const UserUnblock = () => {
   const [unblockModalOpen, setUnblockModalOpen] = useAtom(unblockModalAtom);
   const [blockedTarget] = useAtom(blockTargetAtom);
   const [, setBlockedUsers] = useAtom(blockedUserAtom);
-  const [currentUserId] = useAtom(currentUserAtom);
 
   // ユーザーブロック解除関数
   const unBlockUser = async (userId: string) => {
-    const { error } = await supabase
-      .from('user_blocks')
-      .update({ unblocked_at: new Date().toISOString() })
-      .eq('user_id', currentUserId)
-      .eq('blocked_user_id', userId)
-      .throwOnError();
+    // 専用ファンクションでブロック解除
+    const { data, error } = await supabase.rpc('unblock_user', {
+      target_user_id: userId,
+    });
+
     if (error) {
       console.error(error);
-    } else {
+    } else if (data) {
       setBlockedUsers((user) => user.filter((u) => u.id !== userId));
       setUnblockModalOpen(false);
     }

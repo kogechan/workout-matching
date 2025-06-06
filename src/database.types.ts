@@ -301,32 +301,45 @@ export type Database = {
       user_blocks: {
         Row: {
           blocked_user_id: string
-          created_at: string
-          is_deleted: boolean
+          created_at: string | null
+          id: string
+          is_deleted: boolean | null
+          updated_at: string
           user_id: string
         }
         Insert: {
           blocked_user_id: string
-          created_at?: string
-          is_deleted?: boolean
+          created_at?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          updated_at?: string
           user_id: string
         }
         Update: {
           blocked_user_id?: string
-          created_at?: string
-          is_deleted?: boolean
+          created_at?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_blocks_blocked_user_id_fkey1"
+            foreignKeyName: "fk_blocked_user"
+            columns: ["blocked_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_blocks_blocked_user_id_fkey"
             columns: ["blocked_user_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "user_blocks_user_id_fkey1"
+            foreignKeyName: "user_blocks_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -360,7 +373,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_my_blocked_list: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          username: string
+          avatar_url: string
+          blocked_at: string
+          mutual_block: boolean
+        }[]
+      }
+      is_blocked: {
+        Args: { other: string }
+        Returns: boolean
+      }
+      unblock_user: {
+        Args: { target_user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       Role: "USER" | "ADMIN"

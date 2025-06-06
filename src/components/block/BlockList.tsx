@@ -1,10 +1,10 @@
 import {
   blockedUserAtom,
   blockTargetAtom,
+  currentUserAtom,
   unblockModalAtom,
 } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
-import { ProfileData } from '@/type/chat';
 import {
   alpha,
   Avatar,
@@ -31,51 +31,47 @@ export const BlockList = () => {
   const [blockedUsers, setBlockedUsers] = useAtom(blockedUserAtom);
   const [unblockModalOpen, setUnblockModalOpen] = useAtom(unblockModalAtom);
   const [, setBlockedTarget] = useAtom(blockTargetAtom);
+  const [currentUserId] = useAtom(currentUserAtom);
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
 
   useEffect(() => {
-    async function fetchData() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.user) {
-        await fetchBlockedUsers(session.user.id);
-      }
-      setLoading(false);
-    }
-    fetchData();
-  }, []);
+    // ブロックしたユーザーを取得
+    const fetchBlockedUsers = async () => {
+      if (!currentUserId) return;
+      try {
+        // 認証状態を確認
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-  // ブロックしたユーザーを取得
-  const fetchBlockedUsers = async (userId: string) => {
-    // 自分がブロックしたユーザーを取得
-    const { data: blocked, error } = await supabase
-      .from('user_blocks')
-      .select('blocked_user_id, created_at')
-      .eq('user_id', userId)
-      .is('unblocked_at', null);
+        if (!session?.user?.id) {
+          throw new Error('認証されていません');
+        }
 
-    if (error) {
-      console.error(error);
-    }
+        // 専用ファンクションを使用（RLSをバイパス）
+        const { data, error } = await supabase.rpc('get_my_blocked_list');
 
-    // ユーザー情報を取得
-    if (blocked?.length) {
-      const userIds = blocked
-        .map((block) => block.blocked_user_id)
-        .filter((id): id is string => id !== null);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .in('id', userIds);
-      setBlockedUsers((data as ProfileData[]) || []);
+        if (error) throw error;
 
-      if (error) {
+        // データはすでに適切な形式
+        const transformedData = (data || []).map((item) => ({
+          id: item.id,
+          username: item.username,
+          avatar_url: item.avatar_url,
+          created_at: item.blocked_at,
+          mutual_block: item.mutual_block, // 相互ブロック情報
+        }));
+        console.log('Fetched blocked users:', transformedData);
+        setBlockedUsers(transformedData);
+      } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
-    }
-  };
+    };
+    fetchBlockedUsers();
+  }, [setBlockedUsers, currentUserId]);
 
   if (loading) {
     return (

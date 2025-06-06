@@ -21,13 +21,14 @@ export const UserBlock = () => {
   const [loading, setLoading] = useState(false);
   const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   const [currentUserId] = useAtom(currentUserAtom);
-  const [blockedUsers] = useAtom(blockedUserAtom);
+  const [blockedUsers, setBlockedUsers] = useAtom(blockedUserAtom);
 
   const fetcher = async () => {
     const { data, error } = await supabase
       .from('user_blocks')
       .select('blocked_user_id')
-      .is('unblocked_at', null);
+      .eq('user_id', currentUserId || '')
+      .eq('is_deleted', false);
     if (error) throw error;
     return data.map((d) => d.blocked_user_id as string);
   };
@@ -38,16 +39,44 @@ export const UserBlock = () => {
 
   // ユーザーブロック関数
   const handleBlock = async () => {
-    const blockedTarget = blockedUsers.map((user) => user.id);
+    const blockedTarget = blockedUsers[0].id;
     try {
       setLoading(true);
-      const { error } = await supabase
+      // 既存のブロックを確認
+      const { data, error } = await supabase
         .from('user_blocks')
-        .insert({
-          user_id: currentUserId,
-          blocked_user_id: blockedTarget.join(''),
-        })
-        .throwOnError();
+        .select('blocked_user_id, is_deleted')
+        .eq('user_id', currentUserId || '')
+        .eq('blocked_user_id', blockedTarget)
+        .maybeSingle();
+      mutate();
+
+      if (error) throw error;
+
+      if (data) {
+        if (data.is_deleted) {
+          // もし論理削除されている場合は復活
+          const { error } = await supabase
+            .from('user_blocks')
+            .update({ is_deleted: false, created_at: new Date().toISOString() })
+            .eq('user_id', currentUserId || '')
+            .eq('blocked_user_id', blockedTarget);
+
+          if (error) throw error;
+        }
+      } else {
+        // 新規ブロック作成
+        const { error } = await supabase.from('user_blocks').insert({
+          user_id: currentUserId || '',
+          blocked_user_id: blockedTarget,
+          is_deleted: false,
+        });
+
+        if (error) throw error;
+      }
+
+      setBlockedUsers([]);
+
       mutate();
 
       if (error) {
