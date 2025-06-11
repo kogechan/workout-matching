@@ -387,6 +387,32 @@ export type Database = {
         Args: { other: string }
         Returns: boolean
       }
+      search_profiles_with_blocks: {
+        Args: {
+          p_current_user_id: string
+          p_age?: string
+          p_location?: string
+          p_gender?: string
+          p_training_experience?: string
+          p_favorite_muscle?: string
+          p_difficult_muscle?: string
+          p_belong_gym?: string
+        }
+        Returns: {
+          id: string
+          username: string
+          avatar_url: string
+          age: number
+          location: string
+          gender: string
+          training_experience: string
+          favorite_muscle: string
+          difficult_muscle: string
+          belong_gym: string
+          created_at: string
+          updated_at: string
+        }[]
+      }
       unblock_user: {
         Args: { target_user_id: string }
         Returns: boolean

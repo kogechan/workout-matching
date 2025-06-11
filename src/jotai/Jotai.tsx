@@ -2,7 +2,6 @@ import { atom } from 'jotai';
 import { Post } from '@/type/post';
 import { ProfileImageType, User } from '@/type/user';
 import { ChatRoom, Message, ProfileData } from '@/type/chat';
-import { SearchFilters } from '@/type/search';
 
 // メニューの表示状態を管理
 export const menuAtom = atom(false);
@@ -59,15 +58,5 @@ export const reportUserTargetAtom = atom<ProfileData | null>(null);
 export const blockTargetAtom = atom<ProfileData | null>(null);
 // サブ写真の情報を保持
 export const subImgeAtom = atom<ProfileImageType[]>([]);
-// フィルターしている値を保持
-export const filterAtom = atom<SearchFilters>({
-  age: null,
-  location: null,
-  gender: null,
-  training_experience: null,
-  favorite_muscle: null,
-  difficult_muscle: null,
-  belong_gym: null,
-});
 // ブロックしたユーザーの情報を保持
 export const blockedUserAtom = atom<ProfileData[]>([]);

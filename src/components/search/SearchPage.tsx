@@ -25,12 +25,12 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SearchFilters } from '@/type/search';
 import { useRouter } from 'next/router';
 import Filters from './Filters';
 import { useAtom } from 'jotai';
-import { currentUserAtom, filterAtom, filterModalAtom } from '@/jotai/Jotai';
+import { currentUserAtom, filterModalAtom } from '@/jotai/Jotai';
 
 interface SearchPageProps {
   initialProfiles: ProfileData[];
@@ -41,9 +41,43 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
   const [loading, setLoading] = useState(false);
   const [, setFilterModalOpen] = useAtom(filterModalAtom);
   const [currentUserId] = useAtom(currentUserAtom);
-  const [currentFilters, setCurrentFilters] = useAtom(filterAtom);
+  const [filters, setFilters] = useState<SearchFilters>({
+    age: null,
+    location: null,
+    gender: null,
+    training_experience: null,
+    favorite_muscle: null,
+    difficult_muscle: null,
+    belong_gym: null,
+  });
   const router = useRouter();
   const theme = useTheme();
+
+  // currentUserIdが変更されたら、プロフィールをフィルタリング
+  useEffect(() => {
+    // currentUserIdがまだ読み込まれていない場合は何もしない
+    if (currentUserId === undefined) return;
+
+    // 現在のフィルターが全て null の場合（初期状態）
+    const isInitialState = Object.values(filters).every(
+      (value) => value === null
+    );
+
+    if (isInitialState) {
+      // 初期プロフィールから自分を除外
+      if (currentUserId) {
+        const filteredProfiles = initialProfiles.filter(
+          (profile) => profile.id !== currentUserId
+        );
+        setProfiles(filteredProfiles);
+      } else {
+        setProfiles(initialProfiles);
+      }
+    } else {
+      // フィルターが適用されている場合は、APIを再度呼び出す
+      performSearch(filters);
+    }
+  }, [currentUserId]);
 
   // スクロールトリガー
   const trigger = useScrollTrigger({
@@ -60,39 +94,42 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
   };
 
   // フィルター変更時の検索処理
-  const handleFilterChange = useCallback(
-    async (filters: SearchFilters) => {
-      setLoading(true);
-      setCurrentFilters(filters);
-      try {
-        const response = await fetch('/api/search/search', {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...filters,
-            currentUserId,
-          }),
-        });
+  const performSearch = async (searchFilters: SearchFilters) => {
+    setLoading(true);
 
-        if (!response.ok) {
-          throw new Error('Search failed');
-        }
+    try {
+      const response = await fetch('/api/search/search', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...searchFilters,
+          currentUserId,
+        }),
+      });
 
-        const data = await response.json();
-        setProfiles(data);
-      } catch (error) {
-        console.error('Error searching profiles:', error);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error('Search failed');
       }
-    },
-    [currentUserId, setCurrentFilters]
-  );
+
+      const data = await response.json();
+      setProfiles(data);
+    } catch (error) {
+      console.error('Error searching profiles:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // フィルター変更時の処理
+  const handleFilterChange = async (newFilters: SearchFilters) => {
+    setFilters(newFilters);
+    await performSearch(newFilters);
+  };
 
   // 適用されているフィルターの数を計算
-  const appliedFiltersCount = Object.values(currentFilters).filter(
+  const appliedFiltersCount = Object.values(filters).filter(
     (value) => value !== null
   ).length;
 
@@ -122,6 +159,22 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
 
     return filterDisplayMap[key]?.[value] || value;
   };
+
+  // currentUserIdがまだ読み込まれていない場合はローディング表示
+  if (currentUserId === undefined) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -174,52 +227,50 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
         {/* 適用中のフィルター表示 */}
         {appliedFiltersCount > 0 && (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-            {currentFilters.age && (
+            {filters.age && (
               <Chip
                 icon={<PersonIcon fontSize="small" />}
-                label={getFilterDisplayName('age', currentFilters.age)}
-                onDelete={() =>
-                  handleFilterChange({ ...currentFilters, age: null })
-                }
+                label={getFilterDisplayName('age', filters.age)}
+                onDelete={() => handleFilterChange({ ...filters, age: null })}
                 size="small"
                 color="primary"
                 variant="outlined"
               />
             )}
-            {currentFilters.location && (
+            {filters.location && (
               <Chip
                 icon={<LocationOnIcon fontSize="small" />}
-                label={currentFilters.location}
+                label={filters.location}
                 onDelete={() =>
-                  handleFilterChange({ ...currentFilters, location: null })
+                  handleFilterChange({ ...filters, location: null })
                 }
                 size="small"
                 color="primary"
                 variant="outlined"
               />
             )}
-            {currentFilters.gender && (
+            {filters.gender && (
               <Chip
                 icon={<PersonIcon fontSize="small" />}
-                label={currentFilters.gender}
+                label={filters.gender}
                 onDelete={() =>
-                  handleFilterChange({ ...currentFilters, gender: null })
+                  handleFilterChange({ ...filters, gender: null })
                 }
                 size="small"
                 color="primary"
                 variant="outlined"
               />
             )}
-            {currentFilters.training_experience && (
+            {filters.training_experience && (
               <Chip
                 icon={<FitnessCenterIcon fontSize="small" />}
                 label={getFilterDisplayName(
                   'training_experience',
-                  currentFilters.training_experience
+                  filters.training_experience
                 )}
                 onDelete={() =>
                   handleFilterChange({
-                    ...currentFilters,
+                    ...filters,
                     training_experience: null,
                   })
                 }
@@ -228,12 +279,12 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
                 variant="outlined"
               />
             )}
-            {currentFilters.belong_gym && (
+            {filters.belong_gym && (
               <Chip
                 icon={<FitnessCenterIcon fontSize="small" />}
-                label={currentFilters.belong_gym}
+                label={filters.belong_gym}
                 onDelete={() =>
-                  handleFilterChange({ ...currentFilters, belong_gym: null })
+                  handleFilterChange({ ...filters, belong_gym: null })
                 }
                 size="small"
                 color="primary"
@@ -244,7 +295,7 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
         )}
 
         {/* フィルターコンポーネント */}
-        <Filters onFiltersChange={handleFilterChange} />
+        <Filters filters={filters} onFiltersChange={handleFilterChange} />
 
         {/* 検索結果表示 */}
         {loading ? (

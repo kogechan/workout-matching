@@ -1,4 +1,4 @@
-import { filterAtom, filterModalAtom } from '@/jotai/Jotai';
+import { filterModalAtom } from '@/jotai/Jotai';
 import { SearchFilters } from '@/type/search';
 import {
   AppBar,
@@ -22,25 +22,19 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CheckIcon from '@mui/icons-material/Check';
 import { useAtom } from 'jotai';
-import { useEffect } from 'react';
 
 interface SearchFiltersProps {
+  filters: SearchFilters;
   onFiltersChange: (filters: SearchFilters) => void;
 }
 
-const Filters = ({ onFiltersChange }: SearchFiltersProps) => {
+const Filters = ({ filters, onFiltersChange }: SearchFiltersProps) => {
   const theme = useTheme();
   const [filterModalOpen, setFilterModalOpen] = useAtom(filterModalAtom);
-  const [filters, setFilters] = useAtom(filterAtom);
-
-  // フィルター変更時の処理
-  useEffect(() => {
-    onFiltersChange(filters);
-  }, [filters, onFiltersChange]);
 
   const handleSelectChange =
     (field: keyof SearchFilters) => (event: SelectChangeEvent) => {
-      setFilters({
+      onFiltersChange({
         ...filters,
         [field]: event.target.value,
       });
@@ -48,7 +42,7 @@ const Filters = ({ onFiltersChange }: SearchFiltersProps) => {
 
   // フィルターをリセット
   const handleReset = () => {
-    setFilters({
+    onFiltersChange({
       age: null,
       location: null,
       gender: null,
