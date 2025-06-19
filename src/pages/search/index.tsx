@@ -4,7 +4,7 @@ import { SearchPage } from '../../components/search/SearchPage';
 import supabase from '@/lib/supabase';
 import { ProfileData } from '@/type/chat';
 import Head from 'next/head';
-import { parseCookies } from 'nookies'; // nookiesをインストールする必要があります
+import { parseCookies } from 'nookies';
 
 interface SearchPageProps {
   initialProfiles: ProfileData[];
@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (
 ) => {
   // クッキーからセッション情報を取得
   const cookies = parseCookies(context);
-  const token = cookies['sb-access-token']; // Supabaseのトークン名に応じて調整
+  const token = cookies['sb-access-token'];
 
   let currentUserId = null;
 

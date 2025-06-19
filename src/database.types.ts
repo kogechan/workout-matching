@@ -373,6 +373,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_blocked_users: {
+        Args: { user_id: string }
+        Returns: {
+          blocked_user_id: string
+        }[]
+      }
       get_my_blocked_list: {
         Args: Record<PropertyKey, never>
         Returns: {

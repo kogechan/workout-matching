@@ -31,6 +31,7 @@ import { useRouter } from 'next/router';
 import Filters from './Filters';
 import { useAtom } from 'jotai';
 import { currentUserAtom, filterModalAtom } from '@/jotai/Jotai';
+import supabase from '@/lib/supabase';
 
 interface SearchPageProps {
   initialProfiles: ProfileData[];
@@ -50,62 +51,110 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
     difficult_muscle: null,
     belong_gym: null,
   });
+  const [hasInitialized, setHasInitialized] = useState(false);
   const router = useRouter();
   const theme = useTheme();
 
-  // currentUserIdが変更されたら、プロフィールをフィルタリング
+  // 初期表示時のプロフィール設定
   useEffect(() => {
-    // currentUserIdがまだ読み込まれていない場合は何もしない
-    if (currentUserId === undefined) return;
+    if (currentUserId === undefined && hasInitialized) return;
 
-    // 現在のフィルターが全て null の場合（初期状態）
-    const isInitialState = Object.values(filters).every(
-      (value) => value === null
-    );
+    const initializeProfiles = async () => {
+      setLoading(true);
 
-    if (isInitialState) {
-      // 初期プロフィールから自分を除外
-      if (currentUserId) {
-        const filteredProfiles = initialProfiles.filter(
+      try {
+        // ブロックユーザーを取得する関数
+        const fetchBlockedUserIds = async (): Promise<Set<string>> => {
+          if (!currentUserId) return new Set();
+
+          try {
+            const { data: blockData, error } = await supabase
+              .from('user_blocks')
+              .select('user_id, blocked_user_id')
+              .eq('is_deleted', false)
+              .or(
+                `user_id.eq.${currentUserId},blocked_user_id.eq.${currentUserId}`
+              );
+
+            if (error) {
+              console.error('Error fetching blocked users:', error);
+              return new Set();
+            }
+
+            const blockedUserIds = new Set<string>();
+
+            blockData?.forEach((block) => {
+              if (block.user_id === currentUserId) {
+                blockedUserIds.add(block.blocked_user_id);
+              } else if (block.blocked_user_id === currentUserId) {
+                blockedUserIds.add(block.user_id);
+              }
+            });
+
+            return blockedUserIds;
+          } catch (error) {
+            console.error('Error in fetchBlockedUserIds:', error);
+            return new Set();
+          }
+        };
+
+        // ブロックユーザーIDを取得
+        const blockedUserIds = await fetchBlockedUserIds();
+
+        let filteredProfiles = initialProfiles;
+
+        // 自分のプロフィールとブロックユーザーを除外
+        filteredProfiles = filteredProfiles.filter((profile) => {
+          // 自分自身を除外
+          if (currentUserId && profile.id === currentUserId) {
+            return false;
+          }
+          // ブロックユーザーを除外
+          if (blockedUserIds.has(profile.id)) {
+            return false;
+          }
+          return true;
+        });
+
+        setProfiles(filteredProfiles);
+      } catch (error) {
+        console.error('Error initializing profiles:', error);
+        // エラーが発生しても、最低限自分のプロフィールは除外する
+        const fallbackProfiles = initialProfiles.filter(
           (profile) => profile.id !== currentUserId
         );
-        setProfiles(filteredProfiles);
-      } else {
-        setProfiles(initialProfiles);
+        setProfiles(fallbackProfiles);
+      } finally {
+        setLoading(false);
+        setHasInitialized(true);
       }
-    } else {
-      // フィルターが適用されている場合は、APIを再度呼び出す
-      performSearch(filters);
-    }
-  }, [currentUserId]);
+    };
 
-  // スクロールトリガー
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 100,
-  });
-
-  // スクロールトップボタンの処理
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
+    initializeProfiles();
+  }, [currentUserId, hasInitialized, initialProfiles]); // ESLintエラーが解決される
 
   // フィルター変更時の検索処理
-  const performSearch = async (searchFilters: SearchFilters) => {
+  const handleFilterChange = async (newFilters: SearchFilters) => {
     setLoading(true);
+    setFilters(newFilters);
+
+    // currentUserIdが未定義の場合は検索しない
+    if (currentUserId === undefined) {
+      setLoading(false);
+      return;
+    }
 
     try {
+      console.log('Sending search request with currentUserId:', currentUserId); // デバッグログ
+
       const response = await fetch('/api/search/search', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
         },
         body: JSON.stringify({
-          ...searchFilters,
-          currentUserId,
+          ...newFilters,
+          currentUserId: currentUserId || null,
         }),
       });
 
@@ -122,10 +171,16 @@ export const SearchPage = ({ initialProfiles }: SearchPageProps) => {
     }
   };
 
-  // フィルター変更時の処理
-  const handleFilterChange = async (newFilters: SearchFilters) => {
-    setFilters(newFilters);
-    await performSearch(newFilters);
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   // 適用されているフィルターの数を計算
