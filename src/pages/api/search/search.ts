@@ -1,21 +1,18 @@
-// search.ts - サービスロールキーを使用してRLSをバイパス
-import { createClient } from '@supabase/supabase-js';
+// search.ts - 修正版
 import { NextApiRequest, NextApiResponse } from 'next';
-
-// 通常のクライアント（プロフィール検索用）
 import supabase from '@/lib/supabase';
 
-// サービスロールキーを使用したクライアント（ブロックデータ取得用）
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!, // サービスロールキー
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  }
-);
+// リクエストボディの型定義
+interface SearchRequestBody {
+  currentUserId: string | null;
+  age: string | null;
+  location: string | null;
+  gender: string | null;
+  training_experience: string | null;
+  favorite_muscle: string | null;
+  difficult_muscle: string | null;
+  belong_gym: string | null;
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,9 +32,10 @@ export default async function handler(
       favorite_muscle,
       difficult_muscle,
       belong_gym,
-    } = req.body;
+    }: SearchRequestBody = req.body;
 
-    // プロフィール検索は通常のクライアントを使用
+    console.log('Search API called with currentUserId:', currentUserId);
+
     let query = supabase.from('profiles').select('*');
 
     // 現在のユーザを除外
@@ -75,13 +73,15 @@ export default async function handler(
     const { data, error } = await query;
 
     if (error) {
+      console.error('Profile query error:', error);
       throw error;
     }
 
-    // ブロックユーザーを除外（サービスロールキーを使用）
+    // currentUserIdが存在する場合のみブロックユーザーの処理を行う
     if (data && currentUserId) {
-      // サービスロールキーを使用してブロックデータを取得
-      const { data: blockData, error: blockError } = await supabaseAdmin
+      console.log('Fetching block data for user:', currentUserId);
+
+      const { data: blockData, error: blockError } = await supabase
         .from('user_blocks')
         .select('user_id, blocked_user_id')
         .eq('is_deleted', false)
@@ -90,8 +90,10 @@ export default async function handler(
       if (blockError) {
         console.error('Error fetching block data:', blockError);
         // エラーが発生してもプロフィールは返す（ブロック機能が使えないだけ）
-        return res.status(200).json(data);
+        return res.status(200).json(data || []);
       }
+
+      console.log('Block data found:', blockData?.length || 0, 'records');
 
       const blockedUserIds = new Set<string>();
       blockData?.forEach((block) => {
@@ -102,13 +104,20 @@ export default async function handler(
         }
       });
 
+      console.log('Blocked user IDs:', Array.from(blockedUserIds));
+
       const filteredData = data.filter(
         (profile) => !blockedUserIds.has(profile.id)
+      );
+
+      console.log(
+        `Filtered ${data.length} profiles to ${filteredData.length} profiles`
       );
 
       return res.status(200).json(filteredData);
     }
 
+    // currentUserIdがない場合はそのままデータを返す
     return res.status(200).json(data || []);
   } catch (error) {
     console.error('Search error:', error);

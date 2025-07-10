@@ -373,12 +373,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_blocked_users: {
-        Args: { user_id: string }
-        Returns: {
-          blocked_user_id: string
-        }[]
-      }
       get_my_blocked_list: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -393,16 +387,18 @@ export type Database = {
         Args: { other: string }
         Returns: boolean
       }
-      search_profiles_with_blocks: {
+      search_profiles_with_filters: {
         Args: {
-          p_current_user_id: string
-          p_age?: string
+          p_age_min?: number
+          p_age_max?: number
           p_location?: string
           p_gender?: string
           p_training_experience?: string
           p_favorite_muscle?: string
           p_difficult_muscle?: string
           p_belong_gym?: string
+          p_limit?: number
+          p_offset?: number
         }
         Returns: {
           id: string
@@ -415,8 +411,9 @@ export type Database = {
           favorite_muscle: string
           difficult_muscle: string
           belong_gym: string
+          bio: string
           created_at: string
-          updated_at: string
+          total_count: number
         }[]
       }
       unblock_user: {
