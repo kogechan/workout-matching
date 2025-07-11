@@ -6,6 +6,8 @@ export const useAlert = () => {
   const [reportAlert, setReportAlert] = useState(false);
   const [messageDeleteAlert, setMessageDeleteAlert] = useState(false);
   const [accountDeleteAlert, setAccountDeleteAlert] = useState(false);
+  const [userBlockAlert, setUserBlockAlert] = useState(false);
+  const [userUnBlockAlert, setUserUnBlockAlert] = useState(false);
 
   // 投稿の削除アラート
   const DeleteAlert = () => {
@@ -47,6 +49,22 @@ export const useAlert = () => {
     }, 3000);
   };
 
+  // ユーザーをブロック成功のアラート
+  const UserBlockAlert = () => {
+    setUserBlockAlert(true);
+    setTimeout(() => {
+      setUserBlockAlert(false);
+    }, 3000);
+  };
+
+  // ユーザーをブロック成功のアラート
+  const UserUnBlockAlert = () => {
+    setUserUnBlockAlert(true);
+    setTimeout(() => {
+      setUserUnBlockAlert(false);
+    }, 3000);
+  };
+
   return {
     deleteAlert,
     DeleteAlert,
@@ -58,5 +76,9 @@ export const useAlert = () => {
     MessageDeleteAlert,
     accountDeleteAlert,
     AccountDeleteAlert,
+    userBlockAlert,
+    UserBlockAlert,
+    userUnBlockAlert,
+    UserUnBlockAlert,
   };
 };

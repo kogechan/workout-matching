@@ -45,6 +45,7 @@
     "react-window": "^1.8.11",
     "resend": "^4.4.1",
     "swr": "^2.3.3",
+    "work-out-matching": "link:",
     "zod": "^3.24.3"
   },
   "devDependencies": {

@@ -1,3 +1,4 @@
+import { useAlert } from '@/hooks/useAlert';
 import {
   blockedUserAtom,
   blockTargetAtom,
@@ -5,20 +6,24 @@ import {
 } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Snackbar,
   Typography,
 } from '@mui/material';
 import { useAtom } from 'jotai';
+import CheckIcon from '@mui/icons-material/Check';
 
 export const UserUnblock = () => {
   const [unblockModalOpen, setUnblockModalOpen] = useAtom(unblockModalAtom);
   const [blockedTarget] = useAtom(blockTargetAtom);
   const [, setBlockedUsers] = useAtom(blockedUserAtom);
+  const { userUnBlockAlert, UserUnBlockAlert } = useAlert();
 
   // ユーザーブロック解除関数
   const unBlockUser = async (userId: string) => {
@@ -31,11 +36,25 @@ export const UserUnblock = () => {
       console.error(error);
     } else if (data) {
       setBlockedUsers((user) => user.filter((u) => u.id !== userId));
-      setUnblockModalOpen(false);
+      setTimeout(() => {
+        setUnblockModalOpen(false);
+        UserUnBlockAlert();
+      }, 3000);
     }
   };
   return (
     <>
+      <Snackbar
+        open={userUnBlockAlert}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+          ブロックを解除しました。
+        </Alert>
+      </Snackbar>
       {/* ブロック解除確認ダイアログ */}
       <Dialog
         open={unblockModalOpen}

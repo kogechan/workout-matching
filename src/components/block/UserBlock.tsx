@@ -1,3 +1,4 @@
+import { useAlert } from '@/hooks/useAlert';
 import {
   blockedUserAtom,
   blockModalAtom,
@@ -5,6 +6,7 @@ import {
 } from '@/jotai/Jotai';
 import supabase from '@/lib/supabase';
 import {
+  Alert,
   Button,
   CircularProgress,
   Dialog,
@@ -12,16 +14,21 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Snackbar,
 } from '@mui/material';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import useSWR from 'swr';
+import CheckIcon from '@mui/icons-material/Check';
+import { useRouter } from 'next/router';
 
 export const UserBlock = () => {
   const [loading, setLoading] = useState(false);
   const [blockModalOpen, setBlockModalOpen] = useAtom(blockModalAtom);
   const [currentUserId] = useAtom(currentUserAtom);
   const [blockedUsers, setBlockedUsers] = useAtom(blockedUserAtom);
+  const { userBlockAlert, UserBlockAlert } = useAlert();
+  const router = useRouter();
 
   const fetcher = async () => {
     const { data, error } = await supabase
@@ -82,7 +89,11 @@ export const UserBlock = () => {
       if (error) {
         console.error(error);
       } else {
-        setBlockModalOpen(false);
+        setTimeout(() => {
+          router.back();
+          setBlockModalOpen(false);
+          UserBlockAlert();
+        }, 3000);
       }
     } catch (err) {
       console.log(err);
@@ -93,6 +104,17 @@ export const UserBlock = () => {
 
   return (
     <>
+      <Snackbar
+        open={userBlockAlert}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+          ブロックしました。
+        </Alert>
+      </Snackbar>
       <Dialog
         open={blockModalOpen}
         onClose={() => setBlockModalOpen(false)}
